@@ -31,19 +31,35 @@ function init() {
     applyUpdateMode();
     updateModeButton();
     
+    var versionChanged = false;
+    var currentVersion = window.Updater ? window.Updater.CURRENT_VERSION : '2.1.0';
+
     if (!settings || !settings.tasksFolder) {
         console.log('No settings or tasksFolder, showing setup modal');
         document.getElementById('setupModal').classList.remove('hidden');
         document.getElementById('tabNavigation').classList.add('hidden');
     } else {
         console.log('Setup complete');
+
+        // Check if extension was updated — force re-login for security
+        if (state.lastSeenVersion && state.lastSeenVersion !== currentVersion) {
+            console.log('Version changed from', state.lastSeenVersion, 'to', currentVersion, '- forcing re-login');
+            versionChanged = true;
+            state.currentUser = null;
+            authState.currentUser = null;
+            authState.isAdmin = false;
+            state.rememberMe = false;
+        }
+        state.lastSeenVersion = currentVersion;
+        saveSettings();
+
         if (loadMushafData()) {
             setupSurahControls();
         }
         initAuth();
         
         // Check if we should auto-login
-        if (state.rememberMe && state.currentUser && userExists(state.currentUser)) {
+        if (!versionChanged && state.rememberMe && state.currentUser && userExists(state.currentUser)) {
             console.log('Auto-logging in as:', state.currentUser);
             authState.currentUser = state.currentUser;
             authState.isAdmin = getUser(state.currentUser)?.isAdmin || false;
@@ -56,9 +72,9 @@ function init() {
             document.getElementById('globalUserHeader').classList.remove('hidden');
             document.getElementById('appContainer').classList.remove('no-header');
             updateCurrentUserDisplay();
-            initializeAfterLogin();
+            initializeAfterLogin(versionChanged);
             const displayUser = state.currentUser ? state.currentUser.charAt(0).toUpperCase() + state.currentUser.slice(1) : state.currentUser;
-            showToast(`Welcome back, ${displayUser}!`, 'success');
+            showToast('Welcome back, ' + displayUser + '!', 'success');
         } else {
             showLoginModal(state.currentUser); // Pre-select last user if exists
         }
@@ -99,7 +115,7 @@ function init() {
     }
 }
 
-function initializeAfterLogin() {
+function initializeAfterLogin(versionChanged) {
     populateRiwayahDropdown();
     try {
         loadUserAssignments();
@@ -107,6 +123,13 @@ function initializeAfterLogin() {
         setupUserFilterDropdown();
     } catch (e) {
         console.error('Error initializing user filters:', e);
+    }
+    // Show changelog if this is a new version
+    if (versionChanged && typeof showChangelog === 'function') {
+        var currentVersion = window.Updater ? window.Updater.CURRENT_VERSION : '2.1.0';
+        setTimeout(function() {
+            showChangelog(currentVersion);
+        }, 800);
     }
     setupReviewQueuePolling();
     document.getElementById('reviewFilesList').innerHTML = '<p class="empty-state">Loading review queue...</p>';
@@ -175,9 +198,9 @@ function initAuth() {
     document.getElementById('saveQuoteBtn')?.addEventListener('click', handleSaveQuote);
     document.getElementById('cancelQuoteEdit')?.addEventListener('click', resetQuoteForm);
     document.getElementById('quotesUpdateBtn')?.addEventListener('click', () => {
-        if (confirm('This will merge all member quotes into the master quotes.json in the project folder. Continue?')) {
+        showConfirm('This will merge all member quotes into the master quotes.json in the project folder. Continue?', function() {
             mergeAllQuotes();
-        }
+        });
     });
     document.getElementById('reviewComplaintsBtn')?.addEventListener('click', () => {
         openReviewComplaintsModal();

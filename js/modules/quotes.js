@@ -219,13 +219,14 @@ function editUserQuote(id) {
     document.getElementById('cancelQuoteEdit').classList.remove('hidden');
 }
 function deleteUserQuoteAndRefresh(id) {
-    if (!confirm('Are you sure you want to delete this quote?')) return;
-    if (deleteUserQuote(id)) {
-        renderUserQuotes();
-        showToast('Quote deleted', 'success');
-    } else {
-        showToast('Failed to delete quote', 'error');
-    }
+    showConfirm('Are you sure you want to delete this quote?', function() {
+        if (deleteUserQuote(id)) {
+            renderUserQuotes();
+            showToast('Quote deleted', 'success');
+        } else {
+            showToast('Failed to delete quote', 'error');
+        }
+    });
 }
 function resetQuoteForm() {
     document.getElementById('editQuoteId').value = '';

@@ -194,14 +194,13 @@ function deleteUser(username) {
             showToast('Cannot delete your own account while logged in', 'error');
             return false;
         }
-        if (confirm(`Are you sure you want to delete user ${username}?`)) {
+        showConfirm('Are you sure you want to delete user ' + username + '?', function() {
             delete authState.config.users[lowerUsername];
             saveConfig();
-            showToast(`User ${username} deleted`, 'success');
+            showToast('User ' + username + ' deleted', 'success');
             populateUserSettingsTable();
             populateSettingsUserSelect();
-            return true;
-        }
+        });
         return false;
     } catch (e) {
         console.error('Error deleting user:', e);

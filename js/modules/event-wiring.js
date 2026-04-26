@@ -481,7 +481,7 @@ function setupUpdaterEvents() {
     if (installBtn) {
         installBtn.addEventListener('click', function() {
             if (!window.Updater) return;
-            if (confirm('An update is available.\n\nPlease save all open documents before continuing.\nIllustrator will close and reopen automatically after the update.\n\nContinue?')) {
+            showConfirm('An update is available.\n\nPlease save all open documents before continuing.\nIllustrator will close and reopen automatically after the update.\n\nContinue?', function() {
                 installBtn.disabled = true;
                 progressContainer.classList.remove('hidden');
                 window.Updater.installUpdate(function(evt) {
@@ -509,7 +509,7 @@ function setupUpdaterEvents() {
                     installBtn.disabled = false;
                     showToast('Update failed: ' + err.message, 'error');
                 });
-            }
+            });
         });
     }
 }

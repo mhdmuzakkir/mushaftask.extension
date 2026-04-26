@@ -2552,59 +2552,232 @@ textarea:focus-visible,
 }
 
 .admin-section {
-    background-color: var(--bg-tertiary);
+    background-color: var(--bg-secondary);
     padding: 16px;
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--card-border);
 }
 
-.admin-btn-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+/* Update buttons row — flex layout to prevent overflow */
+.update-btn-row {
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
-    justify-items: center;
 }
 
-.admin-icon-btn {
+.update-btn-row .admin-icon-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
-    min-width: 44px;
-    min-height: 44px;
+    padding: 8px 14px;
+    min-height: 36px;
     font-size: 12px;
-    gap: 0;
+    gap: 6px;
     position: relative;
-    overflow: visible;
+    overflow: hidden;
     transition: background 0.2s;
+    flex: 1 1 auto;
+    white-space: nowrap;
 }
 
-.admin-icon-btn:hover {
-    z-index: 10;
-    background: var(--bg-hover);
-}
-
-.admin-icon-btn .icon-sm {
-    width: 22px;
-    height: 22px;
+.update-btn-row .admin-icon-btn .icon-sm {
+    width: 18px;
+    height: 18px;
     fill: currentColor;
     flex-shrink: 0;
 }
 
-.admin-icon-btn span {
-    display: inline-block;
-    max-width: 0;
-    opacity: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    transition: max-width 0.25s ease, opacity 0.2s ease, margin 0.2s ease;
+.update-btn-row .admin-icon-btn span {
+    display: inline;
+    opacity: 1;
+    max-width: none;
     margin-left: 0;
     font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.admin-icon-btn:hover span {
-    max-width: 140px;
-    opacity: 1;
-    margin-left: 8px;
+/* Admin Controls — Professional grouped list */
+.admin-group {
+    margin-bottom: 16px;
+}
+
+.admin-group:last-child {
+    margin-bottom: 0;
+}
+
+.admin-group-header {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    padding-left: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-actions {
+    background-color: var(--bg-tertiary);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.admin-action-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0 14px;
+    height: 38px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    text-align: left;
+    gap: 10px;
+}
+
+.admin-action-row:last-child {
+    border-bottom: none;
+}
+
+.admin-action-row:hover {
+    background-color: var(--bg-hover);
+}
+
+.admin-action-row:active {
+    background-color: var(--bg-active);
+}
+
+.admin-action-row .icon-sm {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    flex-shrink: 0;
+    opacity: 0.85;
+}
+
+.admin-action-label {
+    flex: 1 1 auto;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-action-chevron {
+    font-size: 16px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    line-height: 1;
+    margin-left: auto;
+}
+
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    background-color: var(--accent-red);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-right: 4px;
+}
+
+.admin-badge:empty,
+.admin-badge[data-count="0"] {
+    display: none;
+}
+
+/* Custom Confirm Modal */
+.confirm-modal-content {
+    max-width: 320px;
+}
+.confirm-modal-content p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    white-space: pre-line;
+}
+
+/* Changelog Modal */
+.changelog-modal-content {
+    max-width: 380px;
+}
+.changelog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+}
+.changelog-header h2 {
+    margin-bottom: 0;
+    font-size: 16px;
+}
+.changelog-version {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent-green);
+    background: var(--success-bg);
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+}
+.changelog-body {
+    max-height: 50vh;
+    overflow-y: auto;
+    margin-bottom: 16px;
+}
+.changelog-section {
+    margin-bottom: 16px;
+}
+.changelog-section:last-child {
+    margin-bottom: 0;
+}
+.changelog-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.changelog-section-title.new { color: var(--accent-green); }
+.changelog-section-title.fixed { color: var(--accent-orange); }
+.changelog-section-title.improved { color: var(--accent-blue); }
+.changelog-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.changelog-list li {
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding: 4px 0 4px 18px;
+    position: relative;
+    line-height: 1.4;
+}
+.changelog-list li::before {
+    content: '•';
+    position: absolute;
+    left: 6px;
+    color: var(--text-muted);
 }
 
 /* Small icon buttons for tab headers & multi-select */

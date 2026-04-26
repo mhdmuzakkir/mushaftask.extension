@@ -14,6 +14,7 @@ function saveSettings() {
             lastSelectedRiwayah: state.lastSelectedRiwayah,
             lastSearchedSurah: state.lastSearchedSurah || null,
             lastSearchedAyah: state.lastSearchedAyah || null,
+            lastSeenVersion: state.lastSeenVersion || null,
             updateMode: state.updateMode || 'normal',
             autoOpenNextPage: state.autoOpenNextPage || false,
             inProgressUserFilter: state.inProgressUserFilter || 'all',
@@ -42,6 +43,7 @@ function loadSettings() {
             state.lastSelectedRiwayah = settings.lastSelectedRiwayah || null;
             state.lastSearchedSurah = settings.lastSearchedSurah || null;
             state.lastSearchedAyah = settings.lastSearchedAyah || null;
+            state.lastSeenVersion = settings.lastSeenVersion || null;
             state.updateMode = settings.updateMode || 'normal';
             state.autoOpenNextPage = settings.autoOpenNextPage || false;
             state.inProgressUserFilter = settings.inProgressUserFilter || 'all';

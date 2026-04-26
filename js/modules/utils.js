@@ -32,16 +32,128 @@
         return null;
     }
 
+    function showConfirm(message, onConfirm, onCancel) {
+        var modal = document.getElementById('confirmModal');
+        var msgEl = document.getElementById('confirmMessage');
+        var okBtn = document.getElementById('confirmOkBtn');
+        var cancelBtn = document.getElementById('confirmCancelBtn');
+        if (!modal || !msgEl || !okBtn || !cancelBtn) {
+            // Fallback to native confirm if modal not found
+            if (confirm(message)) {
+                if (onConfirm) onConfirm();
+            } else {
+                if (onCancel) onCancel();
+            }
+            return;
+        }
+        msgEl.textContent = message || 'Are you sure?';
+        modal.classList.remove('hidden');
+
+        function handleOk() {
+            modal.classList.add('hidden');
+            cleanup();
+            if (onConfirm) onConfirm();
+        }
+        function handleCancel() {
+            modal.classList.add('hidden');
+            cleanup();
+            if (onCancel) onCancel();
+        }
+        function handleKey(e) {
+            if (e.key === 'Escape') handleCancel();
+            if (e.key === 'Enter') handleOk();
+        }
+        function cleanup() {
+            okBtn.removeEventListener('click', handleOk);
+            cancelBtn.removeEventListener('click', handleCancel);
+            document.removeEventListener('keydown', handleKey);
+        }
+        okBtn.addEventListener('click', handleOk);
+        cancelBtn.addEventListener('click', handleCancel);
+        document.addEventListener('keydown', handleKey);
+    }
+
+    var CHANGELOG = {
+        '2.1.0': {
+            date: 'April 2026',
+            new: [
+                'Auto-restart Illustrator after update installation',
+                'Professional Admin Controls UI with grouped sections',
+                'Custom confirmation dialogs (no more white browser popups)',
+                '"What\'s New" changelog shown after each update',
+                'Red badge on Review Complaints when complaints exist'
+            ],
+            fixed: [
+                'Update buttons no longer overflow their container',
+                'Admin buttons text no longer spills outside on hover',
+                'Cleaner update.bat using robocopy instead of xcopy'
+            ],
+            improved: [
+                'Admin section now grouped by User / Riwayah / Moderation',
+                'Force re-login after extension update for security',
+                'Better permission check before starting update'
+            ]
+        },
+        '2.0.1': {
+            date: 'April 2026',
+            fixed: [
+                'Updater batch files improved for reliability'
+            ]
+        }
+    };
+
+    function showChangelog(version) {
+        var modal = document.getElementById('changelogModal');
+        var versionEl = document.getElementById('changelogVersion');
+        var bodyEl = document.getElementById('changelogBody');
+        var closeBtn = document.getElementById('changelogCloseBtn');
+        if (!modal || !bodyEl) return;
+
+        var data = CHANGELOG[version];
+        if (!data) return;
+
+        versionEl.textContent = 'v' + version;
+        var html = '';
+        if (data.new && data.new.length) {
+            html += '<div class="changelog-section"><div class="changelog-section-title new">✨ New</div><ul class="changelog-list">';
+            data.new.forEach(function(item) { html += '<li>' + escapeHtml(item) + '</li>'; });
+            html += '</ul></div>';
+        }
+        if (data.fixed && data.fixed.length) {
+            html += '<div class="changelog-section"><div class="changelog-section-title fixed">🐛 Fixed</div><ul class="changelog-list">';
+            data.fixed.forEach(function(item) { html += '<li>' + escapeHtml(item) + '</li>'; });
+            html += '</ul></div>';
+        }
+        if (data.improved && data.improved.length) {
+            html += '<div class="changelog-section"><div class="changelog-section-title improved">⚡ Improved</div><ul class="changelog-list">';
+            data.improved.forEach(function(item) { html += '<li>' + escapeHtml(item) + '</li>'; });
+            html += '</ul></div>';
+        }
+        bodyEl.innerHTML = html;
+        modal.classList.remove('hidden');
+
+        function handleClose() {
+            modal.classList.add('hidden');
+            closeBtn.removeEventListener('click', handleClose);
+        }
+        closeBtn.addEventListener('click', handleClose);
+    }
+
     window.generateId = generateId;
     window.formatDate = formatDate;
     window.escapeHtml = escapeHtml;
     window.detectRiwayahFromFilename = detectRiwayahFromFilename;
+    window.showConfirm = showConfirm;
+    window.showChangelog = showChangelog;
+    window.CHANGELOG = CHANGELOG;
 
     window.MushafUtils = {
         generateId: generateId,
         formatDate: formatDate,
         escapeHtml: escapeHtml,
-        detectRiwayahFromFilename: detectRiwayahFromFilename
+        detectRiwayahFromFilename: detectRiwayahFromFilename,
+        showConfirm: showConfirm,
+        showChangelog: showChangelog
     };
 
 })(window);

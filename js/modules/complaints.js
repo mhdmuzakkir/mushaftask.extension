@@ -232,8 +232,13 @@ function handleSaveQuoteEdit() {
 function updateComplaintsBadge() {
     const count = getOpenComplaintCount();
     const label = document.getElementById('reviewComplaintsLabel');
+    const badge = document.getElementById('complaintsBadge');
     if (label) {
-        label.textContent = count > 0 ? 'Review Complaints (' + count + ')' : 'Review Complaints';
+        label.textContent = 'Review Complaints';
+    }
+    if (badge) {
+        badge.textContent = count > 0 ? count : '';
+        badge.style.display = count > 0 ? 'inline-flex' : 'none';
     }
 }
 function openReviewComplaintsModal() {
