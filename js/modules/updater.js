@@ -297,19 +297,31 @@
             var child_process = require('child_process');
             var spawn = child_process.spawn;
 
-            // Get Illustrator.exe path from running process
+            // Get Illustrator.exe path — try PowerShell first (works on Win 10/11), then WMIC, then common paths
             var illustratorPath = null;
             try {
-                var wmicResult = child_process.execSync('wmic process where "name=\'Illustrator.exe\'" get ExecutablePath /value', { encoding: 'utf8', timeout: 5000 });
-                var match = wmicResult.match(/ExecutablePath=([^\r\n]+)/);
-                if (match && match[1]) {
-                    illustratorPath = match[1].trim();
+                var psResult = child_process.execSync('powershell -NoProfile -Command "(Get-Process Illustrator -ErrorAction SilentlyContinue).Path"', { encoding: 'utf8', timeout: 5000 }).trim();
+                if (psResult && fs.existsSync(psResult)) {
+                    illustratorPath = psResult;
+                    console.log('Found Illustrator via PowerShell:', illustratorPath);
                 }
             } catch (e) {
-                console.log('WMIC failed, trying fallback paths');
+                console.log('PowerShell path lookup failed');
             }
 
-            // Fallback: common Adobe install paths
+            if (!illustratorPath) {
+                try {
+                    var wmicResult = child_process.execSync('wmic process where "name=\'Illustrator.exe\'" get ExecutablePath /value', { encoding: 'utf8', timeout: 5000 });
+                    var match = wmicResult.match(/ExecutablePath=([^\r\n]+)/);
+                    if (match && match[1]) {
+                        illustratorPath = match[1].trim();
+                        console.log('Found Illustrator via WMIC:', illustratorPath);
+                    }
+                } catch (e) {
+                    console.log('WMIC path lookup failed');
+                }
+            }
+
             if (!illustratorPath) {
                 var pf = process.env['ProgramFiles'] || 'C:\\Program Files';
                 var pf86 = process.env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)';
@@ -322,6 +334,7 @@
                     for (var j = 0; j < candidates.length; j++) {
                         if (fs.existsSync(candidates[j])) {
                             illustratorPath = candidates[j];
+                            console.log('Found Illustrator via fallback:', illustratorPath);
                             break;
                         }
                     }
@@ -331,25 +344,19 @@
 
             if (!illustratorPath) {
                 console.error('Could not find Illustrator.exe');
+                if (typeof showToast === 'function') {
+                    showToast('Update installed. Please restart Illustrator manually.', 'warning');
+                }
                 return false;
             }
 
-            console.log('Found Illustrator at:', illustratorPath);
-
-            // Create a self-deleting restart batch script
+            // Create a self-deleting restart batch that waits, then launches Illustrator
             var restartBatPath = path.join(os.tmpdir(), 'mushaf_restart_' + Date.now() + '.bat');
             var batContent = '@echo off\r\n' +
                 'echo Waiting for Illustrator to close...\r\n' +
-                'timeout /t 5 /nobreak >nul\r\n' +
-                '\r\n' +
-                'tasklist | findstr /I "Illustrator.exe" >nul\r\n' +
-                'if %errorlevel% equ 0 (\r\n' +
-                '    echo Illustrator is still running. Skipping restart.\r\n' +
-                ') else (\r\n' +
-                '    echo Restarting Illustrator...\r\n' +
-                '    start "" "' + illustratorPath.replace(/"/g, '""') + '"\r\n' +
-                ')\r\n' +
-                '\r\n' +
+                'timeout /t 4 /nobreak >nul\r\n' +
+                'echo Restarting Illustrator...\r\n' +
+                'start "" "' + illustratorPath.replace(/"/g, '""') + '"\r\n' +
                 'del /F /Q "%~f0"\r\n';
             fs.writeFileSync(restartBatPath, batContent);
 
@@ -361,15 +368,30 @@
             });
             child.unref();
 
-            // Save all documents and quit via ExtendScript
-            try {
-                if (typeof CSInterface !== 'undefined') {
-                    var csInterface = new CSInterface();
-                    csInterface.evalScript('(function() { for (var i = app.documents.length - 1; i >= 0; i--) { try { app.documents[i].save(); } catch(e) { } } app.quit(); })();');
+            // Give the batch a moment to start, then try graceful quit via ExtendScript
+            setTimeout(function() {
+                try {
+                    if (typeof window.CSInterface !== 'undefined') {
+                        var csInterface = new window.CSInterface();
+                        csInterface.evalScript('(function() { for (var i = app.documents.length - 1; i >= 0; i--) { try { app.documents[i].save(); } catch(e) { } } app.quit(); })();');
+                        console.log('ExtendScript quit sent');
+                    } else {
+                        console.log('CSInterface not available for graceful quit');
+                    }
+                } catch (e) {
+                    console.error('ExtendScript quit failed:', e);
                 }
-            } catch (e) {
-                console.error('ExtendScript quit failed:', e);
-            }
+            }, 800);
+
+            // Force kill if Illustrator is still running after 4 seconds
+            setTimeout(function() {
+                try {
+                    child_process.exec('taskkill /f /im Illustrator.exe', { windowsHide: true });
+                    console.log('Taskkill fallback executed');
+                } catch (e) {
+                    console.log('Taskkill fallback failed:', e);
+                }
+            }, 4000);
 
             return true;
         } catch (e) {

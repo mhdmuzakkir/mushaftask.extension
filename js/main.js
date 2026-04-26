@@ -41,16 +41,22 @@ function init() {
     } else {
         console.log('Setup complete');
 
-        // Check if extension was updated — force re-login for security
+        // Detect version change for changelog
         if (state.lastSeenVersion && state.lastSeenVersion !== currentVersion) {
-            console.log('Version changed from', state.lastSeenVersion, 'to', currentVersion, '- forcing re-login');
+            console.log('Version changed from', state.lastSeenVersion, 'to', currentVersion);
             versionChanged = true;
+        }
+        // Force login ONLY on first install (lastSeenVersion is null)
+        var forceLogin = !state.lastSeenVersion;
+        if (forceLogin) {
+            console.log('First install detected — forcing login');
             state.currentUser = null;
             authState.currentUser = null;
             authState.isAdmin = false;
             state.rememberMe = false;
         }
         state.lastSeenVersion = currentVersion;
+        state._showChangelogOnLogin = versionChanged;
         saveSettings();
 
         if (loadMushafData()) {
@@ -59,7 +65,7 @@ function init() {
         initAuth();
         
         // Check if we should auto-login
-        if (!versionChanged && state.rememberMe && state.currentUser && userExists(state.currentUser)) {
+        if (!forceLogin && state.rememberMe && state.currentUser && userExists(state.currentUser)) {
             console.log('Auto-logging in as:', state.currentUser);
             authState.currentUser = state.currentUser;
             authState.isAdmin = getUser(state.currentUser)?.isAdmin || false;
@@ -72,7 +78,7 @@ function init() {
             document.getElementById('globalUserHeader').classList.remove('hidden');
             document.getElementById('appContainer').classList.remove('no-header');
             updateCurrentUserDisplay();
-            initializeAfterLogin(versionChanged);
+            initializeAfterLogin();
             const displayUser = state.currentUser ? state.currentUser.charAt(0).toUpperCase() + state.currentUser.slice(1) : state.currentUser;
             showToast('Welcome back, ' + displayUser + '!', 'success');
         } else {
@@ -115,7 +121,7 @@ function init() {
     }
 }
 
-function initializeAfterLogin(versionChanged) {
+function initializeAfterLogin() {
     populateRiwayahDropdown();
     try {
         loadUserAssignments();
@@ -125,11 +131,13 @@ function initializeAfterLogin(versionChanged) {
         console.error('Error initializing user filters:', e);
     }
     // Show changelog if this is a new version
-    if (versionChanged && typeof showChangelog === 'function') {
+    if (state._showChangelogOnLogin && typeof showChangelog === 'function') {
         var currentVersion = window.Updater ? window.Updater.CURRENT_VERSION : '2.1.0';
         setTimeout(function() {
             showChangelog(currentVersion);
         }, 800);
+        state._showChangelogOnLogin = false;
+        saveSettings();
     }
     setupReviewQueuePolling();
     document.getElementById('reviewFilesList').innerHTML = '<p class="empty-state">Loading review queue...</p>';
