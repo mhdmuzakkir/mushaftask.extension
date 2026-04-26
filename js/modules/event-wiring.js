@@ -481,7 +481,7 @@ function setupUpdaterEvents() {
     if (installBtn) {
         installBtn.addEventListener('click', function() {
             if (!window.Updater) return;
-            showConfirm('An update is available.\n\nPlease save all open documents before continuing.\nIllustrator will close and reopen automatically after the update.\n\nContinue?', function() {
+            showConfirm('An update is available.\n\nPlease save all open documents before continuing.\n\nContinue?', function() {
                 installBtn.disabled = true;
                 progressContainer.classList.remove('hidden');
                 window.Updater.installUpdate(function(evt) {
@@ -489,18 +489,15 @@ function setupUpdaterEvents() {
                     if (progressText) progressText.textContent = evt.stage + ' ' + evt.percent + '%';
                 }).then(function(result) {
                     if (statusText) {
-                        statusText.innerHTML = '<span style="color: var(--accent-green);">Update installed! Saving documents and restarting Illustrator...</span>';
+                        statusText.innerHTML = '<span style="color: var(--accent-green);">Update installed successfully!</span>';
                     }
                     progressContainer.classList.add('hidden');
                     installBtn.classList.add('hidden');
-                    showToast('Update installed. Restarting Illustrator...', 'success');
+                    showToast('Update installed successfully!', 'success');
 
-                    // Auto-restart after a short delay so the UI can render
-                    setTimeout(function() {
-                        if (window.Updater && window.Updater.restartIllustrator) {
-                            window.Updater.restartIllustrator();
-                        }
-                    }, 1500);
+                    // Show the restart banner
+                    var restartBanner = document.getElementById('restartRequiredBanner');
+                    if (restartBanner) restartBanner.classList.remove('hidden');
                 }).catch(function(err) {
                     if (statusText) {
                         statusText.innerHTML = '<span style="color: var(--accent-red);">Update failed: ' + escapeHtml(err.message) + '</span>';
@@ -510,6 +507,17 @@ function setupUpdaterEvents() {
                     showToast('Update failed: ' + err.message, 'error');
                 });
             });
+        });
+    }
+
+    var restartBtn = document.getElementById('restartIllustratorBtn');
+    if (restartBtn) {
+        restartBtn.addEventListener('click', function() {
+            if (window.Updater && window.Updater.restartIllustrator) {
+                restartBtn.disabled = true;
+                restartBtn.textContent = 'Restarting...';
+                window.Updater.restartIllustrator();
+            }
         });
     }
 }

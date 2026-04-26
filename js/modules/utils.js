@@ -74,6 +74,22 @@
     }
 
     var CHANGELOG = {
+        '2.1.1': {
+            date: 'April 2026',
+            new: [
+                'Manual "Restart Illustrator" button after update (more reliable than auto-restart)',
+                'Prominent green success banner when update completes'
+            ],
+            fixed: [
+                'Changelog now shows correctly after manual login',
+                'Illustrator restart reliability improved with PowerShell path lookup',
+                'No more forced re-login on every update — only on first install'
+            ],
+            improved: [
+                'Update confirmation message is clearer about manual restart',
+                'Restart button gives visual feedback when clicked'
+            ]
+        },
         '2.1.0': {
             date: 'April 2026',
             new: [
