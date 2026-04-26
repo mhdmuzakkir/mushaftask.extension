@@ -144,7 +144,7 @@ Adobe CEP loads extensions from **multiple locations**:
 | System (x86) | `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\mushaftask.extension\` | Yes | No — use `install-or-update.bat` |
 | System (x64) | `C:\Program Files\Common Files\Adobe\CEP\extensions\mushaftask.extension\` | Yes | No — use `install-or-update.bat` |
 
-**New**: `install-user.bat` installs to `%APPDATA%` without requiring Administrator privileges. This is the preferred install method because:
+**New**: `install.bat` installs to `%APPDATA%` without requiring Administrator privileges. This is the preferred install method because:
 - No UAC prompts
 - The in-panel **GitHub updater** (`js/modules/updater.js`) can self-update from Settings
 - No risk of permission issues during file operations
@@ -152,7 +152,7 @@ Adobe CEP loads extensions from **multiple locations**:
 ### Installing for Development / Debugging
 
 **Option A — User Install (Recommended)**:
-1. Run `install-user.bat` (double-click, no admin needed)
+1. Run `install.bat` (double-click, no admin needed)
 2. Enable CEP debugging in the registry:
    ```
    HKEY_CURRENT_USER\SOFTWARE\Adobe\CSXS.11 -> PlayerDebugMode = 1
@@ -167,7 +167,7 @@ Adobe CEP loads extensions from **multiple locations**:
 
 ### Installer Scripts
 
-- `install-user.bat` — **No admin required**. Clones/pulls from GitHub to `%APPDATA%\Adobe\CEP\extensions\mushaftask.extension\`
+- `install.bat` — **No admin required**. Clones/pulls from GitHub to `%APPDATA%\Adobe\CEP\extensions\mushaftask.extension\` (or ZIP fallback if Git is missing)
 - `install-or-update.bat` — **Requires Administrator**. Targets `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\mushaftask.extension\`
 
 ### Self-Update Mechanism
@@ -355,7 +355,7 @@ This repository contains **only the CEP extension**. The full Mushaf Task Manage
 - **Daily Reports**: Google Apps Script + PHP endpoint (`receive.php`) — automated nightly reports (not in repo).
 - **Google Drive**: Activity logs and file storage synced manually or via GAS.
 
-These are documented in `PROJECT_PROGRESS.md`, `SETUP_CHECKLIST.md`, and `WORKFLOW.md` but their source code lives in separate repositories or server environments. The `.gitignore` explicitly excludes `mushaf.linuxproguru.com/*` and `google-scripts/*`.
+These are documented in `docs/WORKFLOW.md` and human-facing project docs, but their source code lives in separate repositories or server environments. The `.gitignore` explicitly excludes `mushaf.linuxproguru.com/*` and `google-scripts/*`.
 
 ---
 

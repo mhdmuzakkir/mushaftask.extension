@@ -1,0 +1,118 @@
+# Mushaf Task Manager — Update & Release Protocol
+
+> **For:** Kimi agents, maintainers, and future developers  
+> **Purpose:** Step-by-step checklist for every release. Follow this to keep versions, installers, and the self-updater in sync.
+
+---
+
+## Does the Extension Support Self-Updates?
+
+**Yes.** The full flow is implemented and wired:
+
+| Step | File | What it does |
+|------|------|--------------|
+| 1 | `check-update.bat` | Runs **outside** Illustrator (bypasses firewall). Downloads remote `version.json` from GitHub `main` branch. |
+| 2 | `js/modules/updater.js` | Spawns `check-update.bat` via Node.js `child_process`, reads `%TEMP%\mushaftask-update\status.json`, compares versions. |
+| 3 | `index.html` + `js/modules/event-wiring.js` | Settings panel shows **"Check for Updates"** button. If update found, reveals **"Install Update"** button. |
+| 4 | `do-update.bat` | Runs **outside** Illustrator. Prefers `git pull`, falls back to ZIP download + PowerShell `Expand-Archive` + `xcopy`. |
+| 5 | `js/modules/updater.js` | Spawns `do-update.bat` with the extension path as argument. Monitors progress via status file. |
+| 6 | Panel UI | On success, prompts: **"Please restart Illustrator."** |
+
+**Requirements for self-update to work:**
+- Extension must be installed in a **user-writable** location: `%APPDATA%\Adobe\CEP\extensions\mushaftask.extension\`
+- Program Files installs **cannot** self-update (permission denied)
+- `version.json` must exist on the GitHub `main` branch
+
+---
+
+## Version Number Locations (MUST all match)
+
+Every release, update **all three** of these:
+
+### 1. `version.json` (GitHub source of truth)
+```json
+{
+  "version": "1.0.1",
+  "manifestVersion": "1.0.1",
+  ...
+}
+```
+
+### 2. `js/modules/updater.js` (local version constant)
+```javascript
+var CURRENT_VERSION = '1.0.1';
+```
+
+### 3. `CSXS/manifest.xml` (CEP manifest)
+```xml
+<ExtensionManifest Version="7.0" ExtensionBundleId="com.mushaf.taskmanager" ExtensionBundleVersion="1.0.1"
+    ExtensionBundleName="Mushaf Task Manager" ...>
+    <ExtensionList>
+        <Extension Id="com.mushaf.taskmanager.panel" Version="1.0.1"/>
+    </ExtensionList>
+```
+
+> **Rule:** If any of these three are out of sync, the updater will behave unpredictably (e.g., telling users an update exists when they're already on the latest version, or vice versa).
+
+---
+
+## Release Checklist
+
+### Before pushing to GitHub
+- [ ] Update `version.json` → `"version"`
+- [ ] Update `js/modules/updater.js` → `CURRENT_VERSION`
+- [ ] Update `CSXS/manifest.xml` → `ExtensionBundleVersion` and `Extension Version`
+- [ ] Test the extension locally in Illustrator (open a file, toggle tasks, move to completed)
+- [ ] Run `install.bat` locally to verify it installs/updates cleanly
+- [ ] Verify `check-update.bat` works when run manually (double-click)
+
+### After pushing to GitHub
+- [ ] Confirm `https://raw.githubusercontent.com/mhdmuzakkir/mushaftask.extension/main/version.json` returns the new version
+- [ ] Open the installed extension → Settings → **Check for Updates**
+- [ ] Confirm it detects the new version and shows **"Install Update"**
+- [ ] Click **Install Update**, wait for completion
+- [ ] Restart Illustrator, confirm new version loads
+
+---
+
+## File Organization (DO NOT MOVE these)
+
+These files **must** stay at the extension root because the updater looks for them there:
+
+| File | Why it must stay at root |
+|------|--------------------------|
+| `check-update.bat` | `updater.js` resolves it via `path.join(extensionPath, 'check-update.bat')` |
+| `do-update.bat` | Same — resolved relative to extension root |
+| `version.json` | Read by `check-update.bat` and compared against remote copy |
+| `index.html` | CEP entry point (`MainPath` in manifest) |
+| `CSXS/manifest.xml` | CEP manifest — must be at `CSXS/manifest.xml` |
+| `install.bat` | Team installer — should be easy to find |
+
+Files that **can** be organized into subfolders:
+- Documentation → `docs/`
+- Utility scripts → `scripts/`
+
+---
+
+## Installer Files Summary
+
+| File | Audience | Admin Required | Method |
+|------|----------|---------------|--------|
+| `install.bat` | **Team (primary)** | No | Git clone/pull, or ZIP fallback |
+| `install-or-update.bat` | IT/Admin | **Yes** | Git clone/pull to Program Files (x86) |
+| `install-user.bat` | *(deleted — use `install.bat`)* | — | — |
+
+---
+
+## Troubleshooting Updates
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| "Network download failed" | Firewall blocks Illustrator | Run `check-update.bat` manually from Explorer, then click Check again in panel |
+| "Extension is in Program Files" | Installed to system path | Reinstall via `install.bat` to AppData, or use `install-or-update.bat` as Admin |
+| Batch runs but panel doesn't see result | `child_process` also blocked | The batch still wrote `%TEMP%\mushaftask-update\remote-version.json`. Panel will read it on next check. |
+| "Git pull failed" | `.git` repo conflict | Delete the extension folder and re-run `install.bat` |
+
+---
+
+*Last updated: April 26, 2026*
