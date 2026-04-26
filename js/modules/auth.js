@@ -428,10 +428,6 @@ function updateCurrentUserDisplay() {
     adminSections.forEach(el => {
         el.classList.toggle('hidden', !authState.isAdmin);
     });
-    const exportBtn = document.getElementById('exportStatsBtn');
-    if (exportBtn) {
-        exportBtn.classList.toggle('hidden', !authState.isAdmin);
-    }
     const adminSettingsSection = document.getElementById('adminSettingsSection');
     if (adminSettingsSection) {
         adminSettingsSection.classList.toggle('hidden', !authState.isAdmin);

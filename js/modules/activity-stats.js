@@ -184,6 +184,14 @@ function refreshStats() {
     document.getElementById('totalPagesStat').textContent = stats.totalPages;
     document.getElementById('topUserStat').textContent = stats.topUser;
     document.getElementById('totalUsersStat').textContent = stats.activeUsers;
+    const totalUsersStatEl = document.getElementById('totalUsersStat');
+    if (totalUsersStatEl && totalUsersStatEl.parentElement) {
+        const userList = Object.entries(stats.userStats)
+            .sort((a, b) => b[1] - a[1])
+            .map(([user, count]) => '• ' + user.charAt(0).toUpperCase() + user.slice(1) + ': ' + count + ' pages')
+            .join('\n');
+        totalUsersStatEl.parentElement.title = stats.activeUsers > 0 ? userList : 'No active users';
+    }
     const tbody = document.getElementById('statsTableBody');
     if (stats.logs.length === 0) {
         tbody.innerHTML = '<tr><td colspan="3" class="empty-cell">No activity recorded for this period</td></tr>';
@@ -198,7 +206,7 @@ function refreshStats() {
             <tr>
                 <td>${dateStr}</td>
                 <td>${userName}</td>
-                <td>${log.file || '-'}</td>
+                <td style="text-align: right;">${log.file || '-'}</td>
             </tr>
         `;
     }).join('');

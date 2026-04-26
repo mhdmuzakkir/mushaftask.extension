@@ -2703,33 +2703,30 @@ textarea:focus-visible,
 
 /* Restart Required Banner */
 .restart-banner {
-    display: flex;
-    align-items: center;
-    gap: 12px;
     background: var(--success-bg);
     border: 1px solid var(--accent-green);
     border-radius: var(--radius);
     padding: 14px 16px;
     margin-bottom: 12px;
 }
+.restart-banner-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
 .restart-banner-icon {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: var(--accent-green);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     flex-shrink: 0;
-}
-.restart-banner-text {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
-    gap: 2px;
 }
 .restart-banner-text strong {
     font-size: 13px;
@@ -2740,11 +2737,10 @@ textarea:focus-visible,
     color: var(--text-secondary);
 }
 .restart-banner-btn {
-    flex-shrink: 0;
-    padding: 8px 16px;
+    width: 100%;
+    padding: 10px;
     font-size: 12px;
     font-weight: 600;
-    white-space: nowrap;
 }
 
 /* Custom Confirm Modal */
@@ -3013,11 +3009,11 @@ textarea:focus-visible,
     text-overflow: ellipsis;
 }
 .stats-table th:nth-child(1),
-.stats-table td:nth-child(1) { width: 28%; }
+.stats-table td:nth-child(1) { width: 20%; }
 .stats-table th:nth-child(2),
-.stats-table td:nth-child(2) { width: 24%; }
+.stats-table td:nth-child(2) { width: 30%; }
 .stats-table th:nth-child(3),
-.stats-table td:nth-child(3) { width: 48%; }
+.stats-table td:nth-child(3) { width: 50%; text-align: right; }
 
 .stats-table th {
     background-color: var(--bg-tertiary);
@@ -3026,6 +3022,9 @@ textarea:focus-visible,
     text-align: left;
     padding: 10px 12px;
     border-bottom: 1px solid var(--border-color);
+}
+.stats-table th:nth-child(3) {
+    text-align: right;
 }
 
 .stats-table td {

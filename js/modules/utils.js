@@ -74,6 +74,20 @@
     }
 
     var CHANGELOG = {
+        '2.1.2': {
+            date: 'April 2026',
+            new: [
+                'Active Users stat card now shows a hover tooltip listing each user and their page count'
+            ],
+            fixed: [
+                'Restart banner layout no longer crams text into narrow columns — clean vertical stack',
+                'Export CSV button properly hidden from all users (was showing for admins)',
+                'Activity log table columns resized: wider User column, right-aligned File names'
+            ],
+            improved: [
+                'Stats UI polish for narrow panel readability'
+            ]
+        },
         '2.1.1': {
             date: 'April 2026',
             new: [

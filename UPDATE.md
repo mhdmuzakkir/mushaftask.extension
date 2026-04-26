@@ -62,6 +62,7 @@ var CURRENT_VERSION = '1.0.1';
 - [ ] Update `version.json` → `"version"`
 - [ ] Update `js/modules/updater.js` → `CURRENT_VERSION`
 - [ ] Update `CSXS/manifest.xml` → `ExtensionBundleVersion` and `Extension Version`
+- [ ] Update `js/modules/utils.js` → `CHANGELOG` — add new entry for this version so the **"What's New"** popup shows correctly after update
 - [ ] Test the extension locally in Illustrator (open a file, toggle tasks, move to completed)
 - [ ] Run `install.bat` locally to verify it installs/updates cleanly
 - [ ] Verify `check-update.bat` works when run manually (double-click)
@@ -113,6 +114,16 @@ Files that **can** be organized into subfolders:
 | Batch runs but panel doesn't see result | `child_process` also blocked | The batch still wrote `%TEMP%\mushaftask-update\remote-version.json`. Panel will read it on next check. |
 | "Git pull failed" | `.git` repo conflict | Delete the extension folder and re-run `install.bat` |
 | Update fails mid-copy | File locked by Illustrator | Close Illustrator completely and run `update.bat` manually |
+
+---
+
+---
+
+## ⚠️ Critical Reminder
+
+> **After every confirmed update that is ready for release, you MUST update both the version number AND the changelog.**
+>
+> If you bump the version in `version.json`, `updater.js`, and `manifest.xml` but forget to add a `CHANGELOG` entry in `js/modules/utils.js`, users who update will see a blank or missing "What's New" popup after restarting Illustrator.
 
 ---
 
