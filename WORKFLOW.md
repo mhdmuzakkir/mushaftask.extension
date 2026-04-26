@@ -124,48 +124,28 @@ The CEP Extension has been refactored from a single 3500+ line `main.js` into a 
 
 ### Module Overview
 
-| Module | Purpose | Key Classes/Objects |
-|--------|---------|---------------------|
-| `config.js` | Centralized constants and configuration | `MushafConfig` |
-| `state.js` | Application state management | `MushafState` (singleton) |
-| `utils.js` | Common utility functions | `MushafUtils` |
-| `auth-manager.js` | User authentication and management | `MushafAuth` (singleton) |
-| `activity-manager.js` | Activity logging and statistics | `MushafActivity` (singleton) |
-| `file-manager.js` | File operations and scanning | `MushafFileManager` (singleton) |
-| `task-manager.js` | Task CRUD operations | `MushafTaskManager` (singleton) |
-| `ui-manager.js` | UI rendering and updates | `MushafUI` (singleton) |
-| `main.js` | Entry point and app logic | `MushafApp` (public API) |
+The CEP extension uses a modular IIFE architecture loaded sequentially via `<script>` tags. There is no ES6 module system — all modules expose globals on `window`.
 
-### Module Dependencies
+| Module | Purpose | Key Globals |
+|--------|---------|-------------|
+| `core-globals.js` | State, authState, Node.js refs | `state`, `authState`, `fs`, `path`, `os` |
+| `config.js` | Page→Juz mapping, path utilities | `MushafConfig` |
+| `utils.js` | Utilities, custom confirm modal, changelog | `MushafUtils`, `showConfirm`, `showChangelog` |
+| `auth.js` | SHA256 password hashing, login/logout, user CRUD | — |
+| `activity-stats.js` | Activity logging and statistics | `getStatsForPeriod`, `refreshStats` |
+| `file-manager.js` | File moves, create riwayah, folder scaffolding | — |
+| `task-manager.js` | Task CRUD, completion markers | — |
+| `ui-core.js` | Rendering tasks, progress bars, location display | — |
+| `queue-manager.js` | Review & In Progress scanning, filtering, caching | — |
+| `updater.js` | GitHub self-update (AppData installs) | `Updater` |
+| `main.js` | Entry point and app logic | `init()` |
 
-```
-config.js (no dependencies)
-    ↓
-state.js (uses Config)
-    ↓
-utils.js (no dependencies)
-    ↓
-file-manager.js (uses State, Config, Utils)
-task-manager.js (uses State, Config, Utils)
-    ↓
-ui-manager.js (uses State, Config, Utils)
-    ↓
-main.js (uses all modules)
-```
+### Key UI Components
 
-### Global Exports
-
-Each module exposes its functionality via the global `window` object:
-
-```javascript
-window.MushafConfig      // Configuration constants
-window.MushafState       // State singleton instance
-window.MushafUtils       // Utility functions
-window.MushafFileManager // File manager singleton
-window.MushafTaskManager // Task manager singleton
-window.MushafUI          // UI manager singleton
-window.MushafApp         // Application public API
-```
+- **Custom confirm modal** (`showConfirm`) — Dark-themed replacement for native `confirm()`
+- **Changelog popup** (`showChangelog`) — "What's New" modal shown after updates
+- **Restart banner** — Green success banner with manual "Restart Illustrator" button
+- **Admin controls** — Grouped full-width rows (User Management, Riwayah Management, Moderation)
 
 ---
 
@@ -229,20 +209,30 @@ MushafProject/
 ```
 extension/
 ├── js/
-│   ├── config.js           # Configuration constants and mappings
-│   │   └── PAGE_TO_JUZ, USER_ASSIGNMENTS, DEFAULT_RIWAYAH_COLORS
-│   ├── state.js            # StateManager class - centralized state
-│   │   └── currentPage, currentRiwayah, tasks, filters, etc.
-│   ├── utils.js            # Utility functions
-│   │   └── file I/O, DOM helpers, date formatting
-│   ├── file-manager.js     # FileManager class - file operations
-│   │   └── scanReviewFiles, scanInProgressFiles, openInIllustrator
-│   ├── task-manager.js     # TaskManager class - task operations
-│   │   └── loadPageTasks, savePageTasks, submitPageTasks
-│   ├── ui-manager.js       # UIManager class - UI rendering
-│   │   └── renderProjectTasks, renderReviewQueue, updateProgress
-│   └── main.js             # Application entry point
-│       └── initApplication, event handlers, public API
+│   ├── main.js               # Application orchestrator (~230 lines)
+│   └── modules/              # 24 files, IIFE pattern, loaded sequentially
+│       ├── core-globals.js   # state, authState, Node.js module refs
+│       ├── config.js         # Page→Juz mapping, path utilities
+│       ├── utils.js          # Utilities, showConfirm, showChangelog
+│       ├── illustrator.js    # CEP bridge: browseFolder, getActiveDocumentInfo
+│       ├── settings.js       # Load/save ~/Documents/MushafTaskManager/settings.json
+│       ├── mushaf-data.js    # Parse css/mushaf_info.json
+│       ├── user-assignments.js # Surah range assignments per user
+│       ├── task-manager.js   # Task CRUD, completion markers
+│       ├── file-manager.js   # File moves, create riwayah, folder scaffolding
+│       ├── ui-core.js        # Rendering tasks, progress bars, location display
+│       ├── queue-manager.js  # Review & In Progress scanning, filtering, caching
+│       ├── export.js         # Batch PDF/PNG export via ExtendScript
+│       ├── multi-select.js   # Bulk selection in queues
+│       ├── keyboard.js       # Keyboard shortcuts
+│       ├── polling.js        # Auto-refresh system (3 modes)
+│       ├── quotes.js         # Quote display, user quotes, complaints
+│       ├── complaints.js     # Quote complaint review modal
+│       ├── auth.js           # SHA256 password hashing, login/logout, user CRUD
+│       ├── activity-stats.js # Activity logging, stats
+│       ├── admin.js          # Admin controls (grouped rows)
+│       ├── updater.js        # GitHub self-update
+│       └── event-wiring.js   # DOM event listener setup
 ```
 
 ### Server Folder Structure (mushaf.linuxproguru.com)
@@ -853,11 +843,18 @@ In Progress filter shows assignment badge
 ### Admin Controls
 
 ```
-User: muzakkir (hardcoded admin)
+User: muzakkir (hardcoded admin, created automatically if config.json missing)
     ↓
-Settings → Admin Controls:
-    - Add New User
-    - Reset User Password
+Settings → Admin Controls (grouped full-width rows):
+    ┌─ User Management ──────────────────────┐
+    │  [Add New User]  [Reset User Password] │
+    └────────────────────────────────────────┘
+    ┌─ Riwayah Management ───────────────────┐
+    │  [Create New Riwayah]                  │
+    └────────────────────────────────────────┘
+    ┌─ Moderation ───────────────────────────┐
+    │  [Review Complaints]  [red badge count]│
+    └────────────────────────────────────────┘
 ```
 
 ---

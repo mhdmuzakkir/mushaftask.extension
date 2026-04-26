@@ -16,7 +16,7 @@
 | 3 | `index.html` + `js/modules/event-wiring.js` | Settings panel shows **"Check for Updates"** button. If update found, reveals **"Install Update"** button. |
 | 4 | `update.bat` | Runs **outside** Illustrator. Downloads ZIP + PowerShell `Expand-Archive` + `robocopy` (same robust method as `install.bat`). |
 | 5 | `js/modules/updater.js` | Spawns `update.bat` with the extension path as argument. Monitors progress via status file. |
-| 6 | Panel UI | On success, prompts: **"Please restart Illustrator."** |
+| 6 | Panel UI | On success, shows a **green restart banner** with a **"Restart Illustrator"** button. User clicks to restart. |
 
 **Requirements for self-update to work:**
 - Extension must be installed in a **user-writable** location: `%APPDATA%\Adobe\CEP\extensions\mushaftask.extension\`
@@ -72,7 +72,26 @@ var CURRENT_VERSION = '1.0.1';
 - [ ] Open the installed extension → Settings → **Check for Updates**
 - [ ] Confirm it detects the new version and shows **"Install Update"**
 - [ ] Click **Install Update**, wait for completion
-- [ ] Restart Illustrator, confirm new version loads
+- [ ] Confirm the **green restart banner** appears with **"Restart Illustrator"** button
+- [ ] Click **Restart Illustrator**, confirm new version loads and changelog popup appears
+
+---
+
+## Restart Flow After Update
+
+When `update.bat` completes successfully:
+
+1. `updater.js` shows a **green restart banner** in the Settings panel
+2. Banner contains: checkmark icon, success message, and a **"Restart Illustrator"** button
+3. User clicks the button → `restartIllustrator()` runs:
+   - Finds `Illustrator.exe` via PowerShell `(Get-Process Illustrator).Path`
+   - Falls back to WMIC, then common install paths
+   - Writes a self-deleting restart batch to `%TEMP%`
+   - Spawns the batch detached (waits 4s, then launches Illustrator)
+   - Sends ExtendScript `app.quit()` after 500ms to close current Illustrator
+4. User re-opens the extension → changelog popup appears (if `lastSeenVersion` changed)
+
+**Important:** There is no auto-restart timeout. The user must manually click the button.
 
 ---
 
@@ -101,7 +120,6 @@ Files that **can** be organized into subfolders:
 |------|----------|---------------|--------|
 | `install.bat` | **Team (primary)** | No | Git clone/pull, or ZIP fallback |
 | `install-or-update.bat` | IT/Admin | **Yes** | Git clone/pull to Program Files (x86) |
-| `install-user.bat` | *(deleted — use `install.bat`)* | — | — |
 
 ---
 

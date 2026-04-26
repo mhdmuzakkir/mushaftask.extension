@@ -81,7 +81,7 @@ mushaftask.extension/
 │   └── hostscript.jsx        # ExtendScript for Illustrator communication
 ├── index.html                # Extension panel UI (single HTML file)
 ├── install-or-update.bat     # Admin installer for Program Files (x86)
-├── install-user.bat          # **User installer** for AppData (no admin required)
+├── install.bat               # **User installer** for AppData (no admin required)
 ├── version.json              # Version info for update checker
 ├── settings.json             # Template placeholder (real config lives in ~/Documents/)
 ├── .debug                    # CEP debug config (port 8088 for ILST)
@@ -144,7 +144,7 @@ Adobe CEP loads extensions from **multiple locations**:
 | System (x86) | `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\mushaftask.extension\` | Yes | No — use `install-or-update.bat` |
 | System (x64) | `C:\Program Files\Common Files\Adobe\CEP\extensions\mushaftask.extension\` | Yes | No — use `install-or-update.bat` |
 
-**New**: `install-user.bat` installs to `%APPDATA%` without requiring Administrator privileges. This is the preferred install method because:
+**Preferred**: `install.bat` installs to `%APPDATA%` without requiring Administrator privileges. This is the recommended method because:
 - No UAC prompts
 - The in-panel **GitHub updater** (`js/modules/updater.js`) can self-update from Settings
 - No risk of permission issues during file operations
@@ -152,7 +152,7 @@ Adobe CEP loads extensions from **multiple locations**:
 ### Installing for Development / Debugging
 
 **Option A — User Install (Recommended)**:
-1. Run `install-user.bat` (double-click, no admin needed)
+1. Run `install.bat` (double-click, no admin needed)
 2. Enable CEP debugging in the registry:
    ```
    HKEY_CURRENT_USER\SOFTWARE\Adobe\CSXS.11 -> PlayerDebugMode = 1
@@ -167,7 +167,7 @@ Adobe CEP loads extensions from **multiple locations**:
 
 ### Installer Scripts
 
-- `install-user.bat` — **No admin required**. Clones/pulls from GitHub to `%APPDATA%\Adobe\CEP\extensions\mushaftask.extension\`
+- `install.bat` — **No admin required**. Clones/pulls from GitHub to `%APPDATA%\Adobe\CEP\extensions\mushaftask.extension\` (or ZIP fallback if Git is missing)
 - `install-or-update.bat` — **Requires Administrator**. Targets `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\mushaftask.extension\`
 
 ### Self-Update Mechanism
@@ -176,7 +176,7 @@ Because Illustrator may be blocked by application firewalls from making outbound
 
 **Files involved:**
 - `check-update.bat` — Downloads `version.json` from GitHub using PowerShell (bypasses Illustrator firewall rules)
-- `do-update.bat` — Performs the actual update (`git pull` or ZIP download + extract)
+- `update.bat` — Performs the actual update (ZIP download + PowerShell `Expand-Archive` + `robocopy`)
 - `js/modules/updater.js` — Spawns the batch files via Node.js `child_process` and reads their result files
 - `version.json` — Tracks current version; compared against the remote copy on GitHub
 
@@ -184,9 +184,11 @@ Because Illustrator may be blocked by application firewalls from making outbound
 
 1. On startup (10s delay), the panel spawns `check-update.bat` via `child_process.exec`. The batch writes its result to `%TEMP%\mushaftask-update\status.json` and downloads the remote `version.json`.
 2. The panel reads the status file and compares versions. If a newer version exists and the extension is in a user-writable location (`AppData`), a green badge appears on the Settings tab.
-3. In Settings → "Extension Update", the user can click **Check for Updates** to run the batch again, then **Install Update** to run `do-update.bat`.
-4. `do-update.bat` prefers `git pull` if `.git` exists (fastest). Otherwise it downloads the ZIP, extracts via PowerShell `Expand-Archive`, and copies files with `xcopy`.
-5. The user is prompted to restart Illustrator.
+3. In Settings → "Extension Update", the user can click **Check for Updates** to run the batch again, then **Install Update** to run `update.bat`.
+4. `update.bat` downloads the ZIP from GitHub, extracts via PowerShell `Expand-Archive`, and copies files with `robocopy` (with `xcopy` fallback on codes ≥ 8).
+5. On success, a **green restart banner** appears in the Settings panel with a **"Restart Illustrator"** button. The user must click it manually — auto-restart was removed for reliability.
+
+**Batch argument contract:** `updater.js` passes `[extensionPath]` to `update.bat`. The batch uses this to skip `pause` (via `if "%~1"=="" pause`) and know where to copy files.
 
 **Firewall / Offline Fallback:**
 
@@ -196,7 +198,7 @@ If `child_process.exec` is also blocked by the firewall (or the batch fails for 
 2. Return to Illustrator and click **Check for Updates** again
 3. The panel will pick up the freshly downloaded `remote-version.json`
 
-The same applies to `do-update.bat` for installation.
+The same applies to `update.bat` for installation.
 
 **Limitations:**
 - Program Files installations cannot self-update (permission denied). The updater detects this and directs the user to `install-or-update.bat` as Administrator.
@@ -217,7 +219,8 @@ There is **no automated test suite**. Testing is entirely manual. When modifying
 8. **Stats tab** — activity logs load and filter by today/week/month.
 9. **Keyboard shortcuts** — Ctrl+Shift+N (next page), Ctrl+Shift+P (prev page), Ctrl+Shift+R (refresh UI).
 10. **Batch export** — PDF/PNG export via ExtendScript works for selected page ranges.
-11. **Updater** — Settings shows correct version, check for updates works, install flow completes.
+11. **Updater** — Settings shows correct version, check for updates works, install flow completes, restart banner appears.
+12. **Changelog popup** — After updating, the "What's New" modal appears on next login.
 
 ---
 
@@ -241,7 +244,7 @@ The UI has five tabs plus modals:
 - **HOME** (`#homeTab`) — Main workspace: file open, tasks, review queue, in-progress queue.
 - **REVIEW** (`#reviewTab`) — Review queue with multi-select and batch export.
 - **IN PROGRESS** (`#inProgressTab`) — In-progress files with user/riwayah filters.
-- **STATS** (`#statsTab`) — Activity statistics with today/week/month filters and CSV export.
+- **STATS** (`#statsTab`) — Activity statistics with today/week/month filters. Export CSV is hidden.
 - **SETTINGS** (`#settingsTab`) — Folder paths, password change, performance mode, auto-open, admin controls, updater.
 
 ---
@@ -370,8 +373,15 @@ These are documented in `PROJECT_PROGRESS.md`, `SETUP_CHECKLIST.md`, and `WORKFL
 7. **Activity logging wraps `moveToCompleted`** — The original `moveToCompleted` is stored and replaced with a wrapper that logs activity. When modifying file-move logic, ensure the wrapper still fires or update the wrapper accordingly.
 8. **Self-update safety** — The updater module checks `isUserInstall()` before allowing file copy. Do not bypass this check; overwriting Program Files without elevation will fail silently or throw EPERM.
 9. **Script load order matters** — If adding a new module, insert it in `index.html` before `event-wiring.js` and after its dependencies. Register any new `window` globals in `core-globals.js` if they need to be shared.
-10. **Version tracking** — When releasing, update both `CSXS/manifest.xml` `ExtensionBundleVersion` and `version.json` `version`. The updater reads `version.json` from the `main` branch raw URL.
-11. **Batch-based updater** — The updater no longer makes HTTP requests directly. It spawns `check-update.bat` / `do-update.bat` via Node.js `child_process`. If modifying the update flow, ensure the batch files and `updater.js` stay in sync. The batch files write JSON to `%TEMP%\mushaftask-update\status.json`.
+10. **Version tracking (3 locations + changelog)** — When releasing, update:
+    - `version.json` → `"version"`
+    - `js/modules/updater.js` → `CURRENT_VERSION`
+    - `CSXS/manifest.xml` → `ExtensionBundleVersion` and `Extension Version`
+    - `js/modules/utils.js` → `CHANGELOG` — add entry so the "What's New" popup shows correctly
+    The updater reads `version.json` from the `main` branch raw URL.
+11. **Batch-based updater** — The updater spawns `check-update.bat` / `update.bat` via Node.js `child_process`. `updater.js` must call `update.bat` (not `do-update.bat`). If modifying the update flow, ensure the batch files and `updater.js` stay in sync. The batch files write JSON to `%TEMP%\mushaftask-update\status.json`.
+12. **Custom confirm modal** — Never use native `confirm()`. Use `showConfirm(message, onConfirm, onCancel)` from `js/modules/utils.js`. It provides a dark-themed modal consistent with the panel UI.
+13. **No forced re-login on every update** — First install (`lastSeenVersion == null`) forces login. Version changes only set a flag to show the changelog on next login.
 
 ---
 
