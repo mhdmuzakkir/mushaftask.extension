@@ -39,7 +39,7 @@ if not exist "%TARGET_DIR%" (
     echo.
     echo Run install.bat first, or pass the correct path as argument.
     echo {"status":"error","stage":"install","message":"Extension not found at %TARGET_DIR%. Run install.bat first."} > "%STATUS_DIR%\status.json"
-    pause
+    if "%~1"=="" pause
     exit /b 1
 )
 
@@ -54,7 +54,7 @@ if not exist "%TEST_FILE%" (
     echo If installed in Program Files, run as Administrator,
     echo or reinstall to AppData using install.bat
     echo {"status":"error","stage":"install","message":"Permission denied. Program Files installs cannot self-update. Reinstall to AppData or run as Administrator."} > "%STATUS_DIR%\status.json"
-    pause
+    if "%~1"=="" pause
     exit /b 1
 )
 del /F /Q "%TEST_FILE%" 2>nul
@@ -75,7 +75,7 @@ powershell -NoProfile -Command "$wc=New-Object Net.WebClient; $wc.DownloadFile('
 if not exist "%ZIP_FILE%" (
     echo [ERROR] Download failed. Check internet connection.
     echo {"status":"error","stage":"download","message":"Failed to download update ZIP. Check internet connection."} > "%STATUS_DIR%\status.json"
-    pause
+    if "%~1"=="" pause
     exit /b 1
 )
 
@@ -97,7 +97,7 @@ if not defined SOURCE_DIR (
     echo [ERROR] Could not find extracted files.
     del /F /Q "%ZIP_FILE%" 2>nul
     echo {"status":"error","stage":"extract","message":"Could not find extracted files after ZIP extraction."} > "%STATUS_DIR%\status.json"
-    pause
+    if "%~1"=="" pause
     exit /b 1
 )
 
@@ -122,7 +122,7 @@ if not exist "%TARGET_DIR%\CSXS\manifest.xml" (
         echo Source had:
         dir "%SOURCE_DIR%" /b
         echo {"status":"error","stage":"install","message":"Update incomplete. manifest.xml not found after copy."} > "%STATUS_DIR%\status.json"
-        pause
+        if "%~1"=="" pause
         exit /b 1
     )
 )
@@ -152,6 +152,6 @@ echo.
 
 :: Write final status
 echo {"status":"done","stage":"install","message":"Update installed successfully. Please restart Illustrator."} > "%STATUS_DIR%\status.json"
-pause
+if "%~1"=="" pause
 endlocal
 exit /b 0
