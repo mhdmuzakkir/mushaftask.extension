@@ -2964,6 +2964,45 @@ textarea:focus-visible,
     padding: 16px;
     text-align: center;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    position: relative;
+    cursor: default;
+}
+.stat-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    font-size: 11px;
+    color: var(--text-primary);
+    text-align: left;
+    white-space: pre-line;
+    line-height: 1.6;
+    min-width: 140px;
+    max-width: 220px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
+    pointer-events: none;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.stat-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: var(--border-color) transparent transparent transparent;
+}
+.stat-card:hover .stat-tooltip {
+    opacity: 1;
+    visibility: visible;
 }
 
 .stat-value {
