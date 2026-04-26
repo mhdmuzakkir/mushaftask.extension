@@ -1,0 +1,14 @@
+callback | js\\modules\illustrator.js:26; js\\modules\illustrator.js:39
+completed | js\\modules\queue-manager.js:522
+config | js\\modules\user-assignments.js:34
+contributions | js\\modules\quotes.js:330
+info | js\\modules\file-manager.js:229
+JavaScript | js\\main.js:2
+login | js\\modules\event-wiring.js:99
+mathPow | js\\modules\auth.js:7; js\\modules\auth.js:22; js\\modules\auth.js:23
+Select | js\\modules\event-wiring.js:47; js\\modules\event-wiring.js:55
+showAllRiwayahs | js\\modules\queue-manager.js:264; js\\modules\queue-manager.js:283
+state | js\\modules\queue-manager.js:175
+support | js\\modules\polling.js:54
+user | js\\modules\queue-manager.js:96
+users | js\\modules\user-assignments.js:3

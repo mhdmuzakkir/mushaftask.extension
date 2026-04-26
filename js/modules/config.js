@@ -1,0 +1,40 @@
+/**
+ * Mushaf Task Manager - Config Module
+ * Constants, mappings, and configuration utilities
+ */
+(function(window) {
+    'use strict';
+
+    var pageToJuz = {
+        1: [1, 21], 2: [22, 41], 3: [42, 61], 4: [62, 81],
+        5: [82, 101], 6: [102, 121], 7: [122, 141], 8: [142, 161],
+        9: [162, 181], 10: [182, 201], 11: [202, 221], 12: [222, 241],
+        13: [242, 261], 14: [262, 281], 15: [282, 301], 16: [302, 321],
+        17: [322, 341], 18: [342, 361], 19: [362, 381], 20: [382, 401],
+        21: [402, 421], 22: [422, 441], 23: [442, 461], 24: [462, 481],
+        25: [482, 501], 26: [502, 521], 27: [522, 541], 28: [542, 561],
+        29: [562, 581], 30: [582, 604]
+    };
+
+    function getJuzFromPage(page) {
+        for (var juz = 1; juz <= 30; juz++) {
+            var range = pageToJuz[juz];
+            if (page >= range[0] && page <= range[1]) return juz;
+        }
+        return null;
+    }
+
+    function escapePathForExtendScript(filePath) {
+        return filePath.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    }
+
+    window.getJuzFromPage = getJuzFromPage;
+    window.escapePathForExtendScript = escapePathForExtendScript;
+
+    window.MushafConfig = {
+        pageToJuz: pageToJuz,
+        getJuzFromPage: getJuzFromPage,
+        escapePathForExtendScript: escapePathForExtendScript
+    };
+
+})(window);
