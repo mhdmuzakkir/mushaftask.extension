@@ -1,3 +1,0 @@
-callback | js\\modules\illustrator.js:26; js\\modules\illustrator.js:39
-mathPow | js\\modules\auth.js:7; js\\modules\auth.js:22; js\\modules\auth.js:23
-showAllRiwayahs | js\\modules\queue-manager.js:264; js\\modules\queue-manager.js:283
