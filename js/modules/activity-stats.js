@@ -156,17 +156,14 @@ function getStatsForPeriod(period) {
     filteredLogs.forEach(log => {
         if (log.action === 'move_to_completed') {
             totalPages++;
-            if (!userStats[log.user]) {
-                userStats[log.user] = { count: 0 };
-            }
-            userStats[log.user].count++;
+            userStats[log.user] = (userStats[log.user] || 0) + 1;
         }
     });
     let topUser = '-';
     let maxCount = 0;
-    Object.entries(userStats).forEach(([user, stats]) => {
-        if (stats.count > maxCount) {
-            maxCount = stats.count;
+    Object.entries(userStats).forEach(([user, count]) => {
+        if (count > maxCount) {
+            maxCount = count;
             topUser = user.charAt(0).toUpperCase() + user.slice(1);
         }
     });
