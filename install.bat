@@ -2,132 +2,123 @@
 setlocal EnableDelayedExpansion
 
 :: ==========================================================
-::  Mushaf Task Manager - Team Installer
-::  No Administrator required.
-::  Installs to: %%APPDATA%%\Adobe\CEP\extensions\
+::  Mushaf Task Manager - Team Installer (Run from Anywhere)
 :: ==========================================================
 
 set "TARGET_DIR=%APPDATA%\Adobe\CEP\extensions\mushaftask.extension"
-set "REPO_URL=https://github.com/mhdmuzakkir/mushaftask.extension.git"
 set "ZIP_URL=https://github.com/mhdmuzakkir/mushaftask.extension/archive/refs/heads/main.zip"
-set "UPDATE_DIR=%TEMP%\mushaftask-installer"
+set "UPDATE_DIR=%TEMP%\mushaf_inst_%RANDOM%%RANDOM%"
 
 echo ==========================================
 echo   Mushaf Task Manager - Team Installer
 echo ==========================================
 echo.
 
-:: Ensure extensions directory exists
+:: Create target directory
+echo Preparing installation...
 if not exist "%APPDATA%\Adobe\CEP\extensions" (
-    echo Creating CEP extensions directory...
-    mkdir "%APPDATA%\Adobe\CEP\extensions"
+    mkdir "%APPDATA%\Adobe\CEP\extensions" 2>nul
 )
 
-:: Check if Git is available
-where git >nul 2>&1
-if %errorlevel% equ 0 (
-    echo [Git found] Using Git clone/pull method.
-    echo.
+:: Clean old temp files completely
+if exist "%UPDATE_DIR%" (
+    rmdir /S /Q "%UPDATE_DIR%" 2>nul
+    timeout /t 1 /nobreak >nul
+)
+if exist "%UPDATE_DIR%.zip" del /F /Q "%UPDATE_DIR%.zip" 2>nul
 
-    if exist "%TARGET_DIR%\.git" (
-        echo Existing installation found.
-        echo Updating to latest version...
-        cd /d "%TARGET_DIR%"
-        git pull
-        if !errorlevel! neq 0 (
-            echo.
-            echo [ERROR] Git pull failed. Check your internet connection.
-            pause
-            exit /b 1
-        )
-        echo.
-        echo [SUCCESS] Extension updated successfully!
-    ) else (
-        echo Installing to:
-        echo   %TARGET_DIR%
-        echo.
-        git clone "%REPO_URL%" "%TARGET_DIR%"
-        if !errorlevel! neq 0 (
-            echo.
-            echo [ERROR] Git clone failed. Check your internet connection.
-            pause
-            exit /b 1
-        )
-        echo.
-        echo [SUCCESS] Extension installed successfully!
-    )
-) else (
-    echo [Git not found] Using ZIP download method.
-    echo.
-
-    if not exist "%UPDATE_DIR%" mkdir "%UPDATE_DIR%"
-
-    :: Download ZIP via PowerShell
-    echo Downloading latest version...
-    powershell -NoProfile -ExecutionPolicy Bypass -Command "try { $wc=New-Object Net.WebClient; $wc.DownloadFile('%ZIP_URL%','%UPDATE_DIR%\mushaf.zip'); exit 0 } catch { exit 1 }" >nul 2>&1
-
-    if errorlevel 1 (
-        echo [ERROR] Download failed. Check your internet connection.
-        pause
-        exit /b 1
-    )
-
-    :: Extract
-    echo Extracting files...
-    powershell -NoProfile -Command "Expand-Archive -Path '%UPDATE_DIR%\mushaf.zip' -DestinationPath '%UPDATE_DIR%\extracted' -Force" >nul 2>&1
-
-    if errorlevel 1 (
-        echo [ERROR] Extraction failed.
-        pause
-        exit /b 1
-    )
-
-    :: Find extracted folder
-    set "SOURCE_DIR="
-    for /d %%D in ("%UPDATE_DIR%\extracted\mushaftask*") do (
-        set "SOURCE_DIR=%%D"
-        goto :found
-    )
-    :found
-
-    if "%SOURCE_DIR%"=="" (
-        echo [ERROR] Could not find extracted folder.
-        pause
-        exit /b 1
-    )
-
-    :: Copy files
-    echo Copying files to extension folder...
-    if not exist "%TARGET_DIR%" mkdir "%TARGET_DIR%"
-    xcopy "%SOURCE_DIR%\*" "%TARGET_DIR%\" /E /Y /I /Q >nul 2>&1
-
-    echo.
-    echo [SUCCESS] Extension installed successfully!
+:: Download ZIP to explicit temp file
+echo Downloading from GitHub...
+set "ZIP_FILE=%TEMP%\mushaf_dl_%RANDOM%.zip"
+powershell -NoProfile -Command "$wc=New-Object Net.WebClient; $wc.DownloadFile('%ZIP_URL%','%ZIP_FILE%')"
+if not exist "%ZIP_FILE%" (
+    echo [ERROR] Download failed. Check internet connection.
+    pause
+    exit /b 1
 )
 
-:: Enable CEP debug mode (HKCU = no admin required)
+:: Extract to completely separate temp folder
+echo Extracting...
+mkdir "%UPDATE_DIR%"
+powershell -NoProfile -Command "Expand-Archive -Path '%ZIP_FILE%' -DestinationPath '%UPDATE_DIR%' -Force"
+
+:: Find the extracted subfolder (GitHub adds -main suffix)
+set "SOURCE_DIR="
+for /d %%D in ("%UPDATE_DIR%\*") do (
+    set "SOURCE_DIR=%%D"
+    goto :found_source
+)
+:found_source
+
+if not defined SOURCE_DIR (
+    echo [ERROR] Could not find extracted files.
+    del /F /Q "%ZIP_FILE%" 2>nul
+    pause
+    exit /b 1
+)
+
+echo Source found: %SOURCE_DIR%
+
+:: Remove old installation if exists
+if exist "%TARGET_DIR%" (
+    echo Removing old version...
+    rmdir /S /Q "%TARGET_DIR%" 2>nul
+    timeout /t 2 /nobreak >nul
+)
+
+:: Create fresh target
+mkdir "%TARGET_DIR%" 2>nul
+
+:: Copy using ROBOCOPY with explicit excludes to prevent cyclic issues
+echo Installing files...
+robocopy "%SOURCE_DIR%" "%TARGET_DIR%" /E /XD "mushaftask.extension" /NFL /NDL /NJH /NJS /nc /ns /np
+set "ROBO_ERR=!errorlevel!"
+
+:: Robocopy exit codes: 0-7 = success, 8+ = error
+if !ROBO_ERR! geq 8 (
+    echo [WARNING] Robocopy had issues (code: !ROBO_ERR!), retrying with xcopy...
+    xcopy "%SOURCE_DIR%\*" "%TARGET_DIR%\" /E /Y /I /Q 2>nul
+)
+
+:: Verify installation
+if not exist "%TARGET_DIR%\CSXS\manifest.xml" (
+    if not exist "%TARGET_DIR%\manifest.xml" (
+        echo [ERROR] Installation incomplete. manifest.xml not found.
+        echo Source had: 
+        dir "%SOURCE_DIR%" /b
+        pause
+        exit /b 1
+    )
+)
+
+:: Cleanup temp files
+echo Cleaning up...
+rmdir /S /Q "%UPDATE_DIR%" 2>nul
+del /F /Q "%ZIP_FILE%" 2>nul
+
+:: Enable CEP debug mode
 echo.
 echo Enabling CEP debug mode...
-reg add "HKCU\SOFTWARE\Adobe\CSXS.11" /v PlayerDebugMode /t REG_SZ /d 1 /f >nul 2>&1
-if %errorlevel% equ 0 (
-    echo Debug mode enabled.
-) else (
-    echo Could not enable debug mode automatically.
-    echo You can enable it manually by running:
-    echo   reg add "HKCU\SOFTWARE\Adobe\CSXS.11" /v PlayerDebugMode /t REG_SZ /d 1 /f
+for %%V in (11 12 13 14 15) do (
+    reg add "HKCU\SOFTWARE\Adobe\CSXS.%%V" /v PlayerDebugMode /t REG_SZ /d 1 /f >nul 2>&1
+    if !errorlevel! equ 0 echo   CSXS.%%V: OK
 )
+
+:: Count installed files
+for /f %%A in ('dir "%TARGET_DIR%" /s /b ^| find /c /v ""') do set "FILE_COUNT=%%A"
 
 echo.
 echo ==========================================
-echo   INSTALLATION COMPLETE
+echo   SUCCESS - Installation Complete
 echo ==========================================
 echo.
 echo Location: %TARGET_DIR%
+echo Files installed: %FILE_COUNT%
 echo.
 echo NEXT STEPS:
-echo 1. Restart Adobe Illustrator if it is already open.
-echo 2. Open Illustrator ^> Window ^> Extensions ^> Mushaf Task Manager
-echo 3. On first run, select your Tasks Folder and Project Folder.
+echo 1. CLOSE Illustrator completely if running
+echo 2. Reopen Illustrator
+echo 3. Window ^> Extensions ^> Mushaf Task Manager
 echo.
 pause
 endlocal
