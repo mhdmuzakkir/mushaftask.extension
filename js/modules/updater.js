@@ -264,7 +264,7 @@
             ensureUpdateDir();
             status = UPDATE_STATUS.downloading;
 
-            runBatch('do-update.bat', [extensionPath], function(progress) {
+            runBatch('update.bat', [extensionPath], function(progress) {
                 if (onProgress) {
                     var percent = 0;
                     if (progress.stage === 'download') percent = 25;
