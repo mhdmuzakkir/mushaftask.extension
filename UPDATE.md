@@ -14,8 +14,8 @@
 | 1 | `check-update.bat` | Runs **outside** Illustrator (bypasses firewall). Downloads remote `version.json` from GitHub `main` branch. |
 | 2 | `js/modules/updater.js` | Spawns `check-update.bat` via Node.js `child_process`, reads `%TEMP%\mushaftask-update\status.json`, compares versions. |
 | 3 | `index.html` + `js/modules/event-wiring.js` | Settings panel shows **"Check for Updates"** button. If update found, reveals **"Install Update"** button. |
-| 4 | `do-update.bat` | Runs **outside** Illustrator. Prefers `git pull`, falls back to ZIP download + PowerShell `Expand-Archive` + `xcopy`. |
-| 5 | `js/modules/updater.js` | Spawns `do-update.bat` with the extension path as argument. Monitors progress via status file. |
+| 4 | `update.bat` | Runs **outside** Illustrator. Downloads ZIP + PowerShell `Expand-Archive` + `robocopy` (same robust method as `install.bat`). |
+| 5 | `js/modules/updater.js` | Spawns `update.bat` with the extension path as argument. Monitors progress via status file. |
 | 6 | Panel UI | On success, prompts: **"Please restart Illustrator."** |
 
 **Requirements for self-update to work:**
@@ -82,7 +82,7 @@ These files **must** stay at the extension root because the updater looks for th
 | File | Why it must stay at root |
 |------|--------------------------|
 | `check-update.bat` | `updater.js` resolves it via `path.join(extensionPath, 'check-update.bat')` |
-| `do-update.bat` | Same — resolved relative to extension root |
+| `update.bat` | Same — resolved relative to extension root |
 | `version.json` | Read by `check-update.bat` and compared against remote copy |
 | `index.html` | CEP entry point (`MainPath` in manifest) |
 | `CSXS/manifest.xml` | CEP manifest — must be at `CSXS/manifest.xml` |
@@ -112,6 +112,7 @@ Files that **can** be organized into subfolders:
 | "Extension is in Program Files" | Installed to system path | Reinstall via `install.bat` to AppData, or use `install-or-update.bat` as Admin |
 | Batch runs but panel doesn't see result | `child_process` also blocked | The batch still wrote `%TEMP%\mushaftask-update\remote-version.json`. Panel will read it on next check. |
 | "Git pull failed" | `.git` repo conflict | Delete the extension folder and re-run `install.bat` |
+| Update fails mid-copy | File locked by Illustrator | Close Illustrator completely and run `update.bat` manually |
 
 ---
 

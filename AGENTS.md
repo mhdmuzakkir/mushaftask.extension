@@ -176,7 +176,7 @@ Because Illustrator may be blocked by application firewalls from making outbound
 
 **Files involved:**
 - `check-update.bat` — Downloads `version.json` from GitHub using PowerShell (bypasses Illustrator firewall rules)
-- `do-update.bat` — Performs the actual update (`git pull` or ZIP download + extract)
+- `update.bat` — Performs the actual update (ZIP download + extract + `robocopy`, same robust method as `install.bat`)
 - `js/modules/updater.js` — Spawns the batch files via Node.js `child_process` and reads their result files
 - `version.json` — Tracks current version; compared against the remote copy on GitHub
 
@@ -184,8 +184,8 @@ Because Illustrator may be blocked by application firewalls from making outbound
 
 1. On startup (10s delay), the panel spawns `check-update.bat` via `child_process.exec`. The batch writes its result to `%TEMP%\mushaftask-update\status.json` and downloads the remote `version.json`.
 2. The panel reads the status file and compares versions. If a newer version exists and the extension is in a user-writable location (`AppData`), a green badge appears on the Settings tab.
-3. In Settings → "Extension Update", the user can click **Check for Updates** to run the batch again, then **Install Update** to run `do-update.bat`.
-4. `do-update.bat` prefers `git pull` if `.git` exists (fastest). Otherwise it downloads the ZIP, extracts via PowerShell `Expand-Archive`, and copies files with `xcopy`.
+3. In Settings → "Extension Update", the user can click **Check for Updates** to run the batch again, then **Install Update** to run `update.bat`.
+4. `update.bat` downloads the ZIP, extracts via PowerShell `Expand-Archive`, and copies files with `robocopy` (falling back to `xcopy`). It also verifies `manifest.xml` exists after copying.
 5. The user is prompted to restart Illustrator.
 
 **Firewall / Offline Fallback:**
@@ -196,7 +196,7 @@ If `child_process.exec` is also blocked by the firewall (or the batch fails for 
 2. Return to Illustrator and click **Check for Updates** again
 3. The panel will pick up the freshly downloaded `remote-version.json`
 
-The same applies to `do-update.bat` for installation.
+The same applies to `update.bat` for installation.
 
 **Limitations:**
 - Program Files installations cannot self-update (permission denied). The updater detects this and directs the user to `install-or-update.bat` as Administrator.
@@ -371,7 +371,7 @@ These are documented in `docs/WORKFLOW.md` and human-facing project docs, but th
 8. **Self-update safety** — The updater module checks `isUserInstall()` before allowing file copy. Do not bypass this check; overwriting Program Files without elevation will fail silently or throw EPERM.
 9. **Script load order matters** — If adding a new module, insert it in `index.html` before `event-wiring.js` and after its dependencies. Register any new `window` globals in `core-globals.js` if they need to be shared.
 10. **Version tracking** — When releasing, update both `CSXS/manifest.xml` `ExtensionBundleVersion` and `version.json` `version`. The updater reads `version.json` from the `main` branch raw URL.
-11. **Batch-based updater** — The updater no longer makes HTTP requests directly. It spawns `check-update.bat` / `do-update.bat` via Node.js `child_process`. If modifying the update flow, ensure the batch files and `updater.js` stay in sync. The batch files write JSON to `%TEMP%\mushaftask-update\status.json`.
+11. **Batch-based updater** — The updater no longer makes HTTP requests directly. It spawns `check-update.bat` / `update.bat` via Node.js `child_process`. If modifying the update flow, ensure the batch files and `updater.js` stay in sync. The batch files write JSON to `%TEMP%\mushaftask-update\status.json`.
 
 ---
 

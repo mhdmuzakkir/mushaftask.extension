@@ -2,7 +2,7 @@
  * Mushaf Task Manager - Self Updater (Batch-based)
  * 
  * Because Illustrator may be blocked by firewall from making outbound connections,
- * this updater runs external batch files (check-update.bat / do-update.bat) via
+ * this updater runs external batch files (check-update.bat / update.bat) via
  * Node.js child_process. Those batch files run outside Illustrator's process context
  * and typically bypass application-level firewall rules.
  * 
@@ -264,12 +264,13 @@
             ensureUpdateDir();
             status = UPDATE_STATUS.downloading;
 
-            runBatch('do-update.bat', [extensionPath], function(progress) {
+            runBatch('update.bat', [extensionPath], function(progress) {
                 if (onProgress) {
                     var percent = 0;
                     if (progress.stage === 'download') percent = 25;
                     else if (progress.stage === 'extract') percent = 60;
                     else if (progress.stage === 'copy') percent = 85;
+                    else if (progress.stage === 'clean') percent = 95;
                     else if (progress.status === 'done') percent = 100;
                     onProgress({ stage: progress.stage || progress.status, percent: percent, message: progress.message });
                 }
