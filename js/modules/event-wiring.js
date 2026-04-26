@@ -481,7 +481,7 @@ function setupUpdaterEvents() {
     if (installBtn) {
         installBtn.addEventListener('click', function() {
             if (!window.Updater) return;
-            if (confirm('This will download and install the latest update. Illustrator should be restarted afterwards. Continue?')) {
+            if (confirm('An update is available.\n\nPlease save all open documents before continuing.\nIllustrator will close and reopen automatically after the update.\n\nContinue?')) {
                 installBtn.disabled = true;
                 progressContainer.classList.remove('hidden');
                 window.Updater.installUpdate(function(evt) {
@@ -489,11 +489,18 @@ function setupUpdaterEvents() {
                     if (progressText) progressText.textContent = evt.stage + ' ' + evt.percent + '%';
                 }).then(function(result) {
                     if (statusText) {
-                        statusText.innerHTML = '<span style="color: var(--accent-green);">Update installed successfully! Please restart Illustrator.</span>';
+                        statusText.innerHTML = '<span style="color: var(--accent-green);">Update installed! Saving documents and restarting Illustrator...</span>';
                     }
                     progressContainer.classList.add('hidden');
                     installBtn.classList.add('hidden');
-                    showToast('Update installed. Restart Illustrator to apply.', 'success');
+                    showToast('Update installed. Restarting Illustrator...', 'success');
+
+                    // Auto-restart after a short delay so the UI can render
+                    setTimeout(function() {
+                        if (window.Updater && window.Updater.restartIllustrator) {
+                            window.Updater.restartIllustrator();
+                        }
+                    }, 1500);
                 }).catch(function(err) {
                     if (statusText) {
                         statusText.innerHTML = '<span style="color: var(--accent-red);">Update failed: ' + escapeHtml(err.message) + '</span>';

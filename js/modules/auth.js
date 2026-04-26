@@ -63,41 +63,6 @@ function hashPassword(password) {
     }
     return sha256(password);
 }
-function getConfigBackupPath() {
-    if (!authState.configPath) return null;
-    return authState.configPath + '.bak';
-}
-
-function backupConfig() {
-    try {
-        if (authState.configPath && fs.existsSync(authState.configPath)) {
-            var backupPath = getConfigBackupPath();
-            var content = fs.readFileSync(authState.configPath, 'utf8');
-            fs.writeFileSync(backupPath, content);
-            console.log('Config backed up to:', backupPath);
-        }
-    } catch (e) {
-        console.error('Config backup failed (non-critical):', e);
-    }
-}
-
-function restoreConfigFromBackup() {
-    try {
-        var backupPath = getConfigBackupPath();
-        if (backupPath && fs.existsSync(backupPath)) {
-            var content = fs.readFileSync(backupPath, 'utf8');
-            var parsed = JSON.parse(content);
-            if (parsed && parsed.users && Object.keys(parsed.users).length > 0) {
-                console.log('Restored config from backup. Users:', Object.keys(parsed.users));
-                return parsed;
-            }
-        }
-    } catch (e) {
-        console.error('Config backup restore failed:', e);
-    }
-    return null;
-}
-
 function loadConfig() {
     try {
         if (!state.tasksFolder) {
@@ -105,45 +70,15 @@ function loadConfig() {
             return null;
         }
         authState.configPath = path.join(state.tasksFolder, 'config.json');
+        // Note: activityPath is now per-user, set after login
         console.log('loadConfig: config path:', authState.configPath);
         
-        var configExists = fs.existsSync(authState.configPath);
-        var configLoaded = false;
-        
-        if (configExists) {
-            try {
-                var content = fs.readFileSync(authState.configPath, 'utf8');
-                authState.config = JSON.parse(content);
-                console.log('loadConfig: loaded users:', Object.keys(authState.config.users || {}));
-                configLoaded = true;
-            } catch (parseErr) {
-                console.error('loadConfig: config.json is corrupted!', parseErr.message);
-                // Try backup before giving up
-                var restored = restoreConfigFromBackup();
-                if (restored) {
-                    authState.config = restored;
-                    // Save the restored config back to main file
-                    fs.writeFileSync(authState.configPath, JSON.stringify(restored, null, 2));
-                    showToast('Config was corrupted but restored from backup.', 'warning');
-                    configLoaded = true;
-                } else {
-                    showToast('Config file is corrupted and no backup exists. A default config will be created.', 'error');
-                }
-            }
+        if (fs.existsSync(authState.configPath)) {
+            console.log('loadConfig: config file exists, loading...');
+            authState.config = JSON.parse(fs.readFileSync(authState.configPath, 'utf8'));
+            console.log('loadConfig: loaded users:', Object.keys(authState.config.users || {}));
         } else {
-            console.log('loadConfig: config file not found');
-            // Try backup even if main file is missing
-            var restored = restoreConfigFromBackup();
-            if (restored) {
-                authState.config = restored;
-                fs.writeFileSync(authState.configPath, JSON.stringify(restored, null, 2));
-                showToast('Config restored from backup.', 'success');
-                configLoaded = true;
-            }
-        }
-        
-        if (!configLoaded) {
-            console.log('loadConfig: creating default config with muzakkir');
+            console.log('loadConfig: config file not found, creating default with muzakkir');
             authState.config = { 
                 users: {
                     muzakkir: {
@@ -158,7 +93,6 @@ function loadConfig() {
             saveConfig();
             console.log('loadConfig: default config created');
         }
-        
         return authState.config;
     } catch (e) {
         console.error('Error loading config:', e);
@@ -168,9 +102,6 @@ function loadConfig() {
 function saveConfig() {
     try {
         if (authState.configPath && authState.config) {
-            // Always backup before saving
-            backupConfig();
-            
             authState.config.lastUpdated = new Date().toISOString();
             fs.writeFileSync(authState.configPath, JSON.stringify(authState.config, null, 2));
             
@@ -293,31 +224,22 @@ function showLoginModal(preselectedUser = null) {
         loadConfig();
     }
     
-    // If still no users, check if a backup exists before creating default
+    // If still no users, create default muzakkir user
     const users = getUsers();
     if (!users || Object.keys(users).length === 0) {
-        console.log('No users found in memory, checking backup before creating default...');
-        var restored = restoreConfigFromBackup();
-        if (restored) {
-            authState.config = restored;
-            fs.writeFileSync(authState.configPath, JSON.stringify(restored, null, 2));
-            showToast('User list was empty. Restored from backup.', 'warning');
-        } else {
-            console.log('No backup found, creating default muzakkir user');
-            authState.config = { 
-                users: {
-                    muzakkir: {
-                        passwordHash: null,
-                        isAdmin: true,
-                        createdAt: new Date().toISOString()
-                    }
-                }, 
-                version: '1.0.0', 
-                lastUpdated: new Date().toISOString() 
-            };
-            saveConfig();
-            showToast('No user config found. Created default admin (muzakkir).', 'warning');
-        }
+        console.log('No users found, creating default muzakkir user');
+        authState.config = { 
+            users: {
+                muzakkir: {
+                    passwordHash: null,
+                    isAdmin: true,
+                    createdAt: new Date().toISOString()
+                }
+            }, 
+            version: '1.0.0', 
+            lastUpdated: new Date().toISOString() 
+        };
+        saveConfig();
     }
     
     userSelect.innerHTML = '<option value="">Select User...</option>';

@@ -1,2 +1,8 @@
 mushaf.linuxproguru.com/*
 google-scripts/*
+
+# Development utility scripts (local debugging tools, not part of the extension)
+scripts/*_report.txt
+scripts/*_v2.txt
+scripts/extract_ids.*
+scripts/analyze_vars.py
