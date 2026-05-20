@@ -74,6 +74,25 @@
     }
 
     var CHANGELOG = {
+        '2.1.8': {
+            date: 'May 2026',
+            new: [
+                'Team Chat tab — each user has their own messages file (no write conflicts)',
+                'Chat avatars — profile pictures shown next to messages'
+            ],
+            fixed: [
+                'Navigate button hidden on Chat tab to prevent overlap with input'
+            ],
+            improved: []
+        },
+        '2.1.5': {
+            date: 'May 2026',
+            new: [
+                'Team Chat tab — real-time messaging shared across all users via the tasks folder'
+            ],
+            fixed: [],
+            improved: []
+        },
         '2.1.4': {
             date: 'May 2026',
             new: [],

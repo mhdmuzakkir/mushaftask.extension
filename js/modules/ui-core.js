@@ -677,6 +677,16 @@ function switchTab(tabName) {
     if (tabName === 'inProgress') {
         loadInProgressFiles(true);
     }
+
+    if (tabName === 'chat') {
+        if (typeof startChatPolling === 'function') startChatPolling();
+    } else {
+        if (typeof stopChatPolling === 'function') stopChatPolling();
+    }
+    const navigateFab = document.getElementById('navigateFab');
+    if (navigateFab) {
+        navigateFab.classList.toggle('hidden', tabName === 'chat');
+    }
     if (tabName === 'settings') {
         document.getElementById('settingsFolderPath').value = state.tasksFolder || '';
         document.getElementById('settingsProjectPath').value = state.projectFolder || '';

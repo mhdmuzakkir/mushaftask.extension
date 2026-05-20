@@ -11,6 +11,7 @@ function init() {
     try {
         setupEventListeners();
         setupKeyboardShortcuts();
+        initChat();
         
         const settings = loadSettings();
         console.log('Settings loaded:', settings);
