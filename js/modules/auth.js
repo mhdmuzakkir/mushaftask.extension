@@ -298,11 +298,10 @@ function showLoginModal(preselectedUser = null) {
         const user = getUser(selectedUser);
         if (user && user.passwordHash) {
             passwordGroup.classList.remove('hidden');
-            setPasswordGroup.classList.add('hidden');
         } else {
             passwordGroup.classList.add('hidden');
-            setPasswordGroup.classList.remove('hidden');
         }
+        setPasswordGroup.classList.add('hidden');
     };
 }
 function hideLoginModal() {
@@ -328,19 +327,7 @@ function handleLogin() {
             return;
         }
     } else {
-        if (!newPassword) {
-            showToast('Please set a password', 'error');
-            return;
-        }
-        if (newPassword !== confirmPassword) {
-            showToast('Passwords do not match', 'error');
-            return;
-        }
-        if (!user) {
-            addUser(username, newPassword, false);
-        } else {
-            resetUserPassword(username, newPassword);
-        }
+        // No password set — allow direct login without setting one
     }
     authState.currentUser = username;
     authState.isAdmin = getUser(username)?.isAdmin || false;

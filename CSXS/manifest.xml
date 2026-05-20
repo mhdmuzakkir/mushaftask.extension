@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="7.0" ExtensionBundleId="com.mushaf.taskmanager" ExtensionBundleVersion="2.1.3"
+<ExtensionManifest Version="7.0" ExtensionBundleId="com.mushaf.taskmanager" ExtensionBundleVersion="2.1.4"
     ExtensionBundleName="Mushaf Task Manager" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <ExtensionList>
-        <Extension Id="com.mushaf.taskmanager.panel" Version="2.1.3"/>
+        <Extension Id="com.mushaf.taskmanager.panel" Version="2.1.4"/>
     </ExtensionList>
     <ExecutionEnvironment>
         <HostList>

@@ -14,7 +14,7 @@
 
     var REPO_OWNER = 'mhdmuzakkir';
     var REPO_NAME = 'mushaftask.extension';
-    var CURRENT_VERSION = '2.1.3';
+    var CURRENT_VERSION = '2.1.4';
 
     var UPDATE_STATUS = {
         idle: 'idle',

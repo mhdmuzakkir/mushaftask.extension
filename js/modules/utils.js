@@ -74,6 +74,14 @@
     }
 
     var CHANGELOG = {
+        '2.1.4': {
+            date: 'May 2026',
+            new: [],
+            fixed: [
+                'First login and user switch no longer force password setup — users can log in directly'
+            ],
+            improved: []
+        },
         '2.1.3': {
             date: 'May 2026',
             new: [
