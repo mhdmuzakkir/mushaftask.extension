@@ -2,7 +2,7 @@
  * Mushaf Task Manager - Self Updater (Batch-based)
  * 
  * Because Illustrator may be blocked by firewall from making outbound connections,
- * this updater runs external batch files (check-update.bat / do-update.bat) via
+ * this updater runs external batch files (check-update.bat / update.bat) via
  * Node.js child_process. Those batch files run outside Illustrator's process context
  * and typically bypass application-level firewall rules.
  * 
@@ -257,7 +257,7 @@
             }
 
             if (!isUserInstall(extensionPath)) {
-                reject(new Error('Extension is installed in Program Files. Please run install-or-update.bat as Administrator, or reinstall to AppData\\Roaming\\Adobe\\CEP\\extensions\\'));
+                reject(new Error('Extension is installed in Program Files. Please run install.bat to reinstall to AppData\\Roaming\\Adobe\\CEP\\extensions\\'));
                 return;
             }
 

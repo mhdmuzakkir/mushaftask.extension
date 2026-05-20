@@ -100,6 +100,7 @@ del /F /Q "%ZIP_FILE%" 2>nul
 echo.
 echo Enabling CEP debug mode...
 for %%V in (11 12 13 14 15) do (
+    reg delete "HKCU\SOFTWARE\Adobe\CSXS.%%V" /v PlayerDebugMode /f >nul 2>&1
     reg add "HKCU\SOFTWARE\Adobe\CSXS.%%V" /v PlayerDebugMode /t REG_SZ /d 1 /f >nul 2>&1
     if !errorlevel! equ 0 echo   CSXS.%%V: OK
 )

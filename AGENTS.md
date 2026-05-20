@@ -80,7 +80,6 @@ mushaftask.extension/
 ├── jsx/
 │   └── hostscript.jsx        # ExtendScript for Illustrator communication
 ├── index.html                # Extension panel UI (single HTML file)
-├── install-or-update.bat     # Admin installer for Program Files (x86)
 ├── install.bat               # **User installer** for AppData (no admin required)
 ├── version.json              # Version info for update checker
 ├── settings.json             # Template placeholder (real config lives in ~/Documents/)
@@ -141,8 +140,8 @@ Adobe CEP loads extensions from **multiple locations**:
 | Location | Path | Admin Required | Self-Update |
 |----------|------|---------------|-------------|
 | User (recommended) | `%APPDATA%\Adobe\CEP\extensions\mushaftask.extension\` | **No** | **Yes** — via in-panel updater |
-| System (x86) | `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\mushaftask.extension\` | Yes | No — use `install-or-update.bat` |
-| System (x64) | `C:\Program Files\Common Files\Adobe\CEP\extensions\mushaftask.extension\` | Yes | No — use `install-or-update.bat` |
+| System (x86) | `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\mushaftask.extension\` | Yes | No — reinstall via `install.bat` to AppData for self-update support |
+| System (x64) | `C:\Program Files\Common Files\Adobe\CEP\extensions\mushaftask.extension\` | Yes | No — reinstall via `install.bat` to AppData for self-update support |
 
 **Preferred**: `install.bat` installs to `%APPDATA%` without requiring Administrator privileges. This is the recommended method because:
 - No UAC prompts
@@ -167,8 +166,7 @@ Adobe CEP loads extensions from **multiple locations**:
 
 ### Installer Scripts
 
-- `install.bat` — **No admin required**. Clones/pulls from GitHub to `%APPDATA%\Adobe\CEP\extensions\mushaftask.extension\` (or ZIP fallback if Git is missing)
-- `install-or-update.bat` — **Requires Administrator**. Targets `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\mushaftask.extension\`
+- `install.bat` — **No admin required**. Downloads ZIP from GitHub to `%APPDATA%\Adobe\CEP\extensions\mushaftask.extension\` and enables CEP debug mode
 
 ### Self-Update Mechanism
 
@@ -201,7 +199,7 @@ If `child_process.exec` is also blocked by the firewall (or the batch fails for 
 The same applies to `update.bat` for installation.
 
 **Limitations:**
-- Program Files installations cannot self-update (permission denied). The updater detects this and directs the user to `install-or-update.bat` as Administrator.
+- Program Files installations cannot self-update (permission denied). The updater detects this and directs the user to reinstall via `install.bat` to AppData.
 - Files actively in use by CEF may fail to copy; the updater logs these but does not block. A restart is required regardless.
 - The batch files require PowerShell (available on all Windows versions since XP SP2) for download and extraction.
 
@@ -379,7 +377,7 @@ These are documented in `PROJECT_PROGRESS.md`, `SETUP_CHECKLIST.md`, and `WORKFL
     - `CSXS/manifest.xml` → `ExtensionBundleVersion` and `Extension Version`
     - `js/modules/utils.js` → `CHANGELOG` — add entry so the "What's New" popup shows correctly
     The updater reads `version.json` from the `main` branch raw URL.
-11. **Batch-based updater** — The updater spawns `check-update.bat` / `update.bat` via Node.js `child_process`. `updater.js` must call `update.bat` (not `do-update.bat`). If modifying the update flow, ensure the batch files and `updater.js` stay in sync. The batch files write JSON to `%TEMP%\mushaftask-update\status.json`.
+11. **Batch-based updater** — The updater spawns `check-update.bat` / `update.bat` via Node.js `child_process`. If modifying the update flow, ensure the batch files and `updater.js` stay in sync. The batch files write JSON to `%TEMP%\mushaftask-update\status.json`.
 12. **Custom confirm modal** — Never use native `confirm()`. Use `showConfirm(message, onConfirm, onCancel)` from `js/modules/utils.js`. It provides a dark-themed modal consistent with the panel UI.
 13. **No forced re-login on every update** — First install (`lastSeenVersion == null`) forces login. Version changes only set a flag to show the changelog on next login.
 

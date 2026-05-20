@@ -118,8 +118,7 @@ Files that **can** be organized into subfolders:
 
 | File | Audience | Admin Required | Method |
 |------|----------|---------------|--------|
-| `install.bat` | **Team (primary)** | No | Git clone/pull, or ZIP fallback |
-| `install-or-update.bat` | IT/Admin | **Yes** | Git clone/pull to Program Files (x86) |
+| `install.bat` | **Team (primary)** | No | ZIP download from GitHub |
 
 ---
 
@@ -128,7 +127,7 @@ Files that **can** be organized into subfolders:
 | Symptom | Cause | Fix |
 |---------|-------|-----|
 | "Network download failed" | Firewall blocks Illustrator | Run `check-update.bat` manually from Explorer, then click Check again in panel |
-| "Extension is in Program Files" | Installed to system path | Reinstall via `install.bat` to AppData, or use `install-or-update.bat` as Admin |
+| "Extension is in Program Files" | Installed to system path | Reinstall via `install.bat` to AppData |
 | Batch runs but panel doesn't see result | `child_process` also blocked | The batch still wrote `%TEMP%\mushaftask-update\remote-version.json`. Panel will read it on next check. |
 | "Git pull failed" | `.git` repo conflict | Delete the extension folder and re-run `install.bat` |
 | Update fails mid-copy | File locked by Illustrator | Close Illustrator completely and run `update.bat` manually |
