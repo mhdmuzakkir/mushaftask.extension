@@ -24,6 +24,16 @@
 <body>
     <!-- ==================== MODALS ==================== -->
 
+    <!-- Drive Missing Modal -->
+    <div id="driveMissingModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Drive Not Connected</h2>
+            <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Please connect or open the drive to access Mushaf tasks.</p>
+            <p id="driveMissingPath" style="font-size: 12px; color: var(--text-muted); word-break: break-all;"></p>
+            <button id="retryDriveBtn" class="btn-primary" style="margin-top: 16px; width: 100%;">Retry</button>
+        </div>
+    </div>
+
     <!-- First Time Setup Modal -->
     <div id="setupModal" class="modal hidden">
         <div class="modal-content">

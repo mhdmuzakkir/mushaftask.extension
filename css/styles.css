@@ -806,14 +806,17 @@ body {
     padding: 8px;
     background-color: var(--bg-primary);
     border-radius: var(--radius);
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
     cursor: pointer;
     direction: ltr;
     text-align: left;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
 .task-item:hover {
     background-color: var(--bg-hover);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transform: translateY(-1px);
 }
 
 .task-item.completed {
@@ -1032,15 +1035,18 @@ body {
     margin-bottom: 6px;
     font-size: 12px;
     cursor: pointer;
-    transition: background-color 0.2s, border-left-width 0.2s;
+    transition: background-color 0.2s, border-left-width 0.2s, box-shadow 0.2s, transform 0.2s;
     border: 1px solid transparent;
     border-left: 3px solid transparent;
     position: relative;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
 .review-file-item:hover {
     background-color: var(--bg-hover);
     border-left-color: var(--accent-orange);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transform: translateY(-1px);
 }
 .file-info {
     flex: 1;
@@ -2344,15 +2350,17 @@ body.performance-mode .modal-content {
     font-size: 12px;
     position: relative;
     cursor: pointer;
-    transition: background-color 0.2s, border-left-width 0.2s;
+    transition: background-color 0.2s, border-left-width 0.2s, box-shadow 0.2s, transform 0.2s;
     border: 1px solid transparent;
     border-left: 3px solid var(--accent-blue);
-    position: relative;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
 .in-progress-file-item:hover {
     background-color: var(--bg-hover);
     border-left-color: var(--accent-green);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transform: translateY(-1px);
 }
 
 .in-progress-file-item.current-file {

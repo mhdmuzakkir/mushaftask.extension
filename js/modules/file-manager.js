@@ -139,35 +139,43 @@ function moveToCompleted() {
         
         // Auto-open next file from queue if setting is enabled
         if (state.autoOpenNextPage && source) {
-            setTimeout(() => maybeAutoOpenNextFile(source), 500);
+            setTimeout(() => maybeAutoOpenNextFile(source, movedPage), 500);
         }
     }
 }
-function maybeAutoOpenNextFile(source) {
+function maybeAutoOpenNextFile(source, lastPageStr) {
     try {
-        if (source === 'review') {
-            // Refresh review queue and open the first file
-            const container = document.getElementById('reviewFilesList');
-            if (!container) return;
-            const firstItem = container.querySelector('.review-file-item');
-            if (firstItem) {
-                firstItem.click();
-                showToast('Opened next file from Review queue', 'success');
-            } else {
-                showToast('No more files in Review queue', 'info');
-            }
-        } else if (source === 'inProgress') {
-            // Refresh in-progress queue and open the first file
-            const container = document.getElementById('inProgressFilesList');
-            if (!container) return;
-            const firstItem = container.querySelector('.in-progress-file-item');
-            if (firstItem) {
-                firstItem.click();
-                showToast('Opened next file from In Progress', 'success');
-            } else {
-                showToast('No more files in In Progress', 'info');
+        var lastPageNum = lastPageStr ? parseInt(lastPageStr, 10) : 0;
+        var selector = source === 'review' ? '.review-file-item' : '.in-progress-file-item';
+        var containerId = source === 'review' ? 'reviewFilesList' : 'inProgressFilesList';
+        var container = document.getElementById(containerId);
+        if (!container) return;
+
+        var items = Array.from(container.querySelectorAll(selector));
+        if (items.length === 0) {
+            showToast('No more files in ' + (source === 'review' ? 'Review queue' : 'In Progress'), 'info');
+            return;
+        }
+
+        var nextItem = null;
+        if (lastPageNum > 0) {
+            for (var i = 0; i < items.length; i++) {
+                var pageEl = items[i].querySelector('.page-number-small');
+                var pageText = pageEl ? pageEl.textContent : '';
+                var pageNum = parseInt(pageText, 10);
+                if (!isNaN(pageNum) && pageNum > lastPageNum) {
+                    nextItem = items[i];
+                    break;
+                }
             }
         }
+
+        if (!nextItem) {
+            nextItem = items[0];
+        }
+
+        nextItem.click();
+        showToast('Opened next file from ' + (source === 'review' ? 'Review queue' : 'In Progress'), 'success');
     } catch (e) {
         console.error('Error auto-opening next file:', e);
     }
@@ -346,7 +354,8 @@ function findAndOpenFile(riwayah, pageNum) {
                 updateNavButtonsState();
                 setTimeout(() => {
                     loadPageTasksForCurrent();
-                }, 500);
+                    refreshCurrentFileUI();
+                }, 1000);
             } else {
                 console.log('Failed to open file');
                 showToast('Failed to open file', 'error');

@@ -38,6 +38,20 @@ function init() {
         console.log('No settings or tasksFolder, showing setup modal');
         document.getElementById('setupModal').classList.remove('hidden');
         document.getElementById('tabNavigation').classList.add('hidden');
+    } else if (typeof fs !== 'undefined' && !fs.existsSync(settings.tasksFolder)) {
+        console.log('Tasks folder not accessible:', settings.tasksFolder);
+        document.getElementById('tabNavigation').classList.add('hidden');
+        document.getElementById('driveMissingModal').classList.remove('hidden');
+        var driveMissingPathEl = document.getElementById('driveMissingPath');
+        if (driveMissingPathEl) {
+            driveMissingPathEl.textContent = settings.tasksFolder;
+        }
+        var retryDriveBtn = document.getElementById('retryDriveBtn');
+        if (retryDriveBtn) {
+            retryDriveBtn.addEventListener('click', function() {
+                location.reload();
+            });
+        }
     } else {
         console.log('Setup complete');
 

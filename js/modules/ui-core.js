@@ -388,11 +388,12 @@ async function refreshCurrentFileUI() {
     updateCloseButtonsState();
     updateNavButtonsState();
     
-    // Show/hide complete FAB based on whether a file is open
+    // Show/hide complete FAB based on whether a file is open and not already completed
     const completeFab = document.getElementById('completeFab');
     if (completeFab) {
         const hasFileOpen = !!(docInfo && state.currentRiwayah && state.currentPage);
-        completeFab.classList.toggle('hidden', !hasFileOpen);
+        const isCompleted = hasFileOpen && (isPageCompleted(state.currentRiwayah, state.currentPage) || isFileCompleted(state.currentRiwayah, state.currentPage));
+        completeFab.classList.toggle('hidden', !hasFileOpen || isCompleted);
     }
 }
 async function refreshQueues(forceScan = false) {

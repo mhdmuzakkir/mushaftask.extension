@@ -74,6 +74,18 @@
     }
 
     var CHANGELOG = {
+        '2.1.3': {
+            date: 'May 2026',
+            new: [
+                'Move to Completed button now appears when opening files via Surah opener',
+                'Auto-open next page from queue now opens the next page number after the one closed',
+                'Drive missing detection: shows "Connect or open drive" instead of defaulting to muzakkir user'
+            ],
+            fixed: [
+                'Move to Completed button is now hidden when a file is already in the Completed folder'
+            ],
+            improved: []
+        },
         '2.1.2': {
             date: 'April 2026',
             new: [
