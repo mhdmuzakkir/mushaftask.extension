@@ -74,7 +74,7 @@
     }
 
     var CHANGELOG = {
-        '2.1.9': {
+        '2.1.10': {
             date: 'May 22, 2026',
             new: [
                 'Google Drive branded "Drive Not Connected" modal with logo, Retry and Change Folder buttons',
@@ -89,6 +89,7 @@
                 'Fixed "Loading review queue..." getting stuck when review queue is empty',
                 'Fixed Complete FAB still showing when no Illustrator file is open',
                 'Fixed Complete FAB showing on Chat tab — now hidden correctly',
+                'Fixed updater showing "you are on the latest" due to GitHub CDN caching — added cache-busting to check-update.bat and update.bat',
                 'Robust folder accessibility check using fs.readdirSync to detect disconnected Google Drive folders'
             ],
             improved: [

@@ -19,7 +19,7 @@ if "%~1"=="" (
     set "TARGET_DIR=%~1"
 )
 
-set "ZIP_URL=https://github.com/mhdmuzakkir/mushaftask.extension/archive/refs/heads/main.zip"
+set "ZIP_URL=https://github.com/mhdmuzakkir/mushaftask.extension/archive/refs/heads/main.zip?nocache=%RANDOM%%RANDOM%"
 set "UPDATE_DIR=%TEMP%\mushaf_upd_%RANDOM%%RANDOM%"
 set "STATUS_DIR=%TEMP%\mushaftask-update"
 set "ZIP_FILE=%TEMP%\mushaf_dl_%RANDOM%.zip"

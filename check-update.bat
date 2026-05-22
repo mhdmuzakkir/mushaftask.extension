@@ -12,7 +12,7 @@ setlocal EnableDelayedExpansion
 :: ==========================================================
 
 set "UPDATE_DIR=%TEMP%\mushaftask-update"
-set "REMOTE_VERSION_URL=https://raw.githubusercontent.com/mhdmuzakkir/mushaftask.extension/main/version.json"
+set "REMOTE_VERSION_URL=https://raw.githubusercontent.com/mhdmuzakkir/mushaftask.extension/main/version.json?nocache=%RANDOM%%RANDOM%"
 
 :: Ensure temp dir exists
 if not exist "%UPDATE_DIR%" mkdir "%UPDATE_DIR%"
