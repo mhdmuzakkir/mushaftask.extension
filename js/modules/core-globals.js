@@ -57,7 +57,9 @@ const state = {
     inProgressRiwayahFilter: 'all', // 'all' or specific riwayah name
     // Cache for queue data to avoid repeated disk scans
     cachedReviewFiles: null,
-    cachedInProgressFiles: null
+    cachedInProgressFiles: null,
+    // Chat unread tracking
+    lastReadChatCount: 0
 };
 
 let USER_ASSIGNMENTS = {};

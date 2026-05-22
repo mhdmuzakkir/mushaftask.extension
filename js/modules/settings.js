@@ -20,7 +20,8 @@ function saveSettings() {
             inProgressUserFilter: state.inProgressUserFilter || 'all',
             inProgressRiwayahFilter: state.inProgressRiwayahFilter || 'all',
             currentUser: state.currentUser || null,
-            rememberMe: state.rememberMe ?? true
+            rememberMe: state.rememberMe ?? true,
+            lastReadChatCount: state.lastReadChatCount || 0
         };
         
         fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
@@ -50,6 +51,7 @@ function loadSettings() {
             state.inProgressRiwayahFilter = settings.inProgressRiwayahFilter || 'all';
             state.currentUser = settings.currentUser || null;
             state.rememberMe = settings.rememberMe ?? true;
+            state.lastReadChatCount = settings.lastReadChatCount || 0;
             state.isSetupComplete = !!settings.tasksFolder;
             return settings;
         }

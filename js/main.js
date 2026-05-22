@@ -35,22 +35,50 @@ function init() {
     var versionChanged = false;
     var currentVersion = window.Updater ? window.Updater.CURRENT_VERSION : '2.1.0';
 
-    if (!settings || !settings.tasksFolder) {
+    // Robust check: for Google Drive / network folders, existsSync can return true
+    // for offline placeholders. Actually reading the directory catches this.
+    function isFolderAccessible(folderPath) {
+        try {
+            if (typeof fs === 'undefined' || !folderPath) return false;
+            if (!fs.existsSync(folderPath)) return false;
+            fs.readdirSync(folderPath);
+            return true;
+        } catch (e) {
+            console.log('Folder accessibility check failed for', folderPath, ':', e.message);
+            return false;
+        }
+    }
+
+    var tasksFolder = (settings && settings.tasksFolder) || state.tasksFolder;
+
+    if (!tasksFolder) {
         console.log('No settings or tasksFolder, showing setup modal');
         document.getElementById('setupModal').classList.remove('hidden');
         document.getElementById('tabNavigation').classList.add('hidden');
-    } else if (typeof fs !== 'undefined' && !fs.existsSync(settings.tasksFolder)) {
-        console.log('Tasks folder not accessible:', settings.tasksFolder);
+    } else if (!isFolderAccessible(tasksFolder)) {
+        console.log('Tasks folder not accessible:', tasksFolder);
         document.getElementById('tabNavigation').classList.add('hidden');
         document.getElementById('driveMissingModal').classList.remove('hidden');
         var driveMissingPathEl = document.getElementById('driveMissingPath');
         if (driveMissingPathEl) {
-            driveMissingPathEl.textContent = settings.tasksFolder;
+            driveMissingPathEl.textContent = tasksFolder;
         }
         var retryDriveBtn = document.getElementById('retryDriveBtn');
         if (retryDriveBtn) {
             retryDriveBtn.addEventListener('click', function() {
                 location.reload();
+            });
+        }
+        var changeDriveBtn = document.getElementById('changeDriveBtn');
+        if (changeDriveBtn) {
+            changeDriveBtn.addEventListener('click', function() {
+                document.getElementById('driveMissingModal').classList.add('hidden');
+                document.getElementById('setupModal').classList.remove('hidden');
+                // Pre-fill so the user doesn't have to browse again
+                var folderInput = document.getElementById('folderPath');
+                var projectInput = document.getElementById('setupProjectPath');
+                if (folderInput && state.tasksFolder) folderInput.value = state.tasksFolder;
+                if (projectInput && state.projectFolder) projectInput.value = state.projectFolder;
             });
         }
     } else {
@@ -227,6 +255,15 @@ function initAuth() {
     });
     document.getElementById('reviewComplaintsBtn')?.addEventListener('click', () => {
         openReviewComplaintsModal();
+    });
+    document.getElementById('clearChatBtn')?.addEventListener('click', () => {
+        showConfirm('Are you sure you want to delete ALL chat messages? This cannot be undone.', function() {
+            if (window.clearAllChatMessages && window.clearAllChatMessages()) {
+                showToast('All chat messages cleared', 'success');
+            } else {
+                showToast('Failed to clear chat messages', 'error');
+            }
+        });
     });
     document.getElementById('closeReviewComplaints')?.addEventListener('click', closeReviewComplaintsModal);
     document.getElementById('reportQuoteBtn')?.addEventListener('click', openReportQuoteModal);

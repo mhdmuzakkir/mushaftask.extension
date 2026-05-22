@@ -159,18 +159,15 @@ function getStatsForPeriod(period) {
             userStats[log.user] = (userStats[log.user] || 0) + 1;
         }
     });
-    let topUser = '-';
-    let maxCount = 0;
-    Object.entries(userStats).forEach(([user, count]) => {
-        if (count > maxCount) {
-            maxCount = count;
-            topUser = user.charAt(0).toUpperCase() + user.slice(1);
-        }
-    });
+    const sortedUsers = Object.entries(userStats)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 2)
+        .map(([user, count]) => user.charAt(0).toUpperCase() + user.slice(1) + ' (' + count + ')');
+    const topUser = sortedUsers.length > 0 ? sortedUsers.join('  •  ') : '-';
     return {
         logs: filteredLogs,
         totalPages: totalPages,
-        topUser: maxCount > 0 ? `${topUser} (${maxCount})` : '-',
+        topUser: topUser,
         activeUsers: Object.keys(userStats).length,
         userStats: userStats
     };

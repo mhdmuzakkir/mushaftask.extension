@@ -309,6 +309,9 @@ function setupEventListeners() {
     document.getElementById('headerRefreshBtn')?.addEventListener('click', () => {
         refreshUI();
         showRandomQuote();
+        // Also refresh chat messages and badge even if on another tab
+        if (typeof renderChatMessages === 'function') renderChatMessages();
+        if (typeof updateChatBadge === 'function') updateChatBadge();
         console.log('Updated');
     });
     

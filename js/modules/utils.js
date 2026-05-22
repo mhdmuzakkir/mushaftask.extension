@@ -74,6 +74,28 @@
     }
 
     var CHANGELOG = {
+        '2.1.9': {
+            date: 'May 22, 2026',
+            new: [
+                'Google Drive branded "Drive Not Connected" modal with logo, Retry and Change Folder buttons',
+                'Chat unread badge — red circle with white count on Chat tab, persists across restarts',
+                'Live chat toast notification — "New message received" popup when not on Chat tab',
+                'Review tab auto-hides from nav bar when queue is empty, shows when files exist',
+                'Admin-only "Clear Chat" button in Settings > Moderation — deletes all messages with confirmation',
+                'Stats tab now shows Top 2 users side by side instead of single top user',
+                'Header refresh button now refreshes chat messages and badge even on other tabs'
+            ],
+            fixed: [
+                'Fixed "Loading review queue..." getting stuck when review queue is empty',
+                'Fixed Complete FAB still showing when no Illustrator file is open',
+                'Fixed Complete FAB showing on Chat tab — now hidden correctly',
+                'Robust folder accessibility check using fs.readdirSync to detect disconnected Google Drive folders'
+            ],
+            improved: [
+                'Chat polling interval reduced from 5 seconds to 1 second for more responsive messaging',
+                'Setup dialog pre-fills previous folder paths when opened from Drive Missing modal'
+            ]
+        },
         '2.1.8': {
             date: 'May 2026',
             new: [

@@ -1,7 +1,7 @@
 (function(window) {
     'use strict';
 
-    var CHAT_POLL_MS = 5000;
+    var CHAT_POLL_MS = 1000;
     var chatPollInterval = null;
     var lastMessageCount = 0;
 
@@ -184,15 +184,76 @@
         }
     }
 
+    function updateChatBadge() {
+        var messages = loadAllChatMessages();
+        var unread = Math.max(0, messages.length - (state.lastReadChatCount || 0));
+        var chatBtn = document.querySelector('.bottom-tab-btn[data-tab="chat"]');
+        if (!chatBtn) return;
+        var badge = chatBtn.querySelector('.chat-badge');
+        if (unread > 0) {
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'chat-badge';
+                chatBtn.style.position = 'relative';
+                chatBtn.appendChild(badge);
+            }
+            badge.textContent = unread > 99 ? '99+' : unread;
+        } else if (badge) {
+            badge.remove();
+        }
+    }
+
+    function clearChatBadge() {
+        var chatBtn = document.querySelector('.bottom-tab-btn[data-tab="chat"]');
+        if (chatBtn) {
+            var badge = chatBtn.querySelector('.chat-badge');
+            if (badge) badge.remove();
+        }
+        state.lastReadChatCount = lastMessageCount;
+        saveSettings();
+    }
+
+    function clearAllChatMessages() {
+        var dir = getChatDir();
+        if (!dir) return false;
+        try {
+            if (!fs.existsSync(dir)) return true;
+            var files = fs.readdirSync(dir).filter(function(f) {
+                return f.startsWith('messages-') && f.endsWith('.json');
+            });
+            files.forEach(function(file) {
+                try {
+                    fs.unlinkSync(path.join(dir, file));
+                } catch (e) {
+                    console.error('Error deleting chat file', file, e);
+                }
+            });
+            lastMessageCount = 0;
+            state.lastReadChatCount = 0;
+            renderChatMessages();
+            updateChatBadge();
+            return true;
+        } catch (e) {
+            console.error('Error clearing chat messages:', e);
+            return false;
+        }
+    }
+
     function checkForNewMessages() {
         if (!state.tasksFolder) return;
         var messages = loadAllChatMessages();
         if (messages.length !== lastMessageCount) {
+            var hadNewMessages = messages.length > lastMessageCount;
             renderChatMessages();
-            if (messages.length > lastMessageCount) {
+            if (hadNewMessages) {
                 scrollChatToBottom();
+                var chatTab = document.getElementById('chatTab');
+                if (!chatTab || !chatTab.classList.contains('active')) {
+                    showToast('New message received', 'info');
+                }
             }
             lastMessageCount = messages.length;
+            updateChatBadge();
         }
     }
 
@@ -202,6 +263,7 @@
         renderChatMessages();
         scrollChatToBottom();
         chatPollInterval = setInterval(checkForNewMessages, CHAT_POLL_MS);
+        updateChatBadge();
         console.log('Chat polling started');
     }
 
@@ -239,4 +301,7 @@
     window.stopChatPolling = stopChatPolling;
     window.initChat = initChat;
     window.renderChatMessages = renderChatMessages;
+    window.updateChatBadge = updateChatBadge;
+    window.clearChatBadge = clearChatBadge;
+    window.clearAllChatMessages = clearAllChatMessages;
 })(window);

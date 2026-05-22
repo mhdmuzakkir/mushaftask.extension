@@ -554,6 +554,8 @@ function loadReviewFiles(forceScan = false) {
     if (!state.projectFolder) {
         container.innerHTML = '<p class="empty-state">Configure project folder to see review queue</p>';
         if (countEl) countEl.textContent = '';
+        const reviewTabBtn = document.querySelector('.bottom-tab-btn[data-tab="review"]');
+        if (reviewTabBtn) reviewTabBtn.classList.add('hidden');
         return;
     }
 
@@ -570,6 +572,16 @@ function loadReviewFiles(forceScan = false) {
     if (countEl) {
         countEl.textContent = currentFiles.length > 0 ? `(${currentFiles.length})` : '';
     }
+    
+    // Show/hide Review tab in bottom nav based on queue contents
+    const reviewTabBtn = document.querySelector('.bottom-tab-btn[data-tab="review"]');
+    if (reviewTabBtn) {
+        reviewTabBtn.classList.toggle('hidden', currentFiles.length === 0);
+        // If currently on review tab and it becomes hidden, switch to home
+        if (currentFiles.length === 0 && reviewTabBtn.classList.contains('active')) {
+            if (typeof switchTab === 'function') switchTab('home');
+        }
+    }
     const newDataHash = JSON.stringify(currentFiles.map(f => 
         `${f.fullPath}|${f.taskCount}|${f.needsReview}`
     ));
@@ -583,7 +595,7 @@ function loadReviewFiles(forceScan = false) {
     state.forceRefresh = false;
 
     const currentItems = container.querySelectorAll('.review-file-item').length;
-    if (currentItems !== currentFiles.length) {
+    if (currentItems !== currentFiles.length || currentFiles.length === 0) {
         container.innerHTML = '';
     } else {
         updateExistingReviewItems(container, currentFiles);

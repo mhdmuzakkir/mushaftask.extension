@@ -680,12 +680,17 @@ function switchTab(tabName) {
 
     if (tabName === 'chat') {
         if (typeof startChatPolling === 'function') startChatPolling();
+        if (typeof clearChatBadge === 'function') clearChatBadge();
     } else {
         if (typeof stopChatPolling === 'function') stopChatPolling();
     }
     const navigateFab = document.getElementById('navigateFab');
     if (navigateFab) {
         navigateFab.classList.toggle('hidden', tabName === 'chat');
+    }
+    const completeFab = document.getElementById('completeFab');
+    if (completeFab && tabName === 'chat') {
+        completeFab.classList.add('hidden');
     }
     if (tabName === 'settings') {
         document.getElementById('settingsFolderPath').value = state.tasksFolder || '';
