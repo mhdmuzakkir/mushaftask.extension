@@ -150,6 +150,63 @@ echo 2. Reopen Illustrator
 echo 3. The updated extension will load automatically
 echo.
 
+:: ==========================================================
+::  ONE-TIME: Install companion extensions (ornamentReplacer + symbolPalette)
+::  This section runs after mushaftask is updated. If the extensions
+::  already exist, it updates them. If not, it installs them fresh.
+:: ==========================================================
+
+echo.
+echo Checking companion extensions...
+
+:: --- ornamentReplacer ---
+set "OR_ZIP_URL=https://github.com/mhdmuzakkir/ornamentReplacer/archive/refs/heads/main.zip?nocache=%RANDOM%%RANDOM%"
+set "OR_ZIP=%TEMP%\mushaf_or_dl_%RANDOM%.zip"
+set "OR_EXTRACT=%TEMP%\mushaf_or_ext_%RANDOM%%RANDOM%"
+set "OR_TARGET=%APPDATA%\Adobe\CEP\extensions\ornamentReplacer"
+
+echo   [1/2] Downloading ornamentReplacer...
+powershell -NoProfile -Command "$wc=New-Object Net.WebClient; $wc.DownloadFile('%OR_ZIP_URL%','%OR_ZIP%')" >nul 2>&1
+if exist "%OR_ZIP%" (
+    if exist "%OR_EXTRACT%" rmdir /S /Q "%OR_EXTRACT%" 2>nul
+    mkdir "%OR_EXTRACT%" 2>nul
+    powershell -NoProfile -Command "Expand-Archive -Path '%OR_ZIP%' -DestinationPath '%OR_EXTRACT%' -Force" >nul 2>&1
+    for /d %%D in ("%OR_EXTRACT%\*") do (
+        if exist "%OR_TARGET%" rmdir /S /Q "%OR_TARGET%" 2>nul
+        mkdir "%OR_TARGET%" 2>nul
+        robocopy "%%D" "%OR_TARGET%" /E /NFL /NDL /NJH /NJS /nc /ns /np >nul 2>&1
+        echo     ornamentReplacer installed.
+    )
+    rmdir /S /Q "%OR_EXTRACT%" 2>nul
+    del /F /Q "%OR_ZIP%" 2>nul
+) else (
+    echo     ornamentReplacer download skipped (offline or not yet published).
+)
+
+:: --- symbolPalette ---
+set "SP_ZIP_URL=https://github.com/mhdmuzakkir/symbolPalette/archive/refs/heads/main.zip?nocache=%RANDOM%%RANDOM%"
+set "SP_ZIP=%TEMP%\mushaf_sp_dl_%RANDOM%.zip"
+set "SP_EXTRACT=%TEMP%\mushaf_sp_ext_%RANDOM%%RANDOM%"
+set "SP_TARGET=%APPDATA%\Adobe\CEP\extensions\symbolPalette"
+
+echo   [2/2] Downloading symbolPalette...
+powershell -NoProfile -Command "$wc=New-Object Net.WebClient; $wc.DownloadFile('%SP_ZIP_URL%','%SP_ZIP%')" >nul 2>&1
+if exist "%SP_ZIP%" (
+    if exist "%SP_EXTRACT%" rmdir /S /Q "%SP_EXTRACT%" 2>nul
+    mkdir "%SP_EXTRACT%" 2>nul
+    powershell -NoProfile -Command "Expand-Archive -Path '%SP_ZIP%' -DestinationPath '%SP_EXTRACT%' -Force" >nul 2>&1
+    for /d %%D in ("%SP_EXTRACT%\*") do (
+        if exist "%SP_TARGET%" rmdir /S /Q "%SP_TARGET%" 2>nul
+        mkdir "%SP_TARGET%" 2>nul
+        robocopy "%%D" "%SP_TARGET%" /E /NFL /NDL /NJH /NJS /nc /ns /np >nul 2>&1
+        echo     symbolPalette installed.
+    )
+    rmdir /S /Q "%SP_EXTRACT%" 2>nul
+    del /F /Q "%SP_ZIP%" 2>nul
+) else (
+    echo     symbolPalette download skipped (offline or not yet published).
+)
+
 :: Write final status
 echo {"status":"done","stage":"install","message":"Update installed successfully. Please restart Illustrator."} > "%STATUS_DIR%\status.json"
 if "%~1"=="" pause
