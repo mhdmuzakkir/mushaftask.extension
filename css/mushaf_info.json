@@ -10,7 +10,7 @@
   "surah_statistics": [
     {
       "surah_number": 1,
-      "surah_name": "ٱلْفَاتِحَةِ",
+      "surah_name": "الفاتحة",
       "total_ayahs": 7,
       "start_page": 1,
       "end_page": 1,
@@ -113,7 +113,7 @@
     },
     {
       "surah_number": 4,
-      "surah_name": "Surah_4",
+      "surah_name": "النساء",
       "total_ayahs": 176,
       "start_page": 77,
       "end_page": 106,
@@ -299,7 +299,7 @@
     },
     {
       "surah_number": 10,
-      "surah_name": "Surah_10",
+      "surah_name": "يونس",
       "total_ayahs": 109,
       "start_page": 208,
       "end_page": 221,
@@ -573,7 +573,7 @@
     },
     {
       "surah_number": 24,
-      "surah_name": "Surah_24",
+      "surah_name": "النور",
       "total_ayahs": 64,
       "start_page": 350,
       "end_page": 359,
@@ -628,7 +628,7 @@
     },
     {
       "surah_number": 27,
-      "surah_name": "Surah_27",
+      "surah_name": "النمل",
       "total_ayahs": 93,
       "start_page": 377,
       "end_page": 385,
@@ -726,7 +726,7 @@
     },
     {
       "surah_number": 33,
-      "surah_name": "Surah_33",
+      "surah_name": "الأحزاب",
       "total_ayahs": 73,
       "start_page": 418,
       "end_page": 427,
@@ -808,7 +808,7 @@
     },
     {
       "surah_number": 38,
-      "surah_name": "Surah_38",
+      "surah_name": "ص",
       "total_ayahs": 88,
       "start_page": 453,
       "end_page": 458,
@@ -920,7 +920,7 @@
     },
     {
       "surah_number": 45,
-      "surah_name": "Surah_45",
+      "surah_name": "الجاثية",
       "total_ayahs": 37,
       "start_page": 499,
       "end_page": 502,
@@ -947,7 +947,7 @@
     },
     {
       "surah_number": 47,
-      "surah_name": "Surah_47",
+      "surah_name": "محمد",
       "total_ayahs": 38,
       "start_page": 507,
       "end_page": 510,
@@ -1023,7 +1023,7 @@
     },
     {
       "surah_number": 53,
-      "surah_name": "Surah_53",
+      "surah_name": "النجم",
       "total_ayahs": 62,
       "start_page": 526,
       "end_page": 528,
@@ -1114,7 +1114,7 @@
     },
     {
       "surah_number": 60,
-      "surah_name": "Surah_60",
+      "surah_name": "الممتحنة",
       "total_ayahs": 13,
       "start_page": 549,
       "end_page": 551,
@@ -1170,7 +1170,7 @@
     },
     {
       "surah_number": 65,
-      "surah_name": "Surah_65",
+      "surah_name": "الطلاق",
       "total_ayahs": 12,
       "start_page": 558,
       "end_page": 559,
@@ -1296,7 +1296,7 @@
     },
     {
       "surah_number": 76,
-      "surah_name": "الانسان",
+      "surah_name": "الإنسان",
       "total_ayahs": 31,
       "start_page": 578,
       "end_page": 580,
@@ -1341,7 +1341,7 @@
     },
     {
       "surah_number": 80,
-      "surah_name": "Surah_80",
+      "surah_name": "عبس",
       "total_ayahs": 42,
       "start_page": 585,
       "end_page": 585,
@@ -1351,7 +1351,7 @@
     },
     {
       "surah_number": 81,
-      "surah_name": "Surah_81",
+      "surah_name": "التكوير",
       "total_ayahs": 29,
       "start_page": 586,
       "end_page": 586,
@@ -1361,7 +1361,7 @@
     },
     {
       "surah_number": 82,
-      "surah_name": "Surah_82",
+      "surah_name": "الإنفطار",
       "total_ayahs": 19,
       "start_page": 587,
       "end_page": 587,
@@ -1393,7 +1393,7 @@
     },
     {
       "surah_number": 85,
-      "surah_name": "Surah_85",
+      "surah_name": "البروج",
       "total_ayahs": 22,
       "start_page": 590,
       "end_page": 590,
@@ -1403,7 +1403,7 @@
     },
     {
       "surah_number": 86,
-      "surah_name": "Surah_86",
+      "surah_name": "الطارق",
       "total_ayahs": 17,
       "start_page": 591,
       "end_page": 591,
@@ -1455,7 +1455,7 @@
     },
     {
       "surah_number": 91,
-      "surah_name": "Surah_91",
+      "surah_name": "الشمس",
       "total_ayahs": 15,
       "start_page": 595,
       "end_page": 595,

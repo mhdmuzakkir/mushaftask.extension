@@ -95,14 +95,30 @@ function handleEditRiwayahSave() {
     const riwayah = document.getElementById('editRiwayahSelect').value;
     const arabicName = document.getElementById('editRiwayahArabicName').value.trim();
     const color = document.getElementById('editRiwayahColor').value;
+    const tasksText = document.getElementById('editRiwayahTasks').value;
     if (!riwayah) {
         showToast('Please select a riwayah', 'error');
         return;
     }
-    if (updateRiwayahInfo(riwayah, { arabicName, color })) {
+    // Build task list preserving IDs for existing titles
+    const existingTasks = loadRiwayahTasks(riwayah);
+    const titles = tasksText.split('\n').map(t => t.trim()).filter(t => t);
+    const taskList = titles.map(function(title) {
+        const existing = existingTasks.find(function(t) { return t.title === title; });
+        if (existing) return existing;
+        return {
+            id: generateId('task'),
+            title: title,
+            completed: false,
+            assigned: '',
+            description: ''
+        };
+    });
+    var tasksSaved = saveRiwayahTasks(riwayah, taskList);
+    var infoSaved = updateRiwayahInfo(riwayah, { arabicName, color });
+    if (tasksSaved && infoSaved) {
         showToast(`Riwayah ${riwayah} updated`, 'success');
         hideEditRiwayahModal();
-        // Refresh UI elements that show riwayah names/colors
         populateRiwayahDropdown();
         refreshUI();
     } else {

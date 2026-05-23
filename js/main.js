@@ -50,38 +50,105 @@ function init() {
     }
 
     var tasksFolder = (settings && settings.tasksFolder) || state.tasksFolder;
+    var projectFolder = (settings && settings.projectFolder) || state.projectFolder;
 
+    // --- AUTO-SCAN: try to discover mushafproject across all drives ---
+    var scanAttempted = false;
+    var scanSucceeded = false;
+
+    function tryAutoScan() {
+        if (!window.DriveScanner || !window.DriveScanner.isNodeAvailable()) {
+            console.log('DriveScanner not available, skipping auto-scan');
+            return false;
+        }
+        scanAttempted = true;
+        console.log('DriveScanner: attempting auto-scan...');
+        var result = window.DriveScanner.autoDetectAndSave();
+        if (result && result.success) {
+            console.log('DriveScanner: auto-scan succeeded! tasksFolder:', result.tasksFolder, 'projectFolder:', result.projectFolder);
+            tasksFolder = result.tasksFolder || tasksFolder;
+            projectFolder = result.projectFolder || projectFolder;
+            state.tasksFolder = tasksFolder;
+            state.projectFolder = projectFolder;
+            scanSucceeded = true;
+            return true;
+        }
+        console.log('DriveScanner: auto-scan failed. Reason:', result ? result.reason : 'unknown');
+        return false;
+    }
+
+    // Case 1: No folder configured at all — try auto-scan first
     if (!tasksFolder) {
-        console.log('No settings or tasksFolder, showing setup modal');
-        document.getElementById('setupModal').classList.remove('hidden');
-        document.getElementById('tabNavigation').classList.add('hidden');
-    } else if (!isFolderAccessible(tasksFolder)) {
-        console.log('Tasks folder not accessible:', tasksFolder);
-        document.getElementById('tabNavigation').classList.add('hidden');
-        document.getElementById('driveMissingModal').classList.remove('hidden');
-        var driveMissingPathEl = document.getElementById('driveMissingPath');
-        if (driveMissingPathEl) {
-            driveMissingPathEl.textContent = tasksFolder;
+        if (!tryAutoScan()) {
+            console.log('No settings or tasksFolder, showing setup modal');
+            document.getElementById('setupModal').classList.remove('hidden');
+            document.getElementById('tabNavigation').classList.add('hidden');
         }
-        var retryDriveBtn = document.getElementById('retryDriveBtn');
-        if (retryDriveBtn) {
-            retryDriveBtn.addEventListener('click', function() {
-                location.reload();
-            });
+    }
+    // Case 2: Folder configured but inaccessible (e.g. drive letter changed, offline) — try auto-scan
+    else if (!isFolderAccessible(tasksFolder)) {
+        if (!tryAutoScan()) {
+            console.log('Tasks folder not accessible:', tasksFolder);
+            document.getElementById('tabNavigation').classList.add('hidden');
+            document.getElementById('driveMissingModal').classList.remove('hidden');
+            var driveMissingPathEl = document.getElementById('driveMissingPath');
+            if (driveMissingPathEl) {
+                driveMissingPathEl.textContent = tasksFolder;
+            }
+            // Wire up Retry button
+            var retryDriveBtn = document.getElementById('retryDriveBtn');
+            if (retryDriveBtn) {
+                // Remove old listener if any (avoid duplicates on reload)
+                var newRetry = retryDriveBtn.cloneNode(true);
+                retryDriveBtn.parentNode.replaceChild(newRetry, retryDriveBtn);
+                newRetry.addEventListener('click', function() {
+                    location.reload();
+                });
+            }
+            // Wire up Change Folder button
+            var changeDriveBtn = document.getElementById('changeDriveBtn');
+            if (changeDriveBtn) {
+                var newChange = changeDriveBtn.cloneNode(true);
+                changeDriveBtn.parentNode.replaceChild(newChange, changeDriveBtn);
+                newChange.addEventListener('click', function() {
+                    document.getElementById('driveMissingModal').classList.add('hidden');
+                    document.getElementById('setupModal').classList.remove('hidden');
+                    var folderInput = document.getElementById('folderPath');
+                    var projectInput = document.getElementById('setupProjectPath');
+                    if (folderInput && state.tasksFolder) folderInput.value = state.tasksFolder;
+                    if (projectInput && state.projectFolder) projectInput.value = state.projectFolder;
+                });
+            }
+            // Wire up Scan Drives button (if present)
+            var scanDriveBtn = document.getElementById('scanDrivesBtn');
+            if (scanDriveBtn) {
+                var newScan = scanDriveBtn.cloneNode(true);
+                scanDriveBtn.parentNode.replaceChild(newScan, scanDriveBtn);
+                newScan.addEventListener('click', function() {
+                    if (tryAutoScan()) {
+                        location.reload();
+                    } else {
+                        showToast('No mushafproject folder found on any drive. Please connect Google Drive or browse manually.', 'error');
+                    }
+                });
+            }
         }
-        var changeDriveBtn = document.getElementById('changeDriveBtn');
-        if (changeDriveBtn) {
-            changeDriveBtn.addEventListener('click', function() {
-                document.getElementById('driveMissingModal').classList.add('hidden');
-                document.getElementById('setupModal').classList.remove('hidden');
-                // Pre-fill so the user doesn't have to browse again
-                var folderInput = document.getElementById('folderPath');
-                var projectInput = document.getElementById('setupProjectPath');
-                if (folderInput && state.tasksFolder) folderInput.value = state.tasksFolder;
-                if (projectInput && state.projectFolder) projectInput.value = state.projectFolder;
-            });
+    }
+
+    // If auto-scan succeeded, we now have valid paths — continue normal flow
+    if (scanSucceeded) {
+        // Re-check accessibility to be safe
+        if (!isFolderAccessible(tasksFolder)) {
+            console.log('Auto-scan found path but it is not accessible:', tasksFolder);
+            document.getElementById('setupModal').classList.remove('hidden');
+            document.getElementById('tabNavigation').classList.add('hidden');
+        } else {
+            console.log('Setup complete via auto-scan');
         }
-    } else {
+    }
+
+    // Normal path: setup is complete and accessible
+    if (tasksFolder && isFolderAccessible(tasksFolder)) {
         console.log('Setup complete');
 
         // Detect version change for changelog

@@ -104,6 +104,42 @@ function setupEventListeners() {
         showLoginModal(state.currentUser);
     });
     
+    // Auto-Detect button in first-time setup modal
+    document.getElementById('autoDetectSetupBtn')?.addEventListener('click', () => {
+        if (!window.DriveScanner) {
+            showToast('Drive scanner not available', 'error');
+            return;
+        }
+        showToast('Scanning all drives for mushafproject...', 'info');
+        var result = window.DriveScanner.autoDetectAndSave();
+        if (result && result.success) {
+            showToast('Found! ' + result.candidateCount + ' drive(s) scanned. Saving...', 'success');
+            // Pre-fill the inputs so user can see what was found
+            if (result.tasksFolder) {
+                document.getElementById('folderPath').value = result.tasksFolder;
+            }
+            if (result.projectFolder) {
+                document.getElementById('setupProjectPath').value = result.projectFolder;
+            }
+            // Small delay so user sees the filled fields, then auto-save
+            setTimeout(function() {
+                state.tasksFolder = result.tasksFolder;
+                state.projectFolder = result.projectFolder;
+                saveSettings();
+                document.getElementById('setupModal').classList.add('hidden');
+                loadRiwayahColors();
+                ensureQuotesFolder();
+                if (loadMushafData()) {
+                    setupSurahControls();
+                }
+                initAuth();
+                showLoginModal(state.currentUser);
+            }, 800);
+        } else {
+            showToast('Could not auto-detect mushafproject. Please browse manually.', 'warning');
+        }
+    });
+    
     document.getElementById('settingsBrowseBtn')?.addEventListener('click', () => {
         console.log('settingsBrowseBtn clicked');
         browseFolder((folder) => {
@@ -122,6 +158,31 @@ function setupEventListeners() {
     
     document.getElementById('closeSettings')?.addEventListener('click', () => {
         switchTab('home');
+    });
+    
+    // Auto-Detect button in Settings modal
+    document.getElementById('settingsAutoDetectBtn')?.addEventListener('click', () => {
+        if (!window.DriveScanner) {
+            showToast('Drive scanner not available', 'error');
+            return;
+        }
+        showToast('Scanning all drives for mushafproject...', 'info');
+        var result = window.DriveScanner.autoDetectAndSave();
+        if (result && result.success) {
+            showToast('Found on ' + (result.candidates[0].source || 'a drive') + '! Saving...', 'success');
+            if (result.tasksFolder) {
+                document.getElementById('settingsFolderPath').value = result.tasksFolder;
+            }
+            if (result.projectFolder) {
+                document.getElementById('settingsProjectPath').value = result.projectFolder;
+            }
+            // Trigger the Save button click to apply everything
+            setTimeout(function() {
+                document.getElementById('saveSettings').click();
+            }, 300);
+        } else {
+            showToast('Could not auto-detect. Please browse manually or connect Google Drive.', 'warning');
+        }
     });
     
     document.getElementById('saveSettings')?.addEventListener('click', () => {
@@ -244,6 +305,8 @@ function setupEventListeners() {
             document.getElementById('editRiwayahArabicName').value = info.arabicName;
             document.getElementById('editRiwayahColor').value = info.color;
             document.getElementById('editColorPreview').style.backgroundColor = info.color;
+            const tasks = loadRiwayahTasks(riwayah);
+            document.getElementById('editRiwayahTasks').value = tasks.map(t => t.title).join('\n');
         }
     });
     document.getElementById('editRiwayahColor')?.addEventListener('input', (e) => {

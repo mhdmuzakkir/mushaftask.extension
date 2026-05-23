@@ -76,6 +76,7 @@ mushaftask.extension/
 │       ├── activity-stats.js # Activity logging, stats, CSV export
 │       ├── admin.js          # Admin controls
 │       ├── updater.js        # GitHub self-update (AppData installs)
+│       ├── drive-scanner.js  # Auto-discovers mushafproject across all drives & shortcuts
 │       └── event-wiring.js   # DOM event listener setup
 ├── jsx/
 │   └── hostscript.jsx        # ExtendScript for Illustrator communication
@@ -116,8 +117,9 @@ mushaftask.extension/
 20. `activity-stats.js` — Stats
 21. `admin.js` — Admin UI
 22. `updater.js` — Self-update
-23. `event-wiring.js` — Event wiring
-24. `main.js` — Orchestrator
+23. `drive-scanner.js` — Google Drive auto-discovery (reusable across all Mushaf tools)
+24. `event-wiring.js` — Event wiring
+25. `main.js` — Orchestrator
 
 **Important**: Because scripts are loaded sequentially via `<script>` tags and use global functions, later modules can call functions defined in earlier modules. There is no explicit module system — dependencies are implicit through load order.
 
@@ -380,6 +382,46 @@ These are documented in `PROJECT_PROGRESS.md`, `SETUP_CHECKLIST.md`, and `WORKFL
 11. **Batch-based updater** — The updater spawns `check-update.bat` / `update.bat` via Node.js `child_process`. If modifying the update flow, ensure the batch files and `updater.js` stay in sync. The batch files write JSON to `%TEMP%\mushaftask-update\status.json`.
 12. **Custom confirm modal** — Never use native `confirm()`. Use `showConfirm(message, onConfirm, onCancel)` from `js/modules/utils.js`. It provides a dark-themed modal consistent with the panel UI.
 13. **No forced re-login on every update** — First install (`lastSeenVersion == null`) forces login. Version changes only set a flag to show the changelog on next login.
+
+---
+
+## Changelog (Session: April 26, 2026)
+
+### Mushaf Task Manager — v2.1.10 → v2.2.0
+- **Drive Scanner**: Root discovery now uses `pathExists()` instead of `isAccessibleFolder()` to avoid `readdirSync` failures on Google Drive virtual folders.
+- **Theme Unification**: Aligned ornamentReplacer and webp-exporter CSS to match mushaftask dark theme (`#2b2b2b`, `#1e1e1e`, `#cccccc`).
+- **Path Updates**: Added nested `mushafproject/mushaffiles` + `mushafproject/mushaftask` search paths in auto-detect.
+- **Version bumped**: `manifest.xml`, `version.json`, `updater.js` → `2.2.0`.
+
+### Ornament Replacer — v2.0.0 → v3.1.0
+- **Google Drive Auto-Detect**: Copied `drive-scanner.js` with `fs`/`path`/`os` require fix. Auto-detects `mushafproject` across all drives, shortcuts, and `.shortcut-targets-by-id`.
+- **Templates Support**: Auto-detect now also finds `mushafproject/templates/` and sets it as the templates folder.
+- **Backward Compat**: `readMushafTaskSettings()` handles `projectFolder` pointing to `mushafproject/` root vs `mushaffiles/`.
+- **Test Path Feature**: Added "Or paste mushafproject path" input with **Test & Use** button in settings.
+- **Removed `R:/Templates` default**: Changed `MY_TEMPLATES_FOLDER` default to `""`. JSX `scanTemplateFolder()` no longer auto-creates folders.
+- **Juz/Surah Filter**: Added **Range** (From→To dropdown) vs **Multiple** (checkbox) toggle modes.
+- **Font Fix**: "Surah" filter card label now uses body font; surah names in checkbox list keep `surah-select` font.
+- **Hidden**: "Flatten & Rename Number SVGs" button hidden (`display:none`).
+- **Self-Updater**: Added `updater.js`, `check-update.bat`, `update.bat`, `install.bat`, `version.json`.
+- **Update UI**: "Check for Updates" + "Install Update" buttons in Settings panel.
+
+### Symbol Palette — v1.0.0 → v1.1.0
+- **CEP Flags**: Added `--enable-nodejs` + `--mixed-context` to `manifest.xml` (was missing — blocked all Node.js APIs).
+- **Google Drive Auto-Detect**: Full scanner using `window.DriveScanner` (copied from mushaftask). Fast path reads MushafTaskManager `settings.json`. Fallback scans drives A–Z.
+- **Nested Structure Support**: Auto-detect handles both flat (`symbols/` + `numbers/` as siblings) and nested (`symbols/symbols/` + `symbols/numbers/`) structures.
+- **Riwayah Discovery**: Scans `mushafproject/mushaftasks/riwayah-tasks/` subfolders and auto-adds them to settings.
+- **Test Path Feature**: "Or paste exact path to test" input with **Test & Use** button in folder modal.
+- **Riwayah Settings**: `getAvailableRiwayahs()` reads actual disk folders instead of hardcoded list.
+- **Self-Updater**: Added `updater.js`, `check-update.bat`, `update.bat`, `install.bat`, `version.json`.
+- **Update UI**: "Check for Updates" + "Install Update" buttons in bottom bar.
+- **Auto-Detect Button**: Added to folder modal with green dashed styling. One-click auto-detect + auto-load.
+- **Startup Auto-Detect**: If no folder saved on load, attempts auto-detect silently.
+
+### Web Exporter (mushafwebp)
+- **Path Update**: Added nested `mushafproject/mushaffiles` search paths in `auto-detect.js`.
+
+### mushafweb (server)
+- **sync-all.php**: Updated `ftp_remote` to `myftp:/mushafproject/mushaftasks/`.
 
 ---
 

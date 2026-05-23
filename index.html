@@ -44,6 +44,7 @@
             <p id="driveMissingPath" style="font-size: 12px; color: var(--text-muted); word-break: break-all; margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; text-align: left;"></p>
             <div style="display: flex; gap: 10px;">
                 <button id="retryDriveBtn" class="btn-primary" style="flex: 1;">Retry</button>
+                <button id="scanDrivesBtn" class="btn-success" style="flex: 1;">Scan Drives</button>
                 <button id="changeDriveBtn" class="btn-secondary" style="flex: 1;">Change Folder</button>
             </div>
         </div>
@@ -67,6 +68,7 @@
                     <button id="setupProjectBrowseBtn" class="btn-secondary">Browse</button>
                 </div>
             </div>
+            <button id="autoDetectSetupBtn" class="btn-success" style="margin-bottom: 12px; width: 100%;"> Auto-Detect from Google Drive</button>
             <button id="saveSetupBtn" class="btn-primary">Save Settings</button>
         </div>
     </div>
@@ -222,6 +224,10 @@
                     <input type="color" id="editRiwayahColor" value="#9b59b6">
                     <span class="color-preview" id="editColorPreview"></span>
                 </div>
+            </div>
+            <div class="form-group">
+                <label>Task List (one per line):</label>
+                <textarea id="editRiwayahTasks" rows="6" placeholder="Check page numbers&#10;Review verse markers&#10;Review titles&#10;Final proofreading"></textarea>
             </div>
             <div class="modal-actions">
                 <button id="cancelEditRiwayah" class="btn-secondary">Cancel</button>
@@ -657,6 +663,9 @@
                             <button id="projectBrowseBtn" class="btn-secondary">Set</button>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <button id="settingsAutoDetectBtn" class="btn-success" style="width: 100%;"> Auto-Detect from Google Drive</button>
+                    </div>
                     <!-- Change Password Section -->
                     <div class="settings-section">
                         <h3>Change My Password</h3>
@@ -1033,6 +1042,7 @@
     <script src="js/modules/core-globals.js"></script>
     <script src="js/modules/config.js"></script>
     <script src="js/modules/utils.js"></script>
+    <script src="js/modules/drive-scanner.js"></script>
     <script src="js/modules/api.js"></script>
     <script src="js/modules/illustrator.js"></script>
     <script src="js/modules/settings.js"></script>

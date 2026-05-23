@@ -156,7 +156,13 @@
         var currentUser = authState.currentUser || '';
 
         if (messages.length === 0) {
-            container.innerHTML = '<p class="chat-empty">No messages yet. Say hello!</p>';
+            container.innerHTML = '<p class="chat-empty">Salam!</p><button id="sendSalamBtn" class="btn-secondary" style="margin-top:10px;">السلام عليكم ورحمة الله وبركاته</button>';
+            var salamBtn = document.getElementById('sendSalamBtn');
+            if (salamBtn) {
+                salamBtn.addEventListener('click', function() {
+                    sendChatMessage('السلام عليكم ورحمة الله وبركاته');
+                });
+            }
             return;
         }
 
