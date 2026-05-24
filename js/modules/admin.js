@@ -146,7 +146,7 @@ function populateUserSettingsTable() {
     
     tbody.innerHTML = Object.entries(users).map(([username, user]) => {
         const isMuzakkir = username === 'muzakkir';
-        const canEdit = isSuperAdmin || (!isMuzakkir && authState.isAdmin);
+        const canEdit = !isMuzakkir && (isSuperAdmin || authState.isAdmin);
         const adminCheckbox = `<input type="checkbox" class="user-admin-toggle" data-user="${username}" ${user.isAdmin ? 'checked' : ''} ${!canEdit ? 'disabled' : ''}>`;
         const deleteBtn = canEdit && !isMuzakkir 
             ? `<button class="btn-link btn-small user-delete-btn" data-user="${username}">Delete</button>` 
@@ -179,8 +179,8 @@ function updateUserAdminStatus(username, isAdmin) {
         if (!authState.config) loadConfig();
         const lowerUsername = username.toLowerCase();
         // Super-admin protection
-        if (lowerUsername === 'muzakkir' && authState.currentUser !== 'muzakkir') {
-            showToast('Only Muzakkir can modify the Muzakkir account', 'error');
+        if (lowerUsername === 'muzakkir') {
+            showToast('Muzakkir cannot be removed from admin', 'error');
             populateUserSettingsTable(); // revert checkbox
             return false;
         }
@@ -239,4 +239,229 @@ function populateSettingsUserSelect() {
     if (currentValue) {
         select.value = currentValue;
     }
+}
+
+// ==================== MOVE TO RECHECK ====================
+function showMoveToRecheckModal() {
+    const select = document.getElementById('moveToRecheckSelect');
+    if (!select) return;
+    select.innerHTML = '<option value="">Select Riwayah...</option>';
+    try {
+        if (state.tasksFolder && fs.existsSync(state.tasksFolder)) {
+            const riwayahTasksPath = path.join(state.tasksFolder, 'riwayah-tasks');
+            if (fs.existsSync(riwayahTasksPath)) {
+                const riwayahs = fs.readdirSync(riwayahTasksPath, { withFileTypes: true })
+                    .filter(dirent => dirent.isDirectory())
+                    .map(dirent => dirent.name)
+                    .sort();
+                riwayahs.forEach(r => {
+                    const option = document.createElement('option');
+                    option.value = r;
+                    option.textContent = r;
+                    select.appendChild(option);
+                });
+            }
+        }
+    } catch (e) {
+        console.error('Error loading riwayahs for recheck:', e);
+    }
+    document.getElementById('recheckStatusDisplay').textContent = '-';
+    document.getElementById('moveToRecheckModal').classList.remove('hidden');
+}
+
+function hideMoveToRecheckModal() {
+    document.getElementById('moveToRecheckModal').classList.add('hidden');
+}
+
+function updateRecheckModalStatus(e) {
+    const riwayah = e.target.value;
+    const display = document.getElementById('recheckStatusDisplay');
+    if (!riwayah || !display) return;
+    const status = getRiwayahStatus(riwayah);
+    display.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+    display.style.color = status === 'recheck' ? '#e67e22' : (status === 'completed' ? '#4a9eff' : '#2ecc71');
+}
+
+function handleMoveToRecheck() {
+    const select = document.getElementById('moveToRecheckSelect');
+    if (!select || !select.value) {
+        showToast('Please select a riwayah', 'error');
+        return;
+    }
+    const riwayah = select.value;
+    const status = getRiwayahStatus(riwayah);
+    if (status === 'recheck') {
+        showToast('This riwayah is already in recheck', 'error');
+        return;
+    }
+    showConfirm('Are you sure you want to move ALL completed pages of ' + riwayah + ' to Recheck?', function() {
+        if (moveRiwayahToRecheck(riwayah)) {
+            hideMoveToRecheckModal();
+            refreshQueues(true);
+        }
+    });
+}
+
+// ==================== MANAGE ASSIGNMENTS ====================
+function showManageAssignmentsModal() {
+    populateAssignmentsTable();
+    document.getElementById('manageAssignmentsModal').classList.remove('hidden');
+}
+
+function hideManageAssignmentsModal() {
+    document.getElementById('manageAssignmentsModal').classList.add('hidden');
+}
+
+function getAvailableRiwayahs() {
+    const riwayahs = [];
+    try {
+        if (state.tasksFolder && fs.existsSync(state.tasksFolder)) {
+            const riwayahTasksPath = path.join(state.tasksFolder, 'riwayah-tasks');
+            if (fs.existsSync(riwayahTasksPath)) {
+                const items = fs.readdirSync(riwayahTasksPath, { withFileTypes: true });
+                items.forEach(item => {
+                    if (item.isDirectory()) riwayahs.push(item.name);
+                });
+            }
+        }
+    } catch (e) {
+        console.error('Error reading riwayahs:', e);
+    }
+    return riwayahs.sort();
+}
+
+function buildRiwayahSelectHtml(selectedRiwayah, riwayahs) {
+    const options = riwayahs.map(r => `<option value="${r}" ${r.toLowerCase() === (selectedRiwayah || '').toLowerCase() ? 'selected' : ''}>${r}</option>`).join('');
+    return `<select class="assignment-riwayah" style="width: 100%; background: #1a1a1a; border: 1px solid #444; color: #fff; padding: 4px; font-size: 12px; border-radius: 3px; cursor: pointer;">
+        <option value="">Select Riwayah...</option>
+        ${options}
+    </select>`;
+}
+
+function populateAssignmentsTable() {
+    const tbody = document.getElementById('assignmentsTableBody');
+    if (!tbody) return;
+    const users = getUsers();
+    const assignments = USER_ASSIGNMENTS || {};
+    const riwayahs = getAvailableRiwayahs();
+    
+    tbody.innerHTML = '';
+    Object.keys(users).sort().forEach(username => {
+        const lowerName = username.toLowerCase();
+        const userData = assignments[lowerName] || { name: lowerName, assignments: { warsh: [1, 114] } };
+        const userAssignments = userData.assignments || {};
+        const riwayahEntries = Object.entries(userAssignments);
+        
+        // User header row
+        const headerTr = document.createElement('tr');
+        headerTr.className = 'assignment-user-header';
+        headerTr.innerHTML = `<td colspan="3">${username.charAt(0).toUpperCase() + username.slice(1)}</td>`;
+        tbody.appendChild(headerTr);
+        
+        // Assignment rows
+        riwayahEntries.forEach(([riwayah, range]) => {
+            const tr = document.createElement('tr');
+            tr.className = 'assignment-row';
+            tr.dataset.user = lowerName;
+            tr.innerHTML = `
+                <td>${buildRiwayahSelectHtml(riwayah, riwayahs)}</td>
+                <td>
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                        <input type="number" class="assignment-from" value="${range[0]}" min="1" max="114" style="width: 60px; background: #1a1a1a; border: 1px solid #444; color: #fff; padding: 4px; font-size: 12px; border-radius: 3px;">
+                        <span style="color: var(--text-muted);">-</span>
+                        <input type="number" class="assignment-to" value="${range[1]}" min="1" max="114" style="width: 60px; background: #1a1a1a; border: 1px solid #444; color: #fff; padding: 4px; font-size: 12px; border-radius: 3px;">
+                    </div>
+                </td>
+                <td style="text-align: center;">
+                    <button class="btn-remove-assignment" style="background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 16px; padding: 2px 6px; line-height: 1;">×</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+        
+        // Add row
+        const addTr = document.createElement('tr');
+        addTr.className = 'assignment-add-row';
+        addTr.innerHTML = `<td colspan="3" style="padding-bottom: 8px;">
+            <button class="btn-add-riwayah" data-user="${lowerName}" style="background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.3); color: #4a9eff; padding: 4px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">+ Add Riwayah</button>
+        </td>`;
+        tbody.appendChild(addTr);
+    });
+    
+    if (tbody.innerHTML === '') {
+        tbody.innerHTML = '<tr><td colspan="3" class="empty-cell">No users found</td></tr>';
+        return;
+    }
+    
+    // Attach remove listeners
+    tbody.querySelectorAll('.btn-remove-assignment').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const row = e.target.closest('.assignment-row');
+            if (row) row.remove();
+        });
+    });
+    
+    // Attach add listeners
+    tbody.querySelectorAll('.btn-add-riwayah').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const user = e.target.dataset.user;
+            const addRow = e.target.closest('.assignment-add-row');
+            const newTr = document.createElement('tr');
+            newTr.className = 'assignment-row';
+            newTr.dataset.user = user;
+            newTr.innerHTML = `
+                <td>${buildRiwayahSelectHtml('', riwayahs)}</td>
+                <td>
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                        <input type="number" class="assignment-from" value="1" min="1" max="114" style="width: 60px; background: #1a1a1a; border: 1px solid #444; color: #fff; padding: 4px; font-size: 12px; border-radius: 3px;">
+                        <span style="color: var(--text-muted);">-</span>
+                        <input type="number" class="assignment-to" value="114" min="1" max="114" style="width: 60px; background: #1a1a1a; border: 1px solid #444; color: #fff; padding: 4px; font-size: 12px; border-radius: 3px;">
+                    </div>
+                </td>
+                <td style="text-align: center;">
+                    <button class="btn-remove-assignment" style="background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 16px; padding: 2px 6px; line-height: 1;">×</button>
+                </td>
+            `;
+            newTr.querySelector('.btn-remove-assignment').addEventListener('click', (ev) => {
+                newTr.remove();
+            });
+            addRow.parentNode.insertBefore(newTr, addRow);
+        });
+    });
+}
+
+function handleSaveAssignments() {
+    const newAssignments = {};
+    
+    document.querySelectorAll('.assignment-row').forEach(row => {
+        const user = row.dataset.user;
+        if (!user) return;
+        
+        const riwayahInput = row.querySelector('.assignment-riwayah');
+        const fromInput = row.querySelector('.assignment-from');
+        const toInput = row.querySelector('.assignment-to');
+        
+        if (!riwayahInput || !fromInput || !toInput) return;
+        
+        const riwayah = riwayahInput.value.trim();
+        if (!riwayah) return; // Skip empty riwayah rows
+        
+        const fromVal = parseInt(fromInput.value, 10) || 1;
+        const toVal = parseInt(toInput.value, 10) || 114;
+        
+        if (!newAssignments[user]) {
+            newAssignments[user] = {
+                name: user.charAt(0).toUpperCase() + user.slice(1),
+                assignments: {}
+            };
+        }
+        
+        newAssignments[user].assignments[riwayah] = [Math.min(fromVal, toVal), Math.max(fromVal, toVal)];
+    });
+    
+    USER_ASSIGNMENTS = newAssignments;
+    saveUserAssignments();
+    populateUserFilterDropdown();
+    showToast('Assignments saved', 'success');
+    hideManageAssignmentsModal();
 }

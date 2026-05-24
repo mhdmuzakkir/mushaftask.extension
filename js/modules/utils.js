@@ -74,6 +74,39 @@
     }
 
     var CHANGELOG = {
+        '2.4.0': {
+            date: 'May 24, 2026',
+            new: [
+                'Per-riwayah user assignments — each user can have different surah ranges across multiple riwayahs',
+                'Riwayah dropdown in Manage Assignments — picks from actual riwayah folders, no more typos',
+                { text: 'Admin-only: Delete individual assignment rows with × button', adminOnly: true },
+                'Removed CURRENT badge — blue highlight is enough to identify the active file',
+                'Fixed surah name truncation in In Progress file items'
+            ],
+            fixed: [
+                'Assignment table riwayah column widened so dropdown names are no longer cut off'
+            ],
+            improved: []
+        },
+        '2.3.0': {
+            date: 'May 24, 2026',
+            new: [
+                'Recheck workflow — new Recheck/Ajza folders for second-pass review',
+                { text: 'Admin-only: "Move to Recheck" button to bulk-move all completed pages back to Recheck', adminOnly: true },
+                { text: 'Admin-only: Manage Assignments modal — assign users to surah ranges', adminOnly: true },
+                'RECHECK badge shown on in-progress files in Recheck folders',
+                'Riwayah status badge (completed/recheck) shown in riwayah dropdown',
+                'Auto-revert riwayah status from recheck → completed when last recheck file is moved back',
+                'User filter in In Progress queue — filter files by assigned user'
+            ],
+            fixed: [
+                'Muzakkir protection — super admin checkbox is permanently disabled, cannot be demoted',
+                'Badge overlap fixed — all badges wrapped in flex container, surah names truncate with ellipsis'
+            ],
+            improved: [
+                'File discovery now searches Recheck/Ajza as a valid file location'
+            ]
+        },
         '2.1.10': {
             date: 'May 22, 2026',
             new: [
@@ -204,22 +237,38 @@
         var data = CHANGELOG[version];
         if (!data) return;
 
+        var isAdmin = (typeof authState !== 'undefined' && authState.isAdmin);
+
+        function renderItems(items) {
+            if (!items || !items.length) return '';
+            var out = '';
+            items.forEach(function(item) {
+                var text = item;
+                var adminOnly = false;
+                if (typeof item === 'object' && item.text) {
+                    text = item.text;
+                    adminOnly = !!item.adminOnly;
+                }
+                if (adminOnly && !isAdmin) return; // Skip admin-only items for non-admins
+                var badge = adminOnly ? ' <span class="admin-badge-inline">ADMIN</span>' : '';
+                out += '<li>' + escapeHtml(text) + badge + '</li>';
+            });
+            return out;
+        }
+
         versionEl.textContent = 'v' + version;
         var html = '';
-        if (data.new && data.new.length) {
-            html += '<div class="changelog-section"><div class="changelog-section-title new">✨ New</div><ul class="changelog-list">';
-            data.new.forEach(function(item) { html += '<li>' + escapeHtml(item) + '</li>'; });
-            html += '</ul></div>';
+        var newItems = renderItems(data.new);
+        if (newItems) {
+            html += '<div class="changelog-section"><div class="changelog-section-title new">✨ New</div><ul class="changelog-list">' + newItems + '</ul></div>';
         }
-        if (data.fixed && data.fixed.length) {
-            html += '<div class="changelog-section"><div class="changelog-section-title fixed">🐛 Fixed</div><ul class="changelog-list">';
-            data.fixed.forEach(function(item) { html += '<li>' + escapeHtml(item) + '</li>'; });
-            html += '</ul></div>';
+        var fixedItems = renderItems(data.fixed);
+        if (fixedItems) {
+            html += '<div class="changelog-section"><div class="changelog-section-title fixed">🐛 Fixed</div><ul class="changelog-list">' + fixedItems + '</ul></div>';
         }
-        if (data.improved && data.improved.length) {
-            html += '<div class="changelog-section"><div class="changelog-section-title improved">⚡ Improved</div><ul class="changelog-list">';
-            data.improved.forEach(function(item) { html += '<li>' + escapeHtml(item) + '</li>'; });
-            html += '</ul></div>';
+        var improvedItems = renderItems(data.improved);
+        if (improvedItems) {
+            html += '<div class="changelog-section"><div class="changelog-section-title improved">⚡ Improved</div><ul class="changelog-list">' + improvedItems + '</ul></div>';
         }
         bodyEl.innerHTML = html;
         modal.classList.remove('hidden');

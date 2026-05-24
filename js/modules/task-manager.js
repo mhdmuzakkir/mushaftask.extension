@@ -10,6 +10,34 @@ function loadRiwayahTasks(riwayah) {
     }
     return [];
 }
+function getRiwayahStatus(riwayah) {
+    try {
+        const tasksFile = path.join(state.tasksFolder, 'riwayah-tasks', riwayah, 'riwayah-tasks.json');
+        if (fs.existsSync(tasksFile)) {
+            const data = JSON.parse(fs.readFileSync(tasksFile, 'utf8'));
+            return data.status || 'active';
+        }
+    } catch (e) {
+        console.error('Error loading riwayah status:', e);
+    }
+    return 'active';
+}
+function setRiwayahStatus(riwayah, status) {
+    try {
+        const tasksFile = path.join(state.tasksFolder, 'riwayah-tasks', riwayah, 'riwayah-tasks.json');
+        let data = { riwayah: riwayah, created: formatDate(), tasks: [], status: 'active' };
+        if (fs.existsSync(tasksFile)) {
+            data = JSON.parse(fs.readFileSync(tasksFile, 'utf8'));
+        }
+        data.status = status;
+        data.lastStatusChange = new Date().toISOString();
+        fs.writeFileSync(tasksFile, JSON.stringify(data, null, 2));
+        return true;
+    } catch (e) {
+        console.error('Error saving riwayah status:', e);
+        return false;
+    }
+}
 function saveRiwayahTasks(riwayah, tasks) {
     try {
         const riwayahPath = path.join(state.tasksFolder, 'riwayah-tasks', riwayah);
@@ -18,9 +46,19 @@ function saveRiwayahTasks(riwayah, tasks) {
         }
         
         const tasksFile = path.join(riwayahPath, 'riwayah-tasks.json');
+        let existingStatus = 'active';
+        let existingCreated = formatDate();
+        if (fs.existsSync(tasksFile)) {
+            try {
+                const existing = JSON.parse(fs.readFileSync(tasksFile, 'utf8'));
+                existingStatus = existing.status || existingStatus;
+                existingCreated = existing.created || existingCreated;
+            } catch (e) {}
+        }
         const data = {
             riwayah: riwayah,
-            created: formatDate(),
+            created: existingCreated,
+            status: existingStatus,
             tasks: tasks
         };
         fs.writeFileSync(tasksFile, JSON.stringify(data, null, 2));

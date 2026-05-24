@@ -47,6 +47,7 @@ function moveToCompleted() {
             
             const ajzaSourceFile = path.join(state.projectFolder, riwayah, 'Ajza', juz, `${page}-${riwayah}.ai`);
             const reviewSourceFile = path.join(state.projectFolder, riwayah, 'Review Task', `${page}-${riwayah}.ai`);
+            const recheckSourceFile = path.join(state.projectFolder, riwayah, 'Recheck', 'Ajza', juz, `${page}-${riwayah}.ai`);
             const completedSourceFile = path.join(state.projectFolder, riwayah, 'Completed', 'Ajza', juz, `${page}-${riwayah}.ai`);
             
             const destFolder = path.join(state.projectFolder, riwayah, 'Completed', 'Ajza', juz);
@@ -61,6 +62,9 @@ function moveToCompleted() {
             } else if (fs.existsSync(reviewSourceFile)) {
                 sourceFile = reviewSourceFile;
                 sourceLocation = 'Review Task';
+            } else if (fs.existsSync(recheckSourceFile)) {
+                sourceFile = recheckSourceFile;
+                sourceLocation = 'Recheck';
             } else if (fs.existsSync(completedSourceFile)) {
                 console.log('File already in Completed folder - closing');
                 closeDocumentAndReset('Completed');
@@ -280,6 +284,12 @@ function createRiwayah(name, tasks, duplicateFrom = null, color = '#9b59b6') {
             
             fs.mkdirSync(path.join(riwayahProjectPath, 'Review Task'), { recursive: true });
             
+            const recheckAjzaPath = path.join(riwayahProjectPath, 'Recheck', 'Ajza');
+            for (let i = 1; i <= 30; i++) {
+                const folderName = i.toString().padStart(2, '0');
+                fs.mkdirSync(path.join(recheckAjzaPath, folderName), { recursive: true });
+            }
+            
             const completedAjzaPath = path.join(riwayahProjectPath, 'Completed', 'Ajza');
             for (let i = 1; i <= 30; i++) {
                 const folderName = i.toString().padStart(2, '0');
@@ -320,6 +330,12 @@ function findAndOpenFile(riwayah, pageNum) {
             label: `Ajza/${juzFolder}`,
             status: 'in-progress',
             display: `Ajza/${juzFolder}`
+        },
+        {
+            path: path.join(state.projectFolder, riwayah, 'Recheck', 'Ajza', juzFolder, fileName),
+            label: `Recheck/Ajza/${juzFolder}`,
+            status: 'recheck',
+            display: `Recheck/Ajza/${juzFolder}`
         },
         {
             path: path.join(state.projectFolder, riwayah, 'Completed', 'Ajza', juzFolder, fileName),
@@ -363,5 +379,61 @@ function findAndOpenFile(riwayah, pageNum) {
         });
     } else {
         console.log('Extension not ready');
+    }
+}
+
+function moveRiwayahToRecheck(riwayah) {
+    try {
+        if (!state.projectFolder) {
+            showToast('Project folder not configured', 'error');
+            return false;
+        }
+        const completedBase = path.join(state.projectFolder, riwayah, 'Completed', 'Ajza');
+        const recheckBase = path.join(state.projectFolder, riwayah, 'Recheck', 'Ajza');
+        
+        if (!fs.existsSync(completedBase)) {
+            showToast('No completed folder found for this riwayah', 'error');
+            return false;
+        }
+        
+        let movedCount = 0;
+        for (let i = 1; i <= 30; i++) {
+            const juzFolder = i.toString().padStart(2, '0');
+            const completedJuz = path.join(completedBase, juzFolder);
+            const recheckJuz = path.join(recheckBase, juzFolder);
+            
+            if (!fs.existsSync(completedJuz)) continue;
+            if (!fs.existsSync(recheckJuz)) {
+                fs.mkdirSync(recheckJuz, { recursive: true });
+            }
+            
+            const files = fs.readdirSync(completedJuz).filter(f => f.endsWith('.ai'));
+            for (const file of files) {
+                const src = path.join(completedJuz, file);
+                const dest = path.join(recheckJuz, file);
+                if (!fs.existsSync(dest)) {
+                    fs.renameSync(src, dest);
+                    movedCount++;
+                }
+            }
+        }
+        
+        // Remove completed markers so files show as needing work again
+        const completedTasksDir = path.join(state.tasksFolder, 'completed', riwayah);
+        if (fs.existsSync(completedTasksDir)) {
+            const completedFiles = fs.readdirSync(completedTasksDir).filter(f => f.endsWith('-completed.json'));
+            for (const cf of completedFiles) {
+                try { fs.unlinkSync(path.join(completedTasksDir, cf)); } catch (e) {}
+            }
+        }
+        
+        setRiwayahStatus(riwayah, 'recheck');
+        invalidateQueueCache();
+        showToast(`Moved ${movedCount} page(s) to Recheck for ${riwayah}`, 'success');
+        return true;
+    } catch (e) {
+        console.error('Error moving riwayah to recheck:', e);
+        showToast('Failed to move riwayah to recheck: ' + e.message, 'error');
+        return false;
     }
 }

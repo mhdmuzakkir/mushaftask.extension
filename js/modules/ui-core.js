@@ -141,6 +141,8 @@ function populateRiwayahDropdown() {
             if (select) select.value = currentSelection;
         });
     }
+    
+    updateRiwayahStatusBadge(state.currentRiwayah);
 }
 function handleRiwayahChange(e) {
     const selectedRiwayah = e.target.value;
@@ -150,8 +152,22 @@ function handleRiwayahChange(e) {
     state.lastSelectedRiwayah = selectedRiwayah;
     saveSettings();
     state.projectTasks = loadRiwayahTasks(selectedRiwayah);
+    updateRiwayahStatusBadge(selectedRiwayah);
     
     console.log(`Selected ${selectedRiwayah}. Type a page number and click Go to open.`);
+}
+
+function updateRiwayahStatusBadge(riwayah) {
+    const badge = document.getElementById('riwayahStatusBadge');
+    if (!badge) return;
+    if (!riwayah) {
+        badge.classList.add('hidden');
+        return;
+    }
+    const status = getRiwayahStatus(riwayah);
+    badge.textContent = status;
+    badge.className = 'riwayah-status-badge status-' + status;
+    badge.classList.remove('hidden');
 }
 function handlePageSubmit() {
     const goToInput = document.getElementById('goToPageInput');

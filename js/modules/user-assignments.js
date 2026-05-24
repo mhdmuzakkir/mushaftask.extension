@@ -1,17 +1,60 @@
 function loadUserAssignments() {
     try {
-        // Always create assignments from current config users (not from file)
-        USER_ASSIGNMENTS = createDefaultUserAssignments();
+        const assignmentsPath = path.join(state.tasksFolder, 'user-assignments.json');
+        let loaded = null;
+        if (fs.existsSync(assignmentsPath)) {
+            try {
+                loaded = JSON.parse(fs.readFileSync(assignmentsPath, 'utf8'));
+            } catch (e) {
+                console.log('Could not parse assignments file, using defaults');
+            }
+        }
         
-        // Save to file for reference only
+        if (loaded && Object.keys(loaded).length > 0) {
+            // Migrate old flat format { riwayah, surahRange } to per-riwayah format { assignments: { riwayah: [from,to] } }
+            let migrated = false;
+            Object.keys(loaded).forEach(key => {
+                const entry = loaded[key];
+                if (entry.riwayah !== undefined && entry.surahRange !== undefined) {
+                    loaded[key] = {
+                        name: entry.name || key,
+                        assignments: { [entry.riwayah]: entry.surahRange }
+                    };
+                    migrated = true;
+                }
+            });
+            
+            USER_ASSIGNMENTS = loaded;
+            
+            // Ensure any new users from config are added with defaults
+            const users = getUsers();
+            Object.keys(users).forEach(username => {
+                const lowerName = username.toLowerCase();
+                if (!USER_ASSIGNMENTS[lowerName]) {
+                    USER_ASSIGNMENTS[lowerName] = {
+                        name: lowerName.charAt(0).toUpperCase() + lowerName.slice(1),
+                        assignments: { warsh: [1, 114] }
+                    };
+                }
+            });
+            
+            if (migrated) {
+                try {
+                    fs.writeFileSync(assignmentsPath, JSON.stringify(USER_ASSIGNMENTS, null, 2));
+                } catch (saveErr) {}
+            }
+        } else {
+            USER_ASSIGNMENTS = createDefaultUserAssignments();
+        }
+        
+        // Save to file
         try {
-            const assignmentsPath = path.join(state.tasksFolder, 'user-assignments.json');
             fs.writeFileSync(assignmentsPath, JSON.stringify(USER_ASSIGNMENTS, null, 2));
         } catch (saveErr) {
             console.log('Could not save assignments file (non-critical)');
         }
         
-        console.log('User assignments loaded from config:', Object.keys(USER_ASSIGNMENTS));
+        console.log('User assignments loaded:', Object.keys(USER_ASSIGNMENTS));
     } catch (e) {
         console.error('Error loading user assignments:', e);
         USER_ASSIGNMENTS = createDefaultUserAssignments();
@@ -37,10 +80,9 @@ function createDefaultUserAssignments() {
         // Use specific assignment if exists, otherwise full range
         const surahRange = surahAssignments[lowerName] || [1, 114];
         
-        assignments[lowerName] = { 
-            name: lowerName.charAt(0).toUpperCase() + lowerName.slice(1), 
-            riwayah: 'warsh', 
-            surahRange: surahRange
+        assignments[lowerName] = {
+            name: lowerName.charAt(0).toUpperCase() + lowerName.slice(1),
+            assignments: { warsh: surahRange }
         };
     });
     
@@ -157,14 +199,16 @@ function getAssignedUserForPage(pageNum, riwayah) {
     
     const fromSurah = surahInfo.fromSurah;
     
-    // Check which user this page belongs to based on their assigned riwayah and surah range
-    for (const [userKey, assignment] of Object.entries(USER_ASSIGNMENTS)) {
-        // Check if this riwayah matches the user's assigned riwayah
-        if (riwayah.toLowerCase() !== assignment.riwayah.toLowerCase()) {
-            continue;
-        }
+    // Check which user this page belongs to based on their per-riwayah surah ranges
+    for (const [userKey, userData] of Object.entries(USER_ASSIGNMENTS)) {
+        const assignments = userData.assignments || {};
+        // Find matching riwayah key (case-insensitive)
+        const riwayahKey = Object.keys(assignments).find(
+            r => r.toLowerCase() === riwayah.toLowerCase()
+        );
+        if (!riwayahKey) continue;
         
-        const [startSurah, endSurah] = assignment.surahRange;
+        const [startSurah, endSurah] = assignments[riwayahKey];
         if (fromSurah >= startSurah && fromSurah <= endSurah) {
             return userKey.toLowerCase(); // Return lowercase for consistent comparison
         }

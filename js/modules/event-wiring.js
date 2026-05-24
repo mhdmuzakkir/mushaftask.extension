@@ -313,6 +313,21 @@ function setupEventListeners() {
         document.getElementById('editColorPreview').style.backgroundColor = e.target.value;
     });
     
+    // Move to Recheck Modal
+    document.getElementById('moveToRecheckBtn')?.addEventListener('click', () => {
+        showMoveToRecheckModal();
+    });
+    document.getElementById('cancelMoveToRecheck')?.addEventListener('click', hideMoveToRecheckModal);
+    document.getElementById('confirmMoveToRecheck')?.addEventListener('click', handleMoveToRecheck);
+    document.getElementById('moveToRecheckSelect')?.addEventListener('change', updateRecheckModalStatus);
+    
+    // Manage Assignments Modal
+    document.getElementById('manageAssignmentsBtn')?.addEventListener('click', () => {
+        showManageAssignmentsModal();
+    });
+    document.getElementById('cancelManageAssignments')?.addEventListener('click', hideManageAssignmentsModal);
+    document.getElementById('saveAssignmentsBtn')?.addEventListener('click', handleSaveAssignments);
+    
     document.getElementById('addTaskBtn')?.addEventListener('click', () => {
         if (!state.currentRiwayah || !state.currentPage) {
             console.log('Open a Mushaf file first');

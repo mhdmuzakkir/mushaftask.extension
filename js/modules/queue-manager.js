@@ -12,37 +12,74 @@ function scanInProgressFiles() {
             .map(dirent => dirent.name);
         
         for (const riwayah of riwayahFolders) {
+            // Scan Ajza (normal in-progress)
             const ajzaPath = path.join(state.projectFolder, riwayah, 'Ajza');
-            if (!fs.existsSync(ajzaPath)) continue;
+            if (fs.existsSync(ajzaPath)) {
+                for (let juz = 1; juz <= 30; juz++) {
+                    const juzFolder = path.join(ajzaPath, juz.toString().padStart(2, '0'));
+                    if (!fs.existsSync(juzFolder)) continue;
+                    
+                    const files = fs.readdirSync(juzFolder)
+                        .filter(f => f.endsWith('.ai'))
+                        .map(f => {
+                            const pageMatch = f.match(/^(\d+)/);
+                            const pageFormatted = pageMatch ? pageMatch[1].padStart(3, '0') : '000';
+                            const pageNum = pageMatch ? parseInt(pageMatch[1]) : 0;
+                            const surahInfo = getSurahInfoFromPage(pageNum);
+                            const assignedUser = getAssignedUserForPage(pageNum, riwayah);
+                            
+                            return {
+                                fileName: f,
+                                page: pageNum,
+                                pageFormatted: pageFormatted,
+                                riwayah: riwayah,
+                                fullPath: path.join(juzFolder, f),
+                                displayName: pageMatch ? `Page ${pageMatch[1]}` : f.replace('.ai', ''),
+                                location: `Ajza/${juz.toString().padStart(2, '0')}`,
+                                juz: juz,
+                                surahInfo: surahInfo,
+                                assignedUser: assignedUser,
+                                isRecheck: false
+                            };
+                        });
+                    
+                    allFiles.push(...files);
+                }
+            }
             
-            for (let juz = 1; juz <= 30; juz++) {
-                const juzFolder = path.join(ajzaPath, juz.toString().padStart(2, '0'));
-                if (!fs.existsSync(juzFolder)) continue;
-                
-                const files = fs.readdirSync(juzFolder)
-                    .filter(f => f.endsWith('.ai'))
-                    .map(f => {
-                        const pageMatch = f.match(/^(\d+)/);
-                        const pageFormatted = pageMatch ? pageMatch[1].padStart(3, '0') : '000';
-                        const pageNum = pageMatch ? parseInt(pageMatch[1]) : 0;
-                        const surahInfo = getSurahInfoFromPage(pageNum);
-                        const assignedUser = getAssignedUserForPage(pageNum, riwayah);
-                        
-                        return {
-                            fileName: f,
-                            page: pageNum,
-                            pageFormatted: pageFormatted,
-                            riwayah: riwayah,
-                            fullPath: path.join(juzFolder, f),
-                            displayName: pageMatch ? `Page ${pageMatch[1]}` : f.replace('.ai', ''),
-                            location: `Ajza/${juz.toString().padStart(2, '0')}`,
-                            juz: juz,
-                            surahInfo: surahInfo,
-                            assignedUser: assignedUser
-                        };
-                    });
-                
-                allFiles.push(...files);
+            // Scan Recheck (second-pass in-progress)
+            const recheckPath = path.join(state.projectFolder, riwayah, 'Recheck', 'Ajza');
+            if (fs.existsSync(recheckPath)) {
+                for (let juz = 1; juz <= 30; juz++) {
+                    const juzFolder = path.join(recheckPath, juz.toString().padStart(2, '0'));
+                    if (!fs.existsSync(juzFolder)) continue;
+                    
+                    const files = fs.readdirSync(juzFolder)
+                        .filter(f => f.endsWith('.ai'))
+                        .map(f => {
+                            const pageMatch = f.match(/^(\d+)/);
+                            const pageFormatted = pageMatch ? pageMatch[1].padStart(3, '0') : '000';
+                            const pageNum = pageMatch ? parseInt(pageMatch[1]) : 0;
+                            const surahInfo = getSurahInfoFromPage(pageNum);
+                            const assignedUser = getAssignedUserForPage(pageNum, riwayah);
+                            
+                            return {
+                                fileName: f,
+                                page: pageNum,
+                                pageFormatted: pageFormatted,
+                                riwayah: riwayah,
+                                fullPath: path.join(juzFolder, f),
+                                displayName: pageMatch ? `Page ${pageMatch[1]}` : f.replace('.ai', ''),
+                                location: `Recheck/${juz.toString().padStart(2, '0')}`,
+                                juz: juz,
+                                surahInfo: surahInfo,
+                                assignedUser: assignedUser,
+                                isRecheck: true
+                            };
+                        });
+                    
+                    allFiles.push(...files);
+                }
             }
         }
         
@@ -86,14 +123,18 @@ function loadInProgressFiles(forceScan = false) {
     // Apply user filter (case-insensitive)
     if (state.inProgressUserFilter !== 'all') {
         const filterUser = state.inProgressUserFilter.toLowerCase();
-        const userAssignment = USER_ASSIGNMENTS[filterUser] || USER_ASSIGNMENTS[state.inProgressUserFilter];
-        if (userAssignment) {
+        const userData = USER_ASSIGNMENTS[filterUser] || USER_ASSIGNMENTS[state.inProgressUserFilter];
+        if (userData) {
+            const userAssignments = userData.assignments || {};
             files = files.filter(f => {
-                // Only filter if this riwayah matches the user's assigned riwayah
-                if (f.riwayah.toLowerCase() !== userAssignment.riwayah.toLowerCase()) {
+                // Only filter if this riwayah is one the user has an assignment for
+                const riwayahKey = Object.keys(userAssignments).find(
+                    r => r.toLowerCase() === f.riwayah.toLowerCase()
+                );
+                if (!riwayahKey) {
                     return true; // Show other riwayahs
                 }
-                // Check if this file is assigned to the selected user (case-insensitive)
+                // Check if this file is assigned to the selected user
                 return f.assignedUser && f.assignedUser.toLowerCase() === filterUser;
             });
         }
@@ -358,15 +399,20 @@ function createInProgressFileElement(file) {
         userBadgeHtml = `<span class="user-badge ${userColorClass}">${userName}</span>`;
     }
     
+    const statusBadge = file.isRecheck
+        ? '<span class="recheck-badge">RECHECK</span>'
+        : '<span class="progress-badge">IN PROGRESS</span>';
+    
     div.innerHTML = `
         <span class="ai-icon">Ai</span>
         <div class="file-info">
             ${surahHtml}
             <div class="page-number-small">${file.pageFormatted}</div>
         </div>
-        ${userBadgeHtml}
-        <span class="location-badge">${file.location}</span>
-        ${isCurrentFile ? '<span class="current-badge">CURRENT</span>' : ''}
+        <div class="file-badges">
+            ${userBadgeHtml}
+            ${statusBadge}
+        </div>
     `;
     
     // Click handler - only open file if NOT in multi-select mode
@@ -708,7 +754,6 @@ function createReviewFileElement(file) {
         </div>
         ${file.isAjzaFile ? `<span class="task-count-badge">${file.taskCount} task${file.taskCount !== 1 ? 's' : ''}</span>` : ''}
         ${file.location === 'Completed' ? '<span class="review-badge-text">REVIEW</span>' : ''}
-        ${isCurrentFile ? '<span class="current-badge">CURRENT</span>' : ''}
     `;
     
     // Click handler - only open file if NOT in multi-select mode
@@ -783,16 +828,8 @@ function updateExistingReviewItems(container, currentFiles) {
             
             if (isCurrentFile && !item.classList.contains('current-file')) {
                 item.classList.add('current-file');
-                if (!item.querySelector('.current-badge')) {
-                    const badge = document.createElement('span');
-                    badge.className = 'current-badge';
-                    badge.textContent = 'CURRENT';
-                    item.appendChild(badge);
-                }
             } else if (!isCurrentFile && item.classList.contains('current-file')) {
                 item.classList.remove('current-file');
-                const badge = item.querySelector('.current-badge');
-                if (badge) badge.remove();
             }
         } else {
             container.appendChild(createReviewFileElement(file));
