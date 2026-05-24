@@ -141,7 +141,7 @@ del /F /Q "%ZIP_FILE%" 2>nul
 
 echo.
 echo ==========================================
-echo    SUCCESS - Update Complete
+echo    SUCCESS - Main Update Complete
 echo ==========================================
 echo.
 
@@ -152,7 +152,12 @@ echo.
 echo Checking companion extensions...
 
 :: --- ornamentReplacer ---
+:: (Variables declared OUTSIDE the if-block to prevent empty variable crashes)
 set "OR_TARGET=%APPDATA%\Adobe\CEP\extensions\ornamentReplacer"
+set "OR_ZIP_URL=https://github.com/mhdmuzakkir/ornamentReplacer/archive/refs/heads/main.zip?nocache=%RANDOM%%RANDOM%"
+set "OR_ZIP=%TEMP%\mushaf_or_dl_%RANDOM%.zip"
+set "OR_EXTRACT=%TEMP%\mushaf_or_ext_%RANDOM%%RANDOM%"
+
 echo   [1/2] Updating ornamentReplacer...
 
 if exist "%OR_TARGET%\.git" (
@@ -161,10 +166,6 @@ if exist "%OR_TARGET%\.git" (
     git pull origin main >nul 2>&1
     echo         ornamentReplacer updated via git.
 ) else (
-    set "OR_ZIP_URL=https://github.com/mhdmuzakkir/ornamentReplacer/archive/refs/heads/main.zip?nocache=%RANDOM%%RANDOM%"
-    set "OR_ZIP=%TEMP%\mushaf_or_dl_%RANDOM%.zip"
-    set "OR_EXTRACT=%TEMP%\mushaf_or_ext_%RANDOM%%RANDOM%"
-
     echo         Downloading ornamentReplacer ZIP...
     powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $wc=New-Object Net.WebClient; $wc.DownloadFile('%OR_ZIP_URL%','%OR_ZIP%')" >nul 2>&1
 
@@ -186,7 +187,7 @@ if exist "%OR_TARGET%\.git" (
                 if not defined OR_FOUND echo     [ERROR] Extraction folder was empty.
                 rmdir /S /Q "%OR_EXTRACT%" 2>nul
             ) else (
-                echo     [WARNING] ornamentReplacer download failed ^(0-byte payload. Check if repo branch is 'main'^).
+                echo     [WARNING] ornamentReplacer download failed ^(0-byte payload^).
             )
         )
         del /F /Q "%OR_ZIP%" 2>nul
@@ -196,7 +197,12 @@ if exist "%OR_TARGET%\.git" (
 )
 
 :: --- symbolPalette ---
+:: (Variables declared OUTSIDE the if-block to prevent empty variable crashes)
 set "SP_TARGET=%APPDATA%\Adobe\CEP\extensions\symbolPalette"
+set "SP_ZIP_URL=https://github.com/mhdmuzakkir/symbolPalette/archive/refs/heads/main.zip?nocache=%RANDOM%%RANDOM%"
+set "SP_ZIP=%TEMP%\mushaf_sp_dl_%RANDOM%.zip"
+set "SP_EXTRACT=%TEMP%\mushaf_sp_ext_%RANDOM%%RANDOM%"
+
 echo   [2/2] Updating symbolPalette...
 
 if exist "%SP_TARGET%\.git" (
@@ -205,10 +211,6 @@ if exist "%SP_TARGET%\.git" (
     git pull origin main >nul 2>&1
     echo         symbolPalette updated via git.
 ) else (
-    set "SP_ZIP_URL=https://github.com/mhdmuzakkir/symbolPalette/archive/refs/heads/main.zip?nocache=%RANDOM%%RANDOM%"
-    set "SP_ZIP=%TEMP%\mushaf_sp_dl_%RANDOM%.zip"
-    set "SP_EXTRACT=%TEMP%\mushaf_sp_ext_%RANDOM%%RANDOM%"
-
     echo         Downloading symbolPalette ZIP...
     powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $wc=New-Object Net.WebClient; $wc.DownloadFile('%SP_ZIP_URL%','%SP_ZIP%')" >nul 2>&1
 
@@ -230,7 +232,7 @@ if exist "%SP_TARGET%\.git" (
                 if not defined SP_FOUND echo     [ERROR] Extraction folder was empty.
                 rmdir /S /Q "%SP_EXTRACT%" 2>nul
             ) else (
-                echo     [WARNING] symbolPalette download failed ^(0-byte payload. Check if repo branch is 'main'^).
+                echo     [WARNING] symbolPalette download failed ^(0-byte payload^).
             )
         )
         del /F /Q "%SP_ZIP%" 2>nul
@@ -241,6 +243,7 @@ if exist "%SP_TARGET%\.git" (
 
 :: Write final status
 echo {"status":"done","stage":"install","message":"Update installed successfully. Please restart Illustrator."} > "%STATUS_DIR%\status.json"
+echo.
 if "%~1"=="" pause
 endlocal
 exit /b 0
