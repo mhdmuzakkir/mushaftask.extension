@@ -74,6 +74,15 @@
     }
 
     var CHANGELOG = {
+        '2.5.0': {
+            date: 'May 24, 2026',
+            new: [
+                'Updater now uses git pull for extensions with a .git folder — preserves your cloned repos',
+                'If git pull fails, the updater reports the error instead of overwriting with ZIP'
+            ],
+            fixed: [],
+            improved: []
+        },
         '2.4.0': {
             date: 'May 24, 2026',
             new: [
