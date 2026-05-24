@@ -3538,7 +3538,7 @@ textarea:focus-visible,
 .tab-card {
     margin: 12px;
     padding: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 .tab-card .tab-page-header {
     padding: 14px 16px;

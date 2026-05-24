@@ -74,6 +74,14 @@
     }
 
     var CHANGELOG = {
+        '2.5.1': {
+            date: 'May 24, 2026',
+            new: [],
+            fixed: [
+                'Fixed dropdown clipping in In Progress tab — user filter and other dropdowns no longer get cut off by tab card bounds'
+            ],
+            improved: []
+        },
         '2.5.0': {
             date: 'May 24, 2026',
             new: [
