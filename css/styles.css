@@ -558,6 +558,12 @@ body {
     border-color: var(--accent-green);
 }
 
+.status-indicator.recheck {
+    background: linear-gradient(135deg, rgba(236, 64, 122, 0.2) 0%, rgba(236, 64, 122, 0.1) 100%);
+    color: var(--accent-purple);
+    border-color: var(--accent-purple);
+}
+
 /* Go To Group (Right side) - INPUT AREA */
 .goto-group {
     display: flex;
@@ -682,6 +688,10 @@ body {
     background-color: var(--accent-green);
 }
 
+.file-path-bar.has-recheck::before {
+    background-color: var(--accent-purple);
+}
+
 .path-label {
     color: var(--text-muted);
     font-weight: 600;
@@ -714,6 +724,11 @@ body {
 
 .file-path.in-progress {
     color: var(--accent-blue);
+    font-weight: 600;
+}
+
+.file-path.recheck {
+    color: var(--accent-purple);
     font-weight: 600;
 }
 

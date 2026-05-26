@@ -329,6 +329,8 @@ async function refreshCurrentFileUI() {
         
         if (fs.existsSync(path.join(state.projectFolder, state.currentRiwayah, 'Review Task', fileName))) {
             location = { label: 'Review Task', status: 'review', display: 'Review Task' };
+        } else if (fs.existsSync(path.join(state.projectFolder, state.currentRiwayah, 'Recheck', 'Ajza', juzFolder, fileName))) {
+            location = { label: `Recheck/Ajza/${juzFolder}`, status: 'recheck', display: `Recheck/Ajza/${juzFolder}` };
         } else if (fs.existsSync(path.join(state.projectFolder, state.currentRiwayah, 'Completed', 'Ajza', juzFolder, fileName))) {
             location = { label: `Completed/Ajza/${juzFolder}`, status: 'completed', display: `Completed/Ajza/${juzFolder}` };
         } else if (fs.existsSync(path.join(state.projectFolder, state.currentRiwayah, 'Ajza', juzFolder, fileName))) {
@@ -408,7 +410,13 @@ async function refreshCurrentFileUI() {
     const completeFab = document.getElementById('completeFab');
     if (completeFab) {
         const hasFileOpen = !!(docInfo && state.currentRiwayah && state.currentPage);
-        const isCompleted = hasFileOpen && (isPageCompleted(state.currentRiwayah, state.currentPage) || isFileCompleted(state.currentRiwayah, state.currentPage));
+        let isInRecheck = false;
+        if (hasFileOpen && state.currentJuz) {
+            const juzFolder = state.currentJuz.toString().padStart(2, '0');
+            const fileName = `${state.currentPage}-${state.currentRiwayah}.ai`;
+            isInRecheck = fs.existsSync(path.join(state.projectFolder, state.currentRiwayah, 'Recheck', 'Ajza', juzFolder, fileName));
+        }
+        const isCompleted = hasFileOpen && !isInRecheck && (isPageCompleted(state.currentRiwayah, state.currentPage) || isFileCompleted(state.currentRiwayah, state.currentPage));
         completeFab.classList.toggle('hidden', !hasFileOpen || isCompleted);
     }
 }

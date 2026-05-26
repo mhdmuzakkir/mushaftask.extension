@@ -355,7 +355,6 @@ function findAndOpenFile(riwayah, pageNum) {
     state.currentRiwayah = riwayah;
     state.currentPage = paddedPage;
     state.currentJuz = juz;
-    state.lastDocName = fileName;
     
     updateLocationDisplay(found.label, found.status, found.display);
     

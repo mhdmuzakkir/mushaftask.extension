@@ -33,7 +33,7 @@ function init() {
     updateModeButton();
     
     var versionChanged = false;
-    var currentVersion = window.Updater ? window.Updater.CURRENT_VERSION : '2.1.0';
+    var currentVersion = window.Updater ? window.Updater.CURRENT_VERSION : '2.5.1';
 
     // Robust check: for Google Drive / network folders, existsSync can return true
     // for offline placeholders. Actually reading the directory catches this.
@@ -242,7 +242,7 @@ function initializeAfterLogin() {
     }
     // Show changelog if this is a new version
     if (state._showChangelogOnLogin && typeof showChangelog === 'function') {
-        var currentVersion = window.Updater ? window.Updater.CURRENT_VERSION : '2.1.0';
+        var currentVersion = window.Updater ? window.Updater.CURRENT_VERSION : '2.5.1';
         setTimeout(function() {
             showChangelog(currentVersion);
         }, 800);
