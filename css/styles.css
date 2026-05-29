@@ -45,6 +45,18 @@
     font-weight: bold;
     font-style: normal;
 }
+@font-face {
+    font-family: 'BahijMuna-Bold';
+    src: url('BahijMuna-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'juz_names';
+    src: url('juz_names.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
 
 * {
     margin: 0;
@@ -520,11 +532,12 @@ body {
     color: var(--accent-blue);
     padding: 4px 10px;
     border-radius: 12px;
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 14px;
+    font-weight: normal;
     border: 1px solid var(--border-color);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0;
+    font-family: 'juz_names', sans-serif;
+    text-transform: none;
 }
 
 /* Status Indicators */
@@ -3447,9 +3460,11 @@ textarea:focus-visible,
 }
 
 .quote-reference {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--text-muted);
     line-height: 1.4;
+    font-family: 'BahijMuna-Bold', 'DIN Next Arabic', sans-serif;
+    font-weight: bold;
 }
 
 /* App Cards */

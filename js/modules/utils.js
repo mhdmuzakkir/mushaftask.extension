@@ -74,6 +74,15 @@
     }
 
     var CHANGELOG = {
+        '2.5.2': {
+            date: 'May 29, 2026',
+            new: [],
+            fixed: [],
+            improved: [
+                'Quote reference text now uses BahijMuna-Bold font',
+                'Juz badge now uses juz_names font with juz001–juz030 format'
+            ]
+        },
         '2.5.1': {
             date: 'May 24, 2026',
             new: [],
