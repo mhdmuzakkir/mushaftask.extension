@@ -3482,7 +3482,7 @@ textarea:focus-visible,
 
 .quote-text {
     font-size: 24px;
-    line-height: 1.8;
+    line-height: 1.4;
     color: var(--text-primary);
     font-family: 'BahijMuna-Bold', 'DIN Next Arabic', sans-serif;
     font-weight: bold;
