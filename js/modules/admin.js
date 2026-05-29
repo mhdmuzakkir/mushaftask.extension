@@ -63,7 +63,7 @@ function handleResetPassword() {
 }
 function showEditRiwayahModal() {
     const select = document.getElementById('editRiwayahSelect');
-    select.innerHTML = '<option value="">Select Riwayah...</option>';
+    select.innerHTML = '<option value="">اختر الرواية</option>';
     try {
         if (state.tasksFolder && fs.existsSync(state.tasksFolder)) {
             const riwayahTasksPath = path.join(state.tasksFolder, 'riwayah-tasks');
@@ -245,7 +245,7 @@ function populateSettingsUserSelect() {
 function showMoveToRecheckModal() {
     const select = document.getElementById('moveToRecheckSelect');
     if (!select) return;
-    select.innerHTML = '<option value="">Select Riwayah...</option>';
+    select.innerHTML = '<option value="">اختر الرواية</option>';
     try {
         if (state.tasksFolder && fs.existsSync(state.tasksFolder)) {
             const riwayahTasksPath = path.join(state.tasksFolder, 'riwayah-tasks');
@@ -333,7 +333,7 @@ function getAvailableRiwayahs() {
 function buildRiwayahSelectHtml(selectedRiwayah, riwayahs) {
     const options = riwayahs.map(r => `<option value="${r}" ${r.toLowerCase() === (selectedRiwayah || '').toLowerCase() ? 'selected' : ''}>${r}</option>`).join('');
     return `<select class="assignment-riwayah" style="width: 100%; background: #1a1a1a; border: 1px solid #444; color: #fff; padding: 4px; font-size: 12px; border-radius: 3px; cursor: pointer;">
-        <option value="">Select Riwayah...</option>
+        <option value="">اختر الرواية</option>
         ${options}
     </select>`;
 }
