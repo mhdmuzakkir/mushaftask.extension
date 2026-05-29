@@ -1172,16 +1172,16 @@ body {
 /* NEW: Current Riwayah Badge */
 .riwayah-badge {
     background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-hover) 100%);
-    color: var(--accent-purple);
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 11px;
+    color: var(--text-primary);
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 16px;
     font-weight: 700;
     border: 1px solid var(--border-color);
-    text-transform: uppercase;
     letter-spacing: 0.5px;
     display: inline-flex;
     align-items: center;
+    font-family: 'DIN Next Arabic', sans-serif;
 }
 
 .riwayah-badge.active {
@@ -3514,6 +3514,33 @@ textarea:focus-visible,
     margin-bottom: 10px;
 }
 .workspace-card .location-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Meta Bar: Riwayah + Juz on top row */
+.meta-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+/* Nav Bar: Navigation buttons + status */
+.nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.nav-group {
     display: flex;
     align-items: center;
     gap: 8px;
