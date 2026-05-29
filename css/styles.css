@@ -2068,12 +2068,12 @@ body.performance-mode .modal-content {
     transition: max-height 0.3s ease, opacity 0.3s ease;
     max-height: 500px;
     opacity: 1;
-    overflow: hidden;
 }
 
 .riwayah-checkboxes.collapsed {
     max-height: 0;
     opacity: 0;
+    overflow: hidden;
 }
 
 .riwayah-checkbox-label {
