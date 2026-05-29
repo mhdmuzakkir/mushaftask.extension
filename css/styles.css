@@ -529,10 +529,10 @@ body {
 /* Juz Badge */
 .juz-badge {
     background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-hover) 100%);
-    color: var(--accent-blue);
+    color: #ffffff;
     padding: 4px 10px;
     border-radius: 12px;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: normal;
     border: 1px solid var(--border-color);
     letter-spacing: 0;
@@ -799,9 +799,9 @@ body {
 }
 
 .section-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 10px;
