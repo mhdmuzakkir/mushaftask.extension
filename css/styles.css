@@ -3462,7 +3462,7 @@ textarea:focus-visible,
 }
 
 .quote-quoter {
-    font-size: 14px;
+    font-size: 19px;
     color: var(--accent-purple);
     font-weight: bold;
     line-height: 1.5;
@@ -3470,7 +3470,7 @@ textarea:focus-visible,
 }
 
 .quote-text {
-    font-size: 16px;
+    font-size: 24px;
     line-height: 1.8;
     color: var(--text-primary);
     font-family: 'BahijMuna-Bold', 'DIN Next Arabic', sans-serif;
@@ -3478,7 +3478,7 @@ textarea:focus-visible,
 }
 
 .quote-reference {
-    font-size: 13px;
+    font-size: 16px;
     color: var(--text-muted);
     line-height: 1.4;
     font-family: 'BahijMuna-Bold', 'DIN Next Arabic', sans-serif;
