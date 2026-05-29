@@ -112,6 +112,7 @@
 
     function getUserColor(username) {
         var colors = ['#4a9eff', '#2ecc71', '#f39c12', '#e74c3c', '#EC407A', '#9b59b6', '#1abc9c', '#e67e22'];
+        if (!username) return colors[0];
         var hash = 0;
         for (var i = 0; i < username.length; i++) {
             hash = username.charCodeAt(i) + ((hash << 5) - hash);
@@ -174,7 +175,7 @@
             html += '<div class="chat-message ' + (isMe ? 'chat-message-me' : 'chat-message-other') + '">';
             html += '<div class="chat-message-header">';
             html += getChatAvatarHtml(msg.username);
-            html += '<span class="chat-message-user" style="color:' + userColor + ';">' + escapeHtml(msg.username) + '</span>';
+            html += '<span class="chat-message-user" style="color:' + userColor + ';">' + escapeHtml(msg.username || '') + '</span>';
             html += '<span class="chat-message-time">' + time + '</span>';
             html += '</div>';
             html += '<div class="chat-message-text">' + escapeHtml(msg.text) + '</div>';

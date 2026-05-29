@@ -703,6 +703,7 @@ function switchTab(tabName) {
     document.querySelectorAll('.tab-content').forEach(content => {
         content.classList.toggle('active', content.id === tabName + 'Tab');
     });
+
     // Global header: visible on all tabs except settings
     const globalHeader = document.getElementById('globalUserHeader');
     const appContainer = document.getElementById('appContainer');

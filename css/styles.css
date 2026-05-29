@@ -4037,15 +4037,19 @@ textarea:focus-visible,
 
 
 /* ==================== CHAT TAB ==================== */
-#chatTab {
+#chatTab.tab-content {
     display: none;
 }
-#chatTab.active {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 156px);
+#chatTab.tab-content.active {
+    display: block;
+    position: fixed;
+    top: 68px;
+    left: 0;
+    right: 0;
+    bottom: 80px;
     padding: 12px;
     box-sizing: border-box;
+    z-index: 1;
 }
 .chat-container {
     display: flex;
