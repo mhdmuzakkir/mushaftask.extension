@@ -14,13 +14,13 @@ function updateProgress() {
     
     updatePageTasksSubmitButton();
 }
-function renderTaskList(containerId, tasks, isPageTask = false, showCompleteAll = false) {
+function renderTaskList(containerId, tasks, isPageTask = false, showCompleteAll = false, isPlainList = false) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
     
     const isFileDone = isPageCompleted(state.currentRiwayah, state.currentPage);
     
-    if (showCompleteAll && tasks.length > 0 && !isPageTask && !isFileDone) {
+    if (showCompleteAll && tasks.length > 0 && !isPageTask && !isFileDone && !isPlainList) {
         const allCompleted = tasks.every(t => t.completed);
         const completeAllBtn = document.createElement('button');
         completeAllBtn.className = 'btn-complete-all';
@@ -43,7 +43,7 @@ function renderTaskList(containerId, tasks, isPageTask = false, showCompleteAll 
     
     tasks.forEach((task, index) => {
         const taskDiv = document.createElement('div');
-        taskDiv.className = `task-item ${task.completed ? 'completed' : ''}`;
+        taskDiv.className = isPlainList ? 'task-item task-plain-item' : `task-item ${task.completed ? 'completed' : ''}`;
         taskDiv.dataset.index = index;
         taskDiv.dataset.ispage = isPageTask;
         taskDiv.dataset.taskid = task.id;
@@ -51,34 +51,17 @@ function renderTaskList(containerId, tasks, isPageTask = false, showCompleteAll 
         const titleClass = containsArabic(task.title) ? 'task-title arabic-text' : 'task-title';
         const descClass = containsArabic(task.description) ? 'task-description arabic-text' : 'task-description';
         
-        taskDiv.innerHTML = `
-            <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} ${isFileDone ? 'disabled' : ''}>
-            <div class="task-content">
-                <div class="${titleClass}">${escapeHtml(task.title)}</div>
-                ${task.assigned ? `<div class="task-meta">Assigned: ${escapeHtml(task.assigned)}</div>` : ''}
-                ${task.description ? `<div class="${descClass}">${escapeHtml(task.description)}</div>` : ''}
-            </div>
-            ${task.description ? `<button class="task-toggle">&#9662;</button>` : ''}
-        `;
-        
-        if (!isFileDone) {
-            taskDiv.addEventListener('click', function(e) {
-                if (e.target.classList.contains('task-checkbox') || 
-                    e.target.classList.contains('task-toggle')) {
-                    return;
-                }
-                
-                const checkbox = this.querySelector('.task-checkbox');
-                checkbox.checked = !checkbox.checked;
-                handleTaskToggle(index, isPageTask, task.id, checkbox.checked, this);
-            });
+        if (isPlainList) {
+            // Plain list mode: no checkbox, no complete-all, just text
+            taskDiv.innerHTML = `
+                <div class="task-content">
+                    <div class="${titleClass}">${escapeHtml(task.title)}</div>
+                    ${task.description ? `<div class="${descClass}">${escapeHtml(task.description)}</div>` : ''}
+                </div>
+                ${task.description ? `<button class="task-toggle">&#9662;</button>` : ''}
+            `;
             
-            const checkbox = taskDiv.querySelector('.task-checkbox');
-            checkbox.addEventListener('change', function(e) {
-                e.stopPropagation();
-                handleTaskToggle(index, isPageTask, task.id, this.checked, taskDiv);
-            });
-            
+            // Allow description toggle in plain mode
             const toggleBtn = taskDiv.querySelector('.task-toggle');
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', function(e) {
@@ -86,6 +69,44 @@ function renderTaskList(containerId, tasks, isPageTask = false, showCompleteAll 
                     taskDiv.classList.toggle('expanded');
                     this.innerHTML = taskDiv.classList.contains('expanded') ? '&#9652;' : '&#9662;';
                 });
+            }
+        } else {
+            taskDiv.innerHTML = `
+                <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} ${isFileDone ? 'disabled' : ''}>
+                <div class="task-content">
+                    <div class="${titleClass}">${escapeHtml(task.title)}</div>
+                    ${task.assigned ? `<div class="task-meta">Assigned: ${escapeHtml(task.assigned)}</div>` : ''}
+                    ${task.description ? `<div class="${descClass}">${escapeHtml(task.description)}</div>` : ''}
+                </div>
+                ${task.description ? `<button class="task-toggle">&#9662;</button>` : ''}
+            `;
+            
+            if (!isFileDone) {
+                taskDiv.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('task-checkbox') || 
+                        e.target.classList.contains('task-toggle')) {
+                        return;
+                    }
+                    
+                    const checkbox = this.querySelector('.task-checkbox');
+                    checkbox.checked = !checkbox.checked;
+                    handleTaskToggle(index, isPageTask, task.id, checkbox.checked, this);
+                });
+                
+                const checkbox = taskDiv.querySelector('.task-checkbox');
+                checkbox.addEventListener('change', function(e) {
+                    e.stopPropagation();
+                    handleTaskToggle(index, isPageTask, task.id, this.checked, taskDiv);
+                });
+                
+                const toggleBtn = taskDiv.querySelector('.task-toggle');
+                if (toggleBtn) {
+                    toggleBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        taskDiv.classList.toggle('expanded');
+                        this.innerHTML = taskDiv.classList.contains('expanded') ? '&#9652;' : '&#9662;';
+                    });
+                }
             }
         }
         
@@ -356,7 +377,7 @@ async function refreshCurrentFileUI() {
             completed: state.pageProjectCompletions.includes(task.id)
         }));
         
-        renderTaskList('projectTasks', displayProjectTasks, false, true);
+        renderTaskList('projectTasks', displayProjectTasks, false, true, true);
         renderTaskList('pageTasks', state.pageTasks, true, false);
         updateProgress();
         updatePageTasksSubmitButton();

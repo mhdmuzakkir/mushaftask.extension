@@ -374,7 +374,7 @@ function toggleCompleteAll(isPageTask) {
             ...task,
             completed: state.pageProjectCompletions.includes(task.id)
         }));
-        renderTaskList('projectTasks', displayProjectTasks, false, true);
+        renderTaskList('projectTasks', displayProjectTasks, false, true, true);
         updateProgress();
         updateCompleteAllButton(false);
     } finally {
@@ -406,7 +406,7 @@ function loadPageTasksForCurrent() {
         completed: state.pageProjectCompletions.includes(task.id)
     }));
     
-    renderTaskList('projectTasks', displayProjectTasks, false, true);
+    renderTaskList('projectTasks', displayProjectTasks, false, true, true);
     renderTaskList('pageTasks', state.pageTasks, true, false);
     updateProgress();
     
