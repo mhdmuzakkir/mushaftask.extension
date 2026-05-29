@@ -532,12 +532,11 @@ body {
     color: var(--text-primary);
     padding: 4px 10px;
     border-radius: 12px;
-    font-size: 14px;
-    font-weight: normal;
+    font-size: 12px;
+    font-weight: 700;
     border: 1px solid var(--border-color);
-    letter-spacing: 0;
-    font-family: 'juz_names', 'DIN Next Arabic', sans-serif;
-    text-transform: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     white-space: nowrap;
 }
 

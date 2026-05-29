@@ -294,7 +294,7 @@ function updateLocationDisplay(label, status, displayPath) {
     }
     
     if (juzInfo) {
-        juzInfo.textContent = 'juz' + String(state.currentJuz).padStart(3, '0');
+        juzInfo.textContent = 'Juz ' + state.currentJuz;
     }
     
     if (pathBar) {
@@ -412,7 +412,7 @@ async function refreshCurrentFileUI() {
             fileStatus.textContent = '';
             fileStatus.className = 'status-indicator';
         }
-        if (juzInfo) juzInfo.textContent = 'الجزء';
+        if (juzInfo) juzInfo.textContent = 'Juz -';
         if (pathBar) {
             pathBar.classList.remove('has-review', 'has-progress', 'has-completed');
         }
