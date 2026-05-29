@@ -151,6 +151,10 @@ function openDocument(filePath) {
         var doc = app.open(file);
         
         if (doc != null) {
+            // Fit artboard to window (Ctrl+0)
+            try {
+                app.executeMenuCommand('fitin');
+            } catch (e) {}
             return "success";
         } else {
             return "ERROR: Could not open document";
