@@ -278,7 +278,7 @@ function updateLocationDisplay(label, status, displayPath) {
         currentRiwayahDisplay.style.color = color;
         currentRiwayahDisplay.style.borderColor = color;
     } else if (currentRiwayahDisplay) {
-        currentRiwayahDisplay.textContent = '-';
+        currentRiwayahDisplay.textContent = 'الرواية';
         currentRiwayahDisplay.classList.remove('active');
         currentRiwayahDisplay.style = '';
     }
@@ -412,7 +412,7 @@ async function refreshCurrentFileUI() {
             fileStatus.textContent = '';
             fileStatus.className = 'status-indicator';
         }
-        if (juzInfo) juzInfo.textContent = 'juz000';
+        if (juzInfo) juzInfo.textContent = 'الجزء';
         if (pathBar) {
             pathBar.classList.remove('has-review', 'has-progress', 'has-completed');
         }

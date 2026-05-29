@@ -536,7 +536,7 @@ body {
     font-weight: normal;
     border: 1px solid var(--border-color);
     letter-spacing: 0;
-    font-family: 'juz_names', sans-serif;
+    font-family: 'juz_names', 'DIN Next Arabic', sans-serif;
     text-transform: none;
 }
 
