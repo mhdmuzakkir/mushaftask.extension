@@ -1,0 +1,483 @@
+/* ==========================================================================
+   Settings Panels, Admin Controls, User Tables, Changelog
+   Part of: Mushaf Task Manager - Adobe Illustrator CEP Extension
+   Original: styles.css (split for maintainability)
+   ========================================================================== */
+
+/* ==================== SETTINGS SECTIONS ==================== */
+.settings-section {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.settings-section h3 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-primary);
+    padding: 6px 0;
+}
+.checkbox-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-blue);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.setting-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    line-height: 1.4;
+}
+
+.admin-section {
+    background-color: var(--bg-secondary);
+    padding: 16px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--card-border);
+}
+
+/* Update buttons row — flex layout to prevent overflow */
+.update-btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.update-btn-row .admin-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    min-height: 36px;
+    font-size: 12px;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+    flex: 1 1 auto;
+    white-space: nowrap;
+}
+
+.update-btn-row .admin-icon-btn .icon-sm {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+.update-btn-row .admin-icon-btn span {
+    display: inline;
+    opacity: 1;
+    max-width: none;
+    margin-left: 0;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Admin Controls — Professional grouped list */
+.admin-group {
+    margin-bottom: 16px;
+}
+
+.admin-group:last-child {
+    margin-bottom: 0;
+}
+
+.admin-group-header {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    padding-left: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-actions {
+    background-color: var(--bg-tertiary);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.admin-action-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0 14px;
+    height: 38px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    text-align: left;
+    gap: 10px;
+}
+
+.admin-action-row:last-child {
+    border-bottom: none;
+}
+
+.admin-action-row:hover {
+    background-color: var(--bg-hover);
+}
+
+.admin-action-row:active {
+    background-color: var(--bg-active);
+}
+
+.admin-action-row .icon-sm {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    flex-shrink: 0;
+    opacity: 0.85;
+}
+
+.admin-action-label {
+    flex: 1 1 auto;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-action-chevron {
+    font-size: 16px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    line-height: 1;
+    margin-left: auto;
+}
+
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    background-color: var(--accent-red);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-right: 4px;
+}
+
+.admin-badge:empty,
+.admin-badge[data-count="0"] {
+    display: none;
+}
+
+.chat-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background-color: var(--accent-red);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+/* Restart Required Banner */
+.restart-banner {
+    background: var(--success-bg);
+    border: 1px solid var(--accent-green);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+}
+.restart-banner-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.restart-banner-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+.restart-banner-text strong {
+    font-size: 13px;
+    color: var(--accent-green);
+}
+.restart-banner-text span {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+.restart-banner-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Custom Confirm Modal */
+.confirm-modal-content {
+    max-width: 320px;
+}
+.confirm-modal-content p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    white-space: pre-line;
+}
+
+/* Changelog Modal */
+.changelog-modal-content {
+    max-width: 380px;
+}
+.changelog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+}
+.changelog-header h2 {
+    margin-bottom: 0;
+    font-size: 16px;
+}
+.changelog-version {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent-green);
+    background: var(--success-bg);
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+}
+.changelog-body {
+    max-height: 50vh;
+    overflow-y: auto;
+    margin-bottom: 16px;
+}
+.changelog-section {
+    margin-bottom: 16px;
+}
+.changelog-section:last-child {
+    margin-bottom: 0;
+}
+.changelog-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.changelog-section-title.new { color: var(--accent-green); }
+.changelog-section-title.fixed { color: var(--accent-orange); }
+.changelog-section-title.improved { color: var(--accent-blue); }
+.changelog-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.changelog-list li {
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding: 4px 0 4px 18px;
+    position: relative;
+    line-height: 1.4;
+}
+.changelog-list li::before {
+    content: '•';
+    position: absolute;
+    left: 6px;
+    color: var(--text-muted);
+}
+.admin-badge-inline {
+    display: inline-block;
+    background: var(--accent-purple);
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    margin-left: 4px;
+    vertical-align: middle;
+    font-family: inherit;
+}
+
+/* Small icon buttons for tab headers & multi-select */
+.btn-icon-sm {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: var(--radius);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-icon-sm:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.btn-icon-sm.active {
+    color: var(--accent-red);
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.btn-icon-sm .icon-sm {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+/* Icon action buttons (close/save page) */
+.icon-action-btn .icon-sm {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+/* User Settings Table */
+.user-settings-table-wrapper {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+}
+
+.user-settings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.user-settings-table th,
+.user-settings-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.user-settings-table th {
+    background: var(--bg-tertiary);
+    font-weight: 600;
+    color: var(--text-primary);
+    position: sticky;
+    top: 0;
+}
+
+.user-settings-table td {
+    color: var(--text-secondary);
+}
+
+.user-settings-table tr:last-child td {
+    border-bottom: none;
+}
+
+.user-settings-table .empty-cell {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-muted);
+}
+
+/* Per-riwayah assignment rows */
+.assignment-user-header td {
+    font-weight: 600;
+    color: var(--text-primary);
+    padding-top: 14px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border-color);
+    background: transparent;
+}
+
+.assignment-row td {
+    padding: 6px 12px;
+    border-bottom: none;
+}
+
+.assignment-add-row td {
+    padding-top: 4px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.btn-remove-assignment {
+    transition: all 0.15s ease;
+    border-radius: 4px;
+    min-width: 24px;
+}
+.btn-remove-assignment:hover {
+    color: #ff6b6b !important;
+    background: rgba(231, 76, 60, 0.1) !important;
+}
+
+.assignment-riwayah option {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.btn-add-riwayah {
+    transition: all 0.15s ease;
+}
+.btn-add-riwayah:hover {
+    background: rgba(74, 158, 255, 0.2) !important;
+    border-color: rgba(74, 158, 255, 0.5) !important;
+}
+
+.super-admin-badge {
+    display: inline-block;
+    background: var(--accent-purple);
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    margin-left: 4px;
+}
+
+.text-muted {
+    color: var(--text-muted);
+}

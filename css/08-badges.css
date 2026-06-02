@@ -1,0 +1,357 @@
+/* ==========================================================================
+   Badges & Status Indicators - Info, juz, status, user badges, surah names
+   Part of: Mushaf Task Manager - Adobe Illustrator CEP Extension
+   Original: styles.css (split for maintainability)
+   ========================================================================== */
+
+/* Info Badge for Current Page Display */
+.info-badge {
+    background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-hover) 100%);
+    color: var(--text-primary);
+    padding: 4px 12px;
+    border-radius: var(--radius);
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+    font-family: 'Consolas', 'Monaco', monospace;
+    letter-spacing: 0.5px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.info-badge.active {
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    background: linear-gradient(135deg, rgba(74, 158, 255, 0.1) 0%, rgba(74, 158, 255, 0.05) 100%);
+}
+
+/* Juz Badge */
+.juz-badge {
+    background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-hover) 100%);
+    color: var(--text-primary);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+/* Status Indicators */
+.status-indicator {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.status-indicator.review {
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.2) 0%, rgba(243, 156, 18, 0.1) 100%);
+    color: var(--accent-orange);
+    border-color: var(--accent-orange);
+}
+
+.status-indicator.in-progress {
+    background: linear-gradient(135deg, rgba(74, 158, 255, 0.2) 0%, rgba(74, 158, 255, 0.1) 100%);
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.status-indicator.completed {
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.2) 0%, rgba(46, 204, 113, 0.1) 100%);
+    color: var(--accent-green);
+    border-color: var(--accent-green);
+}
+
+.status-indicator.recheck {
+    background: linear-gradient(135deg, rgba(236, 64, 122, 0.2) 0%, rgba(236, 64, 122, 0.1) 100%);
+    color: var(--accent-purple);
+    border-color: var(--accent-purple);
+}
+
+/* Go To Group (Right side) - INPUT AREA */
+.goto-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--bg-primary);
+    padding: 3px 3px 3px 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s;
+}
+
+.goto-group:hover {
+    border-color: var(--border-light);
+}
+
+.goto-group:focus-within {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.1);
+}
+
+.goto-group label {
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* The actual input for typing - SEPARATE from display */
+.goto-input {
+    width: 42px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    padding: 5px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    transition: all 0.2s;
+}
+
+.goto-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    background-color: var(--bg-tertiary);
+}
+
+.goto-input::placeholder {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 11px;
+}
+
+/* Review Queue Badge */
+.review-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background-color: var(--accent-orange);
+    color: white;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 5px;
+    border-radius: 10px;
+    min-width: 16px;
+    text-align: center;
+}
+
+/* Review Queue Styles */
+.review-count {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    font-style: italic;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+
+/* NEW: Current Riwayah Badge */
+.riwayah-badge {
+    background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-hover) 100%);
+    color: var(--text-primary);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    font-family: 'DIN Next Arabic', sans-serif;
+    white-space: nowrap;
+}
+
+.riwayah-badge.active {
+    color: var(--accent-purple);
+    border-color: var(--accent-purple);
+    background: linear-gradient(135deg, rgba(155, 89, 182, 0.1) 0%, rgba(155, 89, 182, 0.05) 100%);
+}
+
+/* NEW: Enhanced Go To Section Layout */
+.goto-group-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--bg-primary);
+    padding: 4px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+.goto-separator {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 300;
+    padding: 0 4px;
+}
+
+/* Individual Go To Groups */
+.goto-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: none;
+}
+
+.goto-group.page-group {
+    border-right: 1px solid var(--border-color);
+    padding-right: 10px;
+}
+
+.goto-group label {
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* Surah Names in Review Queue */
+.surah-name {
+    font-family: 'Surah', 'DIN Next Arabic';
+    line-height: 1.2;
+}
+
+.surah-name.primary {
+    font-size: 18px;
+    color: var(--text-primary);
+    font-weight: normal;
+}
+
+.surah-name.secondary {
+    font-size: 14px;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    margin-left: 8px;
+}
+
+.surah-names {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.surah-name.unknown {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-style: italic;
+    font-family: inherit;
+}
+/* Small Page Number */
+.page-number-small {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: 'Consolas', 'Monaco', monospace;
+    letter-spacing: 0.5px;
+}
+/* Surah Select with Special Font */
+
+/* User Badge Styles */
+.user-badge {
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 4px;
+    white-space: nowrap;
+}
+
+/* Default user badge colors - can be customized via JSON */
+.user-saad {
+    background: rgba(46, 204, 113, 0.2);
+    color: var(--accent-green);
+    border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.user-muzakkir {
+    background: rgba(243, 156, 18, 0.2);
+    color: var(--accent-orange);
+    border: 1px solid rgba(243, 156, 18, 0.3);
+}
+
+.user-umar {
+    background: rgba(155, 89, 182, 0.2);
+    color: var(--accent-purple);
+    border: 1px solid rgba(155, 89, 182, 0.3);
+}
+
+/* Generic user colors for dynamically added users */
+.user-badge {
+    background: rgba(74, 158, 255, 0.2);
+    color: var(--accent-blue);
+    border: 1px solid rgba(74, 158, 255, 0.3);
+}
+
+/* Keyboard shortcut hints */
+.kb-shortcut {
+    display: inline-block;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: monospace;
+    margin-left: 8px;
+}
+
+
+.recheck-badge {
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    background: rgba(230, 126, 34, 0.2);
+    color: #e67e22;
+    border: 1px solid rgba(230, 126, 34, 0.3);
+}
+
+.riwayah-status-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin-left: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.riwayah-status-badge.status-active {
+    background: rgba(46, 204, 113, 0.2);
+    color: var(--accent-green);
+    border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.riwayah-status-badge.status-completed {
+    background: rgba(74, 158, 255, 0.2);
+    color: var(--accent-blue);
+    border: 1px solid rgba(74, 158, 255, 0.3);
+}
+
+.riwayah-status-badge.status-recheck {
+    background: rgba(230, 126, 34, 0.2);
+    color: #e67e22;
+    border: 1px solid rgba(230, 126, 34, 0.3);
+}

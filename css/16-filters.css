@@ -1,0 +1,526 @@
+/* ==========================================================================
+   Multi-Select Controls, Filters, Collapsible Sections
+   Part of: Mushaf Task Manager - Adobe Illustrator CEP Extension
+   Original: styles.css (split for maintainability)
+   ========================================================================== */
+
+/* ==================== MULTI-SELECT CONTROLS ==================== */
+.multi-select-controls {
+    position: fixed;
+    bottom: 45px;
+    left: 0;
+    right: 0;
+    background: var(--bg-secondary);
+    border-top: 2px solid var(--accent-blue);
+    padding: 12px;
+    z-index: 200;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.multi-select-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.multi-select-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent-blue);
+}
+
+#multiSelectCount {
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: var(--bg-primary);
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+.multi-select-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 11px;
+}
+
+/* Review Queue Header */
+.review-queue-header {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.review-queue-header .btn-small {
+    font-size: 10px;
+    padding: 4px 10px;
+}
+
+/* Multi-select checkboxes in review items */
+.review-file-item {
+    position: relative;
+}
+
+.review-file-item.multi-select-mode {
+    padding-left: 36px;
+}
+
+.multi-select-checkbox {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-blue);
+    cursor: pointer;
+}
+
+.review-file-item.selected {
+    background: linear-gradient(135deg, rgba(74, 158, 255, 0.2) 0%, rgba(74, 158, 255, 0.1) 100%);
+    border-left-color: var(--accent-blue);
+}
+
+/* In Progress Multi-select styles */
+.in-progress-file-item.multi-select-mode {
+    padding-left: 36px;
+}
+
+.in-progress-file-item.selected {
+    background: linear-gradient(135deg, rgba(74, 158, 255, 0.2) 0%, rgba(74, 158, 255, 0.1) 100%);
+    border-left-color: var(--accent-blue);
+}
+
+/* In Progress Filters */
+.in-progress-filters {
+    display: flex;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    margin: 12px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-group label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.filter-select {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+
+/* Riwayah Checkbox Styles */
+.riwayah-filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.riwayah-filter-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 4px 0;
+}
+
+.riwayah-filter-header label {
+    cursor: pointer;
+}
+
+.riwayah-filter-toggle {
+    font-size: 10px;
+    color: var(--text-secondary);
+    transition: transform 0.2s;
+}
+
+.riwayah-filter-header.collapsed .riwayah-filter-toggle {
+    transform: rotate(-90deg);
+}
+
+.riwayah-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    max-height: 500px;
+    opacity: 1;
+}
+
+.riwayah-checkboxes.collapsed {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.riwayah-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    user-select: none;
+}
+.riwayah-checkbox-label:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-light);
+}
+.riwayah-checkbox-label input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--text-muted);
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    margin: 0;
+}
+.riwayah-checkbox-label input[type="checkbox"]:checked {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+.riwayah-checkbox-label input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 0px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+.riwayah-checkbox-label:has(input[type="checkbox"]:checked) {
+    background: rgba(74, 158, 255, 0.12);
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+/* User Custom Dropdown */
+.user-filter-group {
+    flex: 1;
+    min-width: 140px;
+}
+
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.custom-dropdown-trigger {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s;
+    pointer-events: auto;
+    user-select: none;
+}
+
+.custom-dropdown-trigger:hover {
+    border-color: var(--border-light);
+}
+
+.custom-dropdown-trigger::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid var(--text-secondary);
+    margin-left: 8px;
+}
+
+.custom-dropdown-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+    pointer-events: auto;
+}
+
+.custom-dropdown-option {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.custom-dropdown-option:last-child {
+    border-bottom: none;
+}
+
+.custom-dropdown-option:hover {
+    background: var(--bg-hover);
+}
+
+.custom-dropdown-option.selected {
+    background: var(--accent-blue);
+    color: white;
+}
+
+
+/* ==================== COLLAPSIBLE SECTIONS ==================== */
+.collapsible-section {
+    transition: all 0.3s ease;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 0 0 8px 0;
+    margin: 0;
+    border-bottom: 1px solid var(--border-color);
+    user-select: none;
+}
+
+.section-header:hover {
+    background: var(--bg-hover);
+    border-radius: var(--radius);
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.collapse-icon {
+    font-size: 12px;
+    color: var(--text-secondary);
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+
+.collapsed .collapse-icon {
+    transform: rotate(-90deg);
+}
+
+.section-count {
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--bg-primary);
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 8px;
+}
+
+.section-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.collapsible-content {
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    max-height: 100000px; /* Very large to accommodate any amount of content */
+    opacity: 1;
+    overflow: visible; /* Allow content to overflow when expanded */
+}
+
+.collapsed + .collapsible-content,
+.collapsible-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden; /* Hide overflow when collapsed */
+}
+
+/* In Progress Section - Different accent color */
+#inProgressSection .section-header:hover {
+    background: rgba(74, 158, 255, 0.1);
+    border-radius: var(--radius);
+}
+
+#inProgressSection .section-title {
+    color: var(--accent-blue);
+}
+
+/* In Progress file items */
+.in-progress-file-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background-color: var(--bg-primary);
+    border-radius: var(--radius);
+    margin-bottom: 6px;
+    font-size: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s, border-left-width 0.2s, box-shadow 0.2s, transform 0.2s;
+    border: 1px solid transparent;
+    border-left: 3px solid var(--accent-blue);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+
+.in-progress-file-item:hover {
+    background-color: var(--bg-hover);
+    border-left-color: var(--accent-green);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transform: translateY(-1px);
+}
+
+.in-progress-file-item.current-file {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, #357abd 100%);
+    border-left-color: white;
+}
+
+.in-progress-file-item.current-file .ai-icon {
+    background: white;
+    color: var(--accent-blue);
+}
+
+.in-progress-file-item .file-info .surah-names {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: baseline;
+    gap: 4px;
+    min-width: 0;
+}
+
+.in-progress-file-item.current-file .file-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.in-progress-file-item .file-info .surah-name.primary,
+.in-progress-file-item .file-info .surah-name.secondary {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.in-progress-file-item.current-file .surah-name.primary,
+.in-progress-file-item.current-file .page-number-small {
+    color: white;
+}
+
+.file-badges {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    margin-left: auto;
+    min-width: 0;
+}
+
+.file-badges .user-badge,
+.file-badges .recheck-badge,
+.file-badges .progress-badge,
+.file-badges .location-badge,
+.file-badges .current-badge {
+    margin-left: 0;
+    flex-shrink: 0;
+}
+
+.in-progress-file-item .location-badge {
+    font-size: 9px;
+    color: var(--accent-blue);
+    background: rgba(74, 158, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.in-progress-file-item.current-file .location-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.in-progress-file-item .progress-badge {
+    font-size: 9px;
+    color: var(--accent-blue);
+    background: rgba(74, 158, 255, 0.1);
+    border: 1px solid rgba(74, 158, 255, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.in-progress-file-item.current-file .progress-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}

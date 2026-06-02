@@ -1,0 +1,90 @@
+/* ==========================================================================
+   Form Elements - Inputs, textareas, selects, checkboxes, labels
+   Part of: Mushaf Task Manager - Adobe Illustrator CEP Extension
+   Original: styles.css (split for maintainability)
+   ========================================================================== */
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: left;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-size: 12px;
+    transition: border-color 0.2s;
+    direction: ltr;
+    text-align: left;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    direction: ltr;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent-blue);
+    margin-right: 8px;
+    margin-left: 0;
+}
+
+.checkbox-group label {
+    color: var(--text-secondary);
+    cursor: pointer;
+    margin: 0;
+}
+
+.folder-input-group {
+    display: flex;
+    gap: 8px;
+    flex-direction: row;
+}
+
+.folder-input-group input {
+    flex: 1;
+    text-align: left;
+    direction: ltr;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    flex-direction: row;
+}

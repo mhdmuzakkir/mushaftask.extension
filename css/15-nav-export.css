@@ -1,0 +1,102 @@
+/* ==========================================================================
+   Navigation Buttons, Color Picker, Batch Export Modal
+   Part of: Mushaf Task Manager - Adobe Illustrator CEP Extension
+   Original: styles.css (split for maintainability)
+   ========================================================================== */
+
+/* ==================== NAVIGATION BUTTONS ==================== */
+.nav-btn {
+    font-size: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+.nav-btn:hover {
+    background: var(--accent-blue);
+    color: white;
+    border-color: var(--accent-blue);
+}
+
+.nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+}
+
+/* ==================== COLOR PICKER FOR RIWAYAH ==================== */
+.color-picker-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.color-picker-group input[type="color"] {
+    width: 60px;
+    height: 36px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--bg-primary);
+    cursor: pointer;
+}
+
+.color-preview {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    background-color: var(--accent-purple);
+}
+
+/* Dynamic riwayah badge colors */
+.riwayah-badge {
+    transition: all 0.3s ease;
+}
+
+/* ==================== BATCH EXPORT MODAL ==================== */
+.range-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.range-inputs input {
+    width: 80px;
+    text-align: center;
+}
+
+.range-separator {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.export-progress {
+    margin: 16px 0;
+    padding: 12px;
+    background: var(--bg-primary);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+.export-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.export-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+#exportProgressText {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}

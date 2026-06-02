@@ -1,0 +1,207 @@
+/* ==========================================================================
+   All Button Styles - Primary, secondary, success, icon, action buttons
+   Part of: Mushaf Task Manager - Adobe Illustrator CEP Extension
+   Original: styles.css (split for maintainability)
+   ========================================================================== */
+
+/* Button Styles */
+.btn-primary,
+.btn-secondary,
+.btn-success {
+    padding: 8px 16px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: inherit;
+}
+
+.btn-primary {
+    background-color: var(--accent-blue);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #3a8eef;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg-hover);
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background-color: var(--accent-green);
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #27ae60;
+    transform: translateY(-1px);
+}
+
+.btn-full {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--accent-blue);
+    font-size: 11px;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.2s;
+    font-family: inherit;
+}
+
+.btn-link:hover {
+    color: #6ab3ff;
+    text-decoration: underline;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.icon-btn:hover {
+    color: var(--text-primary);
+}
+/* Page TAsk Button */
+.btn-submit-page-tasks {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.btn-submit-page-tasks:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+}
+
+.btn-submit-page-tasks:disabled {
+    cursor: default;
+}
+/* Complete All Button - Purple Gradient */
+.btn-complete-all {
+    width: 100%;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.btn-complete-all:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Legacy notification styles - keep for compatibility */
+.notification {
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    font-size: 12px;
+    animation: slideDown 0.3s ease;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    direction: ltr;
+    text-align: left;
+    font-family: inherit;
+}
+
+.notification.success {
+    background-color: var(--success-bg);
+    border: 1px solid var(--accent-green);
+    color: var(--accent-green);
+}
+
+.notification.warning {
+    background-color: var(--warning-bg);
+    border: 1px solid var(--accent-orange);
+    color: var(--accent-orange);
+}
+
+.notification.error {
+    background-color: var(--error-bg);
+    border: 1px solid var(--accent-red);
+    color: var(--accent-red);
+}
+
+
+/* ==================== ICON ACTION BUTTONS (Close/Save) ==================== */
+.icon-action-btn {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 12px;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    padding: 0;
+    line-height: 1;
+}
+
+.icon-action-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--border-light);
+}
+
+#closePageBtn:hover {
+    background: var(--error-bg);
+    border-color: var(--accent-red);
+    color: var(--accent-red);
+}
+
+#saveClosePageBtn:hover {
+    background: var(--success-bg);
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+}
+
+.icon-action-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

@@ -1,0 +1,162 @@
+/* ==========================================================================
+   Layout Components - Main panel, header, footer, tabs, responsive
+   Part of: Mushaf Task Manager - Adobe Illustrator CEP Extension
+   Original: styles.css (split for maintainability)
+   ========================================================================== */
+
+/* Main Panel */
+.main-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 12px;
+    padding-bottom: 80px; /* Add space for bottom nav */
+}
+
+/* ==================== HEADER ONLY (NO NOTIFICATIONS) ==================== */
+.header {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 10px;
+    margin-bottom: 0;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-direction: row;
+    gap: 12px;
+}
+
+
+/* Header Info - Contains current location and goto */
+.header-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 0;
+    /* REMOVED - was 10px causing the gap */
+    flex-wrap: wrap;
+}
+
+/* Current Location Group (Left side) - READ ONLY */
+.current-location-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+
+
+/* Actions */
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.actions .icon {
+    font-size: 14px;
+}
+
+/* Footer */
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    z-index: 100;
+}
+
+/* Responsive */
+@media (max-width: 380px) {
+    .header-info {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .current-location-group {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .goto-group {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 280px) {
+    .main-panel {
+        padding: 8px;
+        padding-bottom: 60px; /* Keep space for fixed footer */
+    }
+
+    .header-info {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+
+/* ==================== TAB NAVIGATION ==================== */
+.tab-navigation {
+    display: flex;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0 8px;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-hover);
+}
+
+.tab-btn.active {
+    color: var(--accent-blue);
+    border-bottom-color: var(--accent-blue);
+    background-color: var(--bg-tertiary);
+}
+
+.tab-btn.settings-tab {
+    margin-left: auto;
+    font-size: 16px;
+    padding: 10px 14px;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    padding-bottom: 88px;
+}

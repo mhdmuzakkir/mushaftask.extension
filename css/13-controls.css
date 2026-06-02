@@ -1,0 +1,402 @@
+/* ==========================================================================
+   Riwayah Dropdown, Surah/Ayah Selectors, Mode Selector, Collapsible Headers
+   Part of: Mushaf Task Manager - Adobe Illustrator CEP Extension
+   Original: styles.css (split for maintainability)
+   ========================================================================== */
+
+
+/* Hide old title */
+.riwayah-title {
+    display: none;
+}
+
+/* Riwayah Dropdown */
+.riwayah-dropdown {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 6px 28px 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg ' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    min-width: 160px;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    flex: 1;
+}
+
+.riwayah-dropdown:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--border-light);
+}
+
+.riwayah-dropdown:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
+}
+
+.riwayah-dropdown option {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    padding: 8px;
+    font-weight: 500;
+}
+
+
+.surah-select {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-family: 'DIN Next Arabic';
+    font-weight: bold;
+    font-size: 14px;
+    min-width: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.surah-select:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    background-color: var(--bg-tertiary);
+}
+
+.surah-select option {
+    font-family: 'Surah', 'DIN Next Arabic';
+    font-size: 14px;
+    padding: 4px;
+}
+
+/* Ayah Select */
+.ayah-select {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+    min-width: 60px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ayah-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--bg-primary);
+}
+
+.ayah-select:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+
+/* Ayah Input */
+.ayah-input {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 5px;
+    font-family: inherit !important;
+    font-size: 13px;
+    font-weight: 600;
+    width: 50px;
+    text-align: center;
+}
+
+.ayah-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--bg-primary);
+}
+
+.ayah-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+
+/* Mode Selector (Settings) */
+.mode-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 8px;
+}
+.mode-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--bg-tertiary);
+    border: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 8px;
+    transition: all 0.2s ease;
+}
+.mode-btn svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--text-muted);
+    transition: fill 0.2s ease;
+}
+.mode-btn:hover {
+    background: var(--bg-hover);
+}
+/* Quick = purple (speed icon) */
+.mode-btn.mode-speed.active {
+    background: rgba(155, 89, 182, 0.15);
+    border-color: #9b59b6;
+}
+.mode-btn.mode-speed.active svg {
+    fill: #c084fc;
+}
+/* Normal = green (medium icon) */
+.mode-btn.mode-medium.active {
+    background: rgba(46, 204, 113, 0.15);
+    border-color: #2ecc71;
+}
+.mode-btn.mode-medium.active svg {
+    fill: #2ecc71;
+}
+/* Performance = yellow (slow icon) */
+.mode-btn.mode-slow.active {
+    background: rgba(241, 196, 15, 0.15);
+    border-color: #f1c40f;
+}
+.mode-btn.mode-slow.active svg {
+    fill: #f1c40f;
+}
+
+/* Responsive adjustments for new layout */
+@media (max-width: 480px) {
+    .goto-group-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+
+   .goto-group.page-group {
+       display: flex;
+       align-items: center;
+       gap: 6px;
+       flex-direction: row;
+       /* Explicitly normal */
+       border-right: 1px solid var(--border-color);
+       padding-right: 10px;
+   }
+
+    .goto-separator {
+        display: none;
+    }
+
+    .surah-select,
+    .ayah-select,
+    .ayah-input {
+        flex: 1;
+    }
+}
+.surah-group,
+.ayah-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-direction: row-reverse !important;
+    /* Force RTL, ignore other rules */
+    text-align: right;
+}
+
+/* Label goes on the RIGHT side for Surah/Ayah */
+.surah-group label,
+.ayah-group label {
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-left: 0;
+    margin-right: 4px;
+    order: 3;
+    /* Force to rightmost position */
+}
+
+/* Input in the middle - NORMAL font */
+.surah-input {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 5px;
+    font-family: inherit !important;
+    /* Normal UI font */
+    font-size: 13px;
+    font-weight: 600;
+    width: 60px;
+    text-align: center;
+    order: 2;
+    /* Middle position */
+}
+
+/* Surah name on the LEFT - WHITE color and Surah font */
+.surah-label {
+    font-family: 'Surah', 'DIN Next Arabic';
+    font-size: 14px;
+    color: #ffffff !important;
+    /* Force white */
+    margin-right: 8px;
+    margin-left: 0;
+    min-width: 70px;
+    text-align: right;
+    order: 1;
+    /* Leftmost position */
+}
+.surah-select-display {
+    font-family: 'Surah', 'DIN Next Arabic';
+    font-size: 14px;
+    color: #ffffff;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 4px 8px;
+    min-width: 80px;
+    text-align: right;
+    cursor: pointer;
+    appearance: none;
+    /* Remove default arrow on some browsers */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 4px center;
+    padding-left: 18px;
+    order: 1;
+    /* Rightmost position with row-reverse */
+    margin-left: auto;
+    /* Push to right */
+}
+
+.surah-select-display:focus {
+    outline: none;
+    border-bottom-color: var(--accent-blue);
+}
+
+.surah-select-display option {
+    font-family: 'Surah', 'DIN Next Arabic';
+    font-size: 14px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    text-align: right;
+}
+
+/* Ayah Select Display - similar to surah but with normal font */
+.ayah-select-display {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 4px 8px;
+    min-width: 60px;
+    text-align: center;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    order: 1;
+}
+
+.ayah-select-display:focus {
+    outline: none;
+    border-bottom-color: var(--accent-blue);
+}
+
+.ayah-select-display:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.ayah-select-display option {
+    font-family: inherit;
+    font-size: 13px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    text-align: center;
+}
+
+/* Collapsible Riwayah Header */
+.riwayah-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    margin: 12px 0 6px 0;
+    background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-hover) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.riwayah-header:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-light);
+}
+
+.riwayah-header:first-of-type {
+    margin-top: 0;
+}
+
+.riwayah-toggle-icon {
+    font-size: 10px;
+    color: var(--text-secondary);
+    transition: transform 0.2s;
+    width: 16px;
+    text-align: center;
+}
+
+.riwayah-header.collapsed .riwayah-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.riwayah-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex: 1;
+}
+
+.riwayah-count-badge {
+    background: rgba(74, 158, 255, 0.15);
+    color: var(--accent-blue);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(74, 158, 255, 0.3);
+    min-width: 20px;
+    text-align: center;
+}
+.riwayah-files-container {
+    contain: layout;
+    /* Prevents reflow from affecting other sections */
+}
+/* Current file adjustments for new layout */

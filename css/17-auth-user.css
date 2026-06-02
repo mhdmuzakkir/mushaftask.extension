@@ -1,0 +1,88 @@
+/* ==========================================================================
+   Login Modal, Current User Display, Logout
+   Part of: Mushaf Task Manager - Adobe Illustrator CEP Extension
+   Original: styles.css (split for maintainability)
+   ========================================================================== */
+
+/* ==================== LOGIN MODAL ==================== */
+.login-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.login-hint {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 12px;
+}
+
+.welcome-back {
+    text-align: center;
+    color: var(--accent-blue);
+    font-size: 14px;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.switch-user-link {
+    text-align: center;
+    margin-top: 12px;
+}
+
+.switch-user-link button {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+/* Remember Me Checkbox */
+#rememberMe {
+    margin-right: 8px;
+}
+
+/* Logout Button */
+#logoutBtn {
+    color: var(--accent-red);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+#logoutBtn:hover {
+    color: var(--text-primary);
+}
+
+.footer .btn-link {
+    white-space: nowrap;
+}
+
+/* ==================== CURRENT USER DISPLAY ==================== */
+.current-user-badge {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-purple);
+    background-color: var(--bg-tertiary);
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-left: auto;
+    text-transform: uppercase;
+    border: 1px solid var(--border-color);
+}
+
+/* Remove white focus outline globally */
+*:focus,
+*:focus-visible,
+button:focus,
+button:focus-visible,
+input:focus,
+input:focus-visible,
+select:focus,
+select:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+[tabindex]:focus,
+[tabindex]:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}

@@ -1,0 +1,159 @@
+/* ==========================================================================
+   Task Sections & Task Items - Lists, checkboxes, descriptions
+   Part of: Mushaf Task Manager - Adobe Illustrator CEP Extension
+   Original: styles.css (split for maintainability)
+   ========================================================================== */
+
+/* Task Sections */
+.task-section {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 12px;
+    margin-bottom: 12px;
+    flex: 1;
+    min-height: 120px;
+}
+
+.section-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+    font-family: inherit;
+    text-align: left;
+}
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.empty-state {
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 11px;
+    font-family: inherit;
+}
+
+/* Task Item */
+.task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px;
+    background-color: var(--bg-primary);
+    border-radius: var(--radius);
+    transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+    direction: ltr;
+    text-align: left;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.task-item:hover {
+    background-color: var(--bg-hover);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transform: translateY(-1px);
+}
+
+.task-item.completed {
+    opacity: 0.6;
+}
+
+.task-item.completed .task-title {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+/* Plain list items (rules without checkboxes) */
+.task-plain-item {
+    cursor: default;
+    padding: 10px 12px;
+}
+
+.task-plain-item:hover {
+    background-color: var(--bg-primary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    transform: none;
+}
+
+.task-plain-item .task-title {
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.task-checkbox {
+    width: 16px;
+    height: 16px;
+    margin-top: 1px;
+    accent-color: var(--accent-green);
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-right: 8px;
+    margin-left: 0;
+}
+
+.task-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.task-title {
+    font-size: 12px;
+    color: var(--text-primary);
+    word-break: break-word;
+    font-family: inherit;
+    line-height: 1.6;
+}
+
+.task-title.arabic-text,
+.task-description.arabic-text {
+    font-family: 'DIN Next Arabic';
+    font-weight: bold;
+    font-size: 13px;
+    direction: rtl;
+    text-align: right;
+}
+
+.task-meta {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.task-description {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top: 1px solid var(--border-color);
+    display: none;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.task-item.expanded .task-description {
+    display: block;
+}
+
+.task-toggle {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 10px;
+    cursor: pointer;
+    padding: 2px 4px;
+    transition: color 0.2s;
+}
+
+.task-toggle:hover {
+    color: var(--text-primary);
+}

@@ -1,0 +1,103 @@
+/* ==========================================================================
+   3-Mode Update System & Performance Mode Overrides
+   Part of: Mushaf Task Manager - Adobe Illustrator CEP Extension
+   Original: styles.css (split for maintainability)
+   ========================================================================== */
+
+/* ==================== 3-MODE UPDATE SYSTEM STYLES ==================== */
+
+/* Update Mode Toggle Button */
+.update-mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.8;
+    transition: all 0.2s;
+}
+
+.update-mode-toggle:hover {
+    opacity: 1;
+}
+
+/* Quick Mode - Green (Rabbit - Fast) */
+.update-mode-toggle.mode-quick {
+    color: var(--accent-green);
+    opacity: 1;
+    font-weight: 600;
+}
+
+/* Normal Mode - Blue (Turtle - Standard) */
+.update-mode-toggle.mode-normal {
+    color: var(--accent-blue);
+    opacity: 1;
+    font-weight: 500;
+}
+
+/* Performance Mode - Orange/Purple (Rocket - Optimized) */
+.update-mode-toggle.mode-performance {
+    color: var(--accent-orange);
+    opacity: 1;
+    font-weight: 600;
+}
+
+/* Performance Mode - Disable animations */
+body.performance-mode *,
+body.performance-mode *::before,
+body.performance-mode *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-property: none !important;
+    scroll-behavior: auto !important;
+}
+
+/* Performance Mode - Simplify hover effects */
+body.performance-mode .btn-primary:hover,
+body.performance-mode .btn-secondary:hover,
+body.performance-mode .btn-success:hover,
+body.performance-mode .btn-link:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Performance Mode - Disable complex gradients */
+body.performance-mode .info-badge,
+body.performance-mode .juz-badge,
+body.performance-mode .riwayah-badge,
+body.performance-mode .riwayah-header,
+body.performance-mode .file-path-bar,
+body.performance-mode .btn-complete-all,
+body.performance-mode .btn-submit-page-tasks {
+    background: var(--bg-tertiary) !important;
+}
+
+/* Performance Mode - Simplify status indicators */
+body.performance-mode .status-indicator {
+    box-shadow: none !important;
+}
+
+/* Performance Mode - Disable spinner animation */
+body.performance-mode .spinner {
+    animation: none !important;
+    border: 3px solid var(--accent-blue) !important;
+}
+
+/* Performance Mode - Simplify review file items */
+body.performance-mode .review-file-item:hover {
+    border-left-width: 3px !important;
+}
+
+body.performance-mode .review-file-item:hover .ai-icon {
+    box-shadow: none !important;
+}
+
+/* Performance Mode - Simplify progress bar */
+body.performance-mode .progress-fill {
+    transition: none !important;
+}
+
+/* Performance Mode - Simplify modals */
+body.performance-mode .modal-content {
+    box-shadow: none !important;
+}
+

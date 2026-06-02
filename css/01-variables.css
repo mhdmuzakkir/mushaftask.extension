@@ -1,0 +1,45 @@
+/* ==========================================================================
+   CSS Custom Properties (Design Tokens) - Colors, spacing, shadows
+   Part of: Mushaf Task Manager - Adobe Illustrator CEP Extension
+   Original: styles.css (split for maintainability)
+   ========================================================================== */
+
+/* Mushaf Task Manager - Dark Theme Styles with Arabic Support */
+/* Matches Adobe Illustrator's dark mode */
+
+:root {
+    --bg-primary: #2b2b2b;
+    --bg-secondary: #1e1e1e;
+    --bg-tertiary: #3a3a3a;
+    --bg-hover: #404040;
+    --bg-active: #4a4a4a;
+
+    --text-primary: #cccccc;
+    --text-secondary: #999999;
+    --text-muted: #666666;
+    --text-inverse: #2b2b2b;
+
+    --accent-blue: #4a9eff;
+    --accent-green: #2ecc71;
+    --accent-orange: #f39c12;
+    --accent-red: #e74c3c;
+    --accent-purple: #EC407A;
+
+    --border-color: #444444;
+    --border-light: #555555;
+
+    --success-bg: rgba(46, 204, 113, 0.15);
+    --warning-bg: rgba(243, 156, 18, 0.15);
+    --error-bg: rgba(231, 76, 60, 0.15);
+
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --radius: 4px;
+
+    /* New Design System */
+    --card-bg: #252525;
+    --card-border: #333333;
+    --radius-lg: 12px;
+    --radius-pill: 24px;
+    --nav-height: 64px;
+    --fab-size: 52px;
+}
