@@ -14,7 +14,7 @@
 
     var REPO_OWNER = 'mhdmuzakkir';
     var REPO_NAME = 'mushaftask.extension';
-    var CURRENT_VERSION = '2.5.2';
+    var CURRENT_VERSION = loadCurrentVersion();
 
     var UPDATE_STATUS = {
         idle: 'idle',
@@ -53,6 +53,24 @@
             console.error('Error finding extension path:', e);
         }
         return null;
+    }
+
+    function loadCurrentVersion() {
+        try {
+            var extPath = getExtensionPath();
+            if (extPath && fs) {
+                var versionPath = path.join(extPath, 'version.json');
+                if (fs.existsSync(versionPath)) {
+                    var data = JSON.parse(fs.readFileSync(versionPath, 'utf8'));
+                    if (data && data.version) {
+                        return data.version;
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Error loading version.json:', e);
+        }
+        return '2.5.4'; // fallback
     }
 
     function isUserInstall(extensionPath) {
