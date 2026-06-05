@@ -12,6 +12,32 @@
 (function(window) {
     'use strict';
 
+    // Node.js availability guard
+    var fs, path, os;
+    try {
+        if (typeof require !== 'undefined') {
+            fs = require('fs');
+            path = require('path');
+            os = require('os');
+        }
+    } catch (e) {
+        console.log('MushafTask updater: Node.js not available. Updater disabled.');
+    }
+
+    if (!fs || !path || !os) {
+        window.Updater = {
+            checkForUpdates: function() { return Promise.resolve({ hasUpdate: false, error: 'Node.js not available in this CEP context. Restart Illustrator.' }); },
+            installUpdate: function() { return Promise.reject(new Error('Node.js not available')); },
+            getUpdateStatus: function() { return 'error'; },
+            getLastCheckResult: function() { return null; },
+            restartIllustrator: function() { return false; },
+            CURRENT_VERSION: '2.5.5',
+            isUserInstall: function() { return false; },
+            getExtensionPath: function() { return null; }
+        };
+        return;
+    }
+
     var REPO_OWNER = 'mhdmuzakkir';
     var REPO_NAME = 'mushaftask.extension';
     var CURRENT_VERSION = loadCurrentVersion();

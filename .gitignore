@@ -1,8 +1,16 @@
-mushaf.linuxproguru.com/*
-google-scripts/*
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
 
-# Development utility scripts (local debugging tools, not part of the extension)
-*_report.txt
-*_v2.txt
-extract_ids.*
-analyze_vars.py
+# Node
+node_modules/
+npm-debug.log*
+
+# Build outputs
+*.zip
+*.zxp
+
+# IDE
+.vscode/
+.idea/
