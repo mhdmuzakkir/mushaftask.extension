@@ -53,8 +53,9 @@ Copy the `mushaftask.extension` folder to:
 mushaftask.extension/
 ├── CSXS/manifest.xml         # CEP extension manifest
 ├── index.html                # Panel UI entry point
-├── js/modules/               # 24 JavaScript modules (IIFE pattern)
-│   ├── main.js               # Application orchestrator
+├── js/
+│   ├── main.js               # Application orchestrator (~230 lines)
+│   └── modules/              # 25 JavaScript modules (IIFE pattern)
 │   ├── updater.js            # GitHub self-updater
 │   ├── auth.js               # Authentication & user management
 │   ├── activity-stats.js     # Activity logging & statistics
