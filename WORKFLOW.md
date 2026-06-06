@@ -75,6 +75,10 @@ The Mushaf Task Manager is a comprehensive workflow system for managing the digi
 │  │ - Move files    │  │ - Submit tasks  │  │ - Progress bars         │ │
 │  └─────────────────┘  └─────────────────┘  └─────────────────────────┘ │
 │  ┌─────────────────────────────────────────────────────────────────────┐│
+│  │ chat.js                                                             ││
+│  │ - Chat/messaging tab                                                ││
+│  └─────────────────────────────────────────────────────────────────────┘│
+│  ┌─────────────────────────────────────────────────────────────────────┐│
 │  │ main.js (Entry Point)                                               ││
 │  │ - Initializes modules                                               ││
 │  │ - Event handlers                                                    ││
@@ -138,6 +142,7 @@ The CEP extension uses a modular IIFE architecture loaded sequentially via `<scr
 | `ui-core.js` | Rendering tasks, progress bars, location display | — |
 | `queue-manager.js` | Review & In Progress scanning, filtering, caching | — |
 | `updater.js` | GitHub self-update (AppData installs) | `Updater` |
+| `chat.js` | Chat/messaging tab functionality | — |
 | `main.js` | Entry point and app logic | `init()` |
 
 ### Key UI Components
@@ -232,7 +237,8 @@ extension/
 │       ├── activity-stats.js # Activity logging, stats
 │       ├── admin.js          # Admin controls (grouped rows)
 │       ├── updater.js        # GitHub self-update
-│       └── event-wiring.js   # DOM event listener setup
+│       ├── event-wiring.js   # DOM event listener setup
+│       └── chat.js           # Chat/messaging tab
 ```
 
 ### Server Folder Structure (mushaf.linuxproguru.com)

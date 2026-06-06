@@ -16,6 +16,11 @@
 (function() {
     'use strict';
 
+    // Ensure Node.js modules are available (CEP mixed-context may pre-load them globally)
+    var fs   = ((typeof require !== 'undefined' && require('fs'))   || (typeof window !== 'undefined' && window.fs)   || undefined);
+    var path = ((typeof require !== 'undefined' && require('path')) || (typeof window !== 'undefined' && window.path) || undefined);
+    var os   = ((typeof require !== 'undefined' && require('os'))   || (typeof window !== 'undefined' && window.os)   || undefined);
+
     // ------------------------------------------------------------------
     // CONFIGURATION
     // ------------------------------------------------------------------
@@ -359,7 +364,8 @@
                 var riwayahs = fs.readdirSync(result.projectFolder);
                 var hasRiwayah = riwayahs.some(function(r) {
                     return isAccessibleFolder(joinPath(result.projectFolder, r, 'Ajza')) ||
-                           isAccessibleFolder(joinPath(result.projectFolder, r, 'Review Task'));
+                           isAccessibleFolder(joinPath(result.projectFolder, r, 'Review Task')) ||
+                           isAccessibleFolder(joinPath(result.projectFolder, r, 'Recheck', 'Ajza'));
                 });
                 if (hasRiwayah) result.score += 15;
             } catch (e) {}
