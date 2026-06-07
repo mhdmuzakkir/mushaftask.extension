@@ -19,6 +19,7 @@ body {
     background-color: var(--bg-primary);
     overflow-x: hidden;
     direction: ltr;
+    min-width: 320px;
 }
 
 /* Arabic Text Support - Only applied to Arabic content */
