@@ -265,7 +265,7 @@ function updateLocationDisplay(label, status, displayPath) {
     const pathBar = document.querySelector('.file-path-bar');
     
     if (currentPageDisplay) {
-        currentPageDisplay.textContent = `Page ${state.currentPage}`;
+        currentPageDisplay.textContent = `${state.currentPage}`;
         currentPageDisplay.classList.add('active');
     }
     
@@ -401,7 +401,7 @@ async function refreshCurrentFileUI() {
         }
         
         if (currentPageDisplay) {
-            currentPageDisplay.textContent = 'Page -';
+            currentPageDisplay.textContent = '-';
             currentPageDisplay.classList.remove('active');
         }
         if (fileLocation) {
