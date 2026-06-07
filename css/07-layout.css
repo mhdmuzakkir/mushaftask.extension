@@ -158,5 +158,6 @@
 
 .tab-content.active {
     display: block;
+    padding: 12px;
     padding-bottom: 88px;
 }
