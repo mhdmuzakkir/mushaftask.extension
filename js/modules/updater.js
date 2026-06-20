@@ -31,7 +31,7 @@
             getUpdateStatus: function() { return 'error'; },
             getLastCheckResult: function() { return null; },
             restartIllustrator: function() { return false; },
-            CURRENT_VERSION: '2.5.5',
+            CURRENT_VERSION: '2.6.0',
             isUserInstall: function() { return false; },
             getExtensionPath: function() { return null; }
         };

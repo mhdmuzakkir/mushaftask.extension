@@ -74,6 +74,16 @@
     }
 
     var CHANGELOG = {
+        '2.6.0': {
+            date: 'June 20, 2026',
+            new: [
+                'Activity Calendar in Stats tab — visual month view with green dots for days that have activity',
+                'Calendar navigation — browse previous/next month and year with dropdown selects',
+                'Hover any calendar date with a green dot to see who completed pages and how many'
+            ],
+            fixed: [],
+            improved: []
+        },
         '2.5.2': {
             date: 'May 29, 2026',
             new: [],

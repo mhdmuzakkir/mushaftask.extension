@@ -16,7 +16,7 @@
 | Extension Type | Panel (`Type: Panel` in manifest) |
 | Panel Size | 320x800px default; min 280x400px; max 500x2000px |
 | Total Pages | 604 (standard Madani Mushaf) |
-| Current Version | 2.5.5 |
+| Current Version | 2.6.0 |
 
 The extension targets Windows primarily. All UI text is in English; Arabic content uses the `DGShamael` and `DIN Next Arabic` fonts.
 

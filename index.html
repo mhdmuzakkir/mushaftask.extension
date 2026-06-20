@@ -681,6 +681,29 @@
                         <div class="stat-tooltip" id="activeUsersTooltip"></div>
                     </div>
                 </div>
+
+                <div class="stats-calendar-card">
+                    <div class="calendar-header">
+                        <span class="calendar-title">Activity Calendar</span>
+                        <div class="calendar-controls">
+                            <button class="calendar-nav-btn" id="calendarPrevYear" title="Previous year">«</button>
+                            <button class="calendar-nav-btn" id="calendarPrevMonth" title="Previous month">‹</button>
+                            <select id="calendarMonthSelect" class="calendar-select"></select>
+                            <select id="calendarYearSelect" class="calendar-select"></select>
+                            <button class="calendar-nav-btn" id="calendarNextMonth" title="Next month">›</button>
+                            <button class="calendar-nav-btn" id="calendarNextYear" title="Next year">»</button>
+                            <button class="calendar-nav-btn calendar-today-btn" id="calendarTodayBtn" title="Go to today">●</button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid" id="activityCalendarGrid">
+                        <!-- Calendar rendered by JS -->
+                    </div>
+                    <div class="calendar-legend">
+                        <span class="calendar-legend-dot"></span>
+                        <span class="calendar-legend-text">Activity recorded</span>
+                    </div>
+                </div>
+
                 <div class="stats-table-container">
                     <h3>Activity Log</h3>
                     <table class="stats-table">
@@ -772,7 +795,7 @@
                         <h3>Extension Update</h3>
                         <div id="updateStatusContainer">
                             <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
-                                Current version: <strong id="currentVersionDisplay">2.5.5</strong>
+                                Current version: <strong id="currentVersionDisplay">2.6.0</strong>
                             </p>
                             <p id="updateStatusText" style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
                                 Click Check to look for updates.
@@ -1101,7 +1124,7 @@
         <div class="modal-content changelog-modal-content">
             <div class="changelog-header">
                 <h2>🎉 What's New</h2>
-                <span class="changelog-version" id="changelogVersion">v2.5.5</span>
+                <span class="changelog-version" id="changelogVersion">v2.6.0</span>
             </div>
             <div class="changelog-body" id="changelogBody">
                 <!-- Populated by JS -->
